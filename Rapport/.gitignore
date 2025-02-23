@@ -1,0 +1,16 @@
+# Ignore temporary LaTeX files
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.xdv
+
+# Ignore PDF output (optional: remove if you want to track the final PDF)
+*.pdf

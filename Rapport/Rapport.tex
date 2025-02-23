@@ -1,0 +1,102 @@
+\documentclass{report}
+\usepackage{graphicx}  % For adding images
+\usepackage{xcolor}    % Color support (before hyperref)
+\usepackage{hyperref}  % For clickable links
+\usepackage{titlesec}  % For customizing titles
+\usepackage{fancyhdr}  % For custom headers and footers
+\usepackage{lmodern}   % Modern font
+\usepackage{etoolbox}  % Required for \preto (if needed)
+
+\definecolor{darkblue}{RGB}{34, 102, 153}  % Chapter title
+\definecolor{mediumblue}{RGB}{50, 120, 180}  % Section title
+\definecolor{lightblue}{RGB}{100, 140, 200}  % Subsection title
+\definecolor{teal}{RGB}{30, 120, 120}  % Résumé & Table of Contents
+\definecolor{grayline}{RGB}{180, 180, 180}  % Line under titles
+
+
+% --- Personnalisation du style des chapitres ---
+\titleformat{\chapter}[block]  
+{\centering\bfseries\Huge\vspace{5cm}\color{darkblue}}  % Centre horizontalement, police moderne et grande
+{Chapitre \thechapter:}  % Chapitre numéroté sous la forme "Chapitre X: "
+{10pt}  
+{\parbox{0.9\textwidth}{\centering}} % Wrap inside a centered box
+[\vspace{0.4pt}\rule{\textwidth}{1pt}\vspace{10pt}] % Ligne SOUS le titre
+
+%sections styling
+\titleformat{\section}
+{\Large\bfseries\color{mediumblue}}  % Medium Blue for Sections
+{\thesection}{1em}{}
+
+%subsections styling
+\titleformat{\subsection}
+{\large\bfseries\color{lightblue}}  % Light Blue for Subsections
+{\thesubsection}{1em}{}
+
+% --- Force chaque section à commencer sur une nouvelle page ---
+\preto\section{\clearpage}
+
+% --- Customizing the TOC title ---
+\renewcommand{\contentsname}{\textcolor{teal}{\textbf{Table des Matières}}}
+\renewcommand{\listfigurename}{\textcolor{teal}{\textbf{Liste des Figures}}}
+
+% Hyperref settings to remove color, border, and line
+\hypersetup{
+    colorlinks=false,       % Disable colored links
+    linkbordercolor={1 1 1}, % Remove border color (set to white)
+    pdfborder={0 0 0},     % Remove the border around links
+}
+
+\title{Rapport du Projet de Fin d'Études}
+\author{Fatim Ezzahrae Akniz \\ Fatima Ezzahra Benzeroual}
+
+\begin{document}
+
+\maketitle
+
+\section*{\textcolor{teal}{Résumé}}  % Unnumbered section in teal
+
+{ % Open a temporary scope
+\titleformat{\chapter}{\normalfont\Huge}{}{0pt}{}  % Reset style
+\tableofcontents
+\listoffigures  % List of Figures
+} % Close the scope
+\clearpage
+
+\chapter{Introduction}
+
+\chapter{Présentation de l'organisme}
+\section{Ecole Supérieure de Technologie de Safi}
+
+\chapter{Analyse des besoins}
+\section{Besoins fonctionnels}
+\section{Besoins non-fonctionnels}
+
+\chapter{Conception}
+\section{UML}
+\section{Diagramme des cas d'utilisation}
+\section{Diagramme de classe}
+\section{Diagrammes de séquence}
+
+\chapter{Outils et Langages utilisés}
+\section{Introduction}
+\section{Outils}
+\subsection{React}
+\subsection{Express.js}
+\subsection{MongoDB}
+\subsection{Visual Studio Code}
+\subsection{StarUML}
+\section{Conclusion}
+
+\chapter{Implémentation du Projet}
+\section{Introduction}
+\section{Application web}
+\section{Conclusion}
+
+
+
+\chapter{Conclusion}
+
+\section*{Références}
+\addcontentsline{toc}{section}{Références}  % Add Références to TOC
+
+\end{document}
