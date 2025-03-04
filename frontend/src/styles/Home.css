@@ -1,0 +1,54 @@
+.home-container {
+    background-color: #ffffff;
+    height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    
+  }
+  
+  .home-text {
+    text-align: left;
+    font-size: 3rem; 
+    font-family: "Preahvihear", serif;
+    font-weight: 400;
+    font-style: normal;
+    margin-left: 13rem; 
+    color: #000000;
+    padding-top: 250px;
+  }
+ 
+
+  .animatedGIF img{
+    margin-top: 4cm;
+    margin-left: 4cm;
+    width: 100%;
+  }
+
+  .home-button {
+    background-color: #4a7c59;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    width: auto;
+    margin-top: 15cm; 
+    padding: 15px 40px;
+    border: 1px solid white;
+    border-radius: 45px;
+    font-size: 1.5rem;
+    outline: none;
+    cursor: pointer;
+    display: block; 
+    position: relative;
+    left: -1370px;
+}
+
+  .home-button:hover{
+    transition: all 0.3s ease-out;
+    background: #8fc0a9;
+    transform: translateY(3px);
+    box-shadow: none;
+    color: white;
+  }
+  .home-button:active {
+    opacity: 0.5;
+  }
