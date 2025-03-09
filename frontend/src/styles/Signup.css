@@ -272,11 +272,12 @@ button.Sign-up-ghost:hover {
 .Sign-container.right-panel-active .overlay-right {
   transform: translateX(20%);
 }
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 1000px) {
   .Sign-container {
-    width: 80%; 
+    width: 90%; 
     top: 200px;
     left: 10px;
+    transform: translate(-5%, 0%);
     padding: 20px;
     transform: scale(0.9); 
   }

@@ -1,0 +1,55 @@
+.progress-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    top: 130px;
+    position: relative;
+    z-index: 0;
+  }
+  
+  .step {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .step-circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #d3d3d3;
+    transition:  0.3s ease-in-out;
+  }
+  
+  .step-circle.active {
+    background-color: #4a7c59;
+  }
+  
+  .step-label {
+    margin-left: 10px;
+    font-size: 18px;
+    color: #000000;
+  }
+  
+  .active-label {
+    color: #000;
+    font-weight: bold;
+  }
+  
+  .step-line {
+    width: 40px;
+    height: 2px;
+    background-color: #d3d3d3;
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+  }
+  
