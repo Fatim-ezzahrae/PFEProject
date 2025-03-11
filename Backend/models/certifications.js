@@ -6,9 +6,7 @@ const certificationSchema = new mongoose.Schema({
     
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },   // Reference to User
     title: String,
-    description: String,
-    startDate: Date,
-    endDate: Date
+    description: String
 
 }, { timestamps: true }
 );

@@ -2,12 +2,19 @@ import React, {useState} from 'react'
 import Logo from "../assets/logoS.jpg"
 import { Link } from 'react-router-dom';
 import "../styles/Navbar.css";
-
+import { useLogout } from '../hooks/useLogout'
+import { useAuthContext } from '../hooks/useAuthContext'
 
 function Navbar() {
     const [click, setClick] = useState(false);
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
+    const { logout } = useLogout()
+    const { user } = useAuthContext()
+
+    const handleLogout = () => {
+      logout()
+    }
   
 
   return (
@@ -45,14 +52,24 @@ function Navbar() {
             </span> Job offers
            </Link>
           </li>
-          <li className='nav-item'>
-          <Link to='/sign-up' className='nav-button' onClick={closeMobileMenu}>
-    <span>Sign Up / Sign In</span>
-    <span className="icon">
-        <i className="fas fa-chevron-right"></i> 
-    </span>
-</Link>
-          </li>
+          {!user && (
+            <li className='nav-item'>
+              <Link to='/sign-up' className='nav-button' onClick={closeMobileMenu}>
+                  <span>Sign Up / Sign In</span>
+                  <span className="icon">
+                      <i className="fas fa-chevron-right"></i> 
+                  </span>
+              </Link>
+            </li>
+          )}
+          {user && (
+            <li>
+              <Link to='/sign-up' className='nav-button' onClick={handleLogout}>
+                <span>Logout</span>
+              </Link>
+            </li>
+          )}
+          
         </ul>
            
         

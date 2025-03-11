@@ -1,4 +1,5 @@
 {
+  "proxy": "http://localhost:4000",
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
@@ -11,9 +12,15 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "axios": "^1.8.1",
+    "katex": "^0.16.21",
+    "latex": "^0.0.1",
+    "latex.js": "^0.12.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.5"
+    "react-router-dom": "^7.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
@@ -25,6 +32,6 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
-    "vite": "^6.1.0"
+    "vite": "^6.2.0"
   }
 }

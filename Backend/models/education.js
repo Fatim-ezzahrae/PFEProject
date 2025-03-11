@@ -8,7 +8,9 @@ const educationSchema = new mongoose.Schema({
     institute: String,
     degree: String,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    city: String,
+    country: String
 
 }, { timestamps: true }
 );
