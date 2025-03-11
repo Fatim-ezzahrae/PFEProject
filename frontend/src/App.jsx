@@ -1,15 +1,15 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import './App.css';
+import './styles/App.css';
 import Navbar from "./component/Navbar";
 import Home from "./pages/Home";
-import Resumes from "./pages/Resumes";
+import Resumes from "./pages/Resumes/Resumes.jsx";
 import Job from "./pages/Job";
 import SignUp from "./pages/Sign-up"; 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
+     
         <Navbar /> 
         <Routes>
           <Route path="/" element={<Home />} />
@@ -17,7 +17,6 @@ function App() {
           <Route path="/job" element={<Job />} />
           <Route path="/sign-up" element={<SignUp />} />
         </Routes>
-      </BrowserRouter>
     </div>
   );
 }

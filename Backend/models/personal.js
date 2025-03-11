@@ -13,6 +13,7 @@ const personalSchema = new mongoose.Schema({
     {
       category: String,
       details: String
+
     }
     ],
     languages: [

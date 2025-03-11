@@ -18,5 +18,6 @@ const templateSchema = new mongoose.Schema({
     } // Store PDF as binary data
 }, { timestamps: true });
 
+
 //export templates model        
 module.exports = mongoose.model('Template', templateSchema);

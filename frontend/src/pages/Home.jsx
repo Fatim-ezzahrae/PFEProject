@@ -1,5 +1,6 @@
 import React from 'react'
 import "../styles/Home.css"
+import { Link } from 'react-router-dom'
 import gifImage from "../assets/Home.gif"
 
 function Home() {
@@ -11,9 +12,9 @@ function Home() {
       <div className='animatedGIF'>
       <img src={gifImage} alt="Animated GIF" />;
       </div>
-      <button className='home-button'>
-      Create your Resume
-      </button>
+      <Link to="/Resumes"  className="home-button">
+        Create your Resume
+    </Link>
     </div>
   )
 }
