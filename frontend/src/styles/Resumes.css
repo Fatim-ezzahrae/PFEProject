@@ -1,4 +1,4 @@
-/*:root {
+:root {
     --primary-light: #ffffff;
     --primary-medium: #C8D5B9;
     --primary-dark: #8FC0A9;
@@ -9,7 +9,7 @@
     --transition: all 0.3s ease-in-out;
   }
   
-  /* Global Reset 
+  /* Global Reset */
   * {
     margin: 0;
     padding: 0;
@@ -17,7 +17,7 @@
     font-family: 'Poppins', sans-serif;
   }
   
-  /* Resume Container 
+  /* Resume Container */
   .resume-container {
     max-width: 1000px;
     margin: 250px auto;
@@ -25,7 +25,7 @@
     padding: 20px;
   }
   
-  /* Titles 
+  /* Titles */
   .title {
     text-align: center;
     color: var(--secondary-dark);
@@ -60,7 +60,7 @@
     font-weight: 600;
   }
   
-  /* Template Section 
+  /* Template Section */
   .template-wrapper {
     display: flex;
     align-items: center;
@@ -131,40 +131,40 @@
     color: var(--secondary-light);
   }
   
-  /* Form Wrapper (Personal Information Form) 
+  /* Form Wrapper (Personal Information Form) */
   .form-wrapper {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    background: var(--primary-light); /* White background 
+    background: var(--primary-light); /* White background */
     padding: 20px;
     border-radius: var(--border-radius);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  /* Employment History Form 
+  /* Employment History Form */
   .employment-wrapper {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    background: var(--primary-light); /* White background 
+    background: var(--primary-light); /* White background */
     padding: 20px;
     border-radius: var(--border-radius);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  /* Skills Form 
+  /* Skills Form */
   .skills-wrapper {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    background: var(--primary-light); /* White background 
+    background: var(--primary-light); /* White background */
     padding: 20px;
     border-radius: var(--border-radius);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  /* Personal Information Form Inputs 
+  /* Personal Information Form Inputs */
   .form-wrapper input, 
   .form-wrapper textarea, 
   .form-wrapper select {
@@ -184,7 +184,7 @@
     height: 80px;
   }
   
-  /* Employment History Form Inputs 
+  /* Employment History Form Inputs */
   .employment-wrapper input, 
   .employment-wrapper textarea, 
   .employment-wrapper select {
@@ -204,7 +204,7 @@
     height: 80px;
   }
   
-  /* Skills Form Inputs 
+  /* Skills Form Inputs */
   .skills-wrapper input, 
   .skills-wrapper select {
     width: 100%;
@@ -222,7 +222,7 @@
     height: 40px;
   }
   
-  /* Next Button in Forms 
+  /* Next Button in Forms */
   .next {
     background: var(--secondary-dark);
     color: white;
@@ -238,7 +238,7 @@
     background: var(--secondary-light);
   }
   
-  /* Skill Entry Section 
+  /* Skill Entry Section */
   .skill-entry {
     display: flex;
     justify-content: space-between;
@@ -249,7 +249,7 @@
     width: 48%;
   }
   
-  /* Add Skill Button 
+  /* Add Skill Button */
   button[type="button"] {
     background: var(--primary-dark);
     color: white;
@@ -266,7 +266,7 @@
     background: var(--secondary-dark);
   }
   
-  /* Navigation Buttons for Templates 
+  /* Navigation Buttons for Templates */
   .select-button {
     background: var(--secondary-light);
     color: white;
@@ -278,12 +278,12 @@
     transition: var(--transition);
   }
   
-  /* Button Hover Effect 
+  /* Button Hover Effect */
   .select-button:hover {
     background: var(--secondary-dark);
   }
   
-  /* Responsive Design 
+  /* Responsive Design */
   @media (max-width: 768px) {
     .resume-container {
       width: 90%;
@@ -311,30 +311,4 @@
       width: 100%;
       text-align: center;
     }
-  } */
-
-  .template-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid with columns */
-    gap: 20px;
-    padding: 200px;
-    justify-items: center;
-}
-
-.template-card {
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    padding: 15px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 250px; /* Limit the size of each card */
-    overflow: hidden;
-}
-
-.pdf-iframe {
-    width: 100%;
-    height: 150px; /* Adjust the size of the iframe to fit within the card */
-    border: none;
-    border-radius: 8px;
-}
-
+  } 
