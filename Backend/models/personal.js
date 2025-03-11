@@ -9,10 +9,10 @@ const personalSchema = new mongoose.Schema({
     lastName: String,
     email: String,
     phone: String,
-    skills: [String],languages: [
+    skills: [
     {
-      language: String,
-      level: String
+      category: String,
+      details: String
     }
     ],
     languages: [
