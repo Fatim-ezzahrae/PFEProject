@@ -22,7 +22,11 @@ export const useSignup = () => {
         if (response.status === 201) {
             console.log('User signed up successfully:', response.data);
             // Save token to localStorage
-            localStorage.setItem('user', response.data.token); 
+            localStorage.setItem('user', JSON.stringify({
+                _id: response.data._id,  // ✅ Now this exists
+                email: response.data.email,
+                token: response.data.token
+              }));
             
             navigate('/');  // Redirect to dashboard after successful login or sign-up
       

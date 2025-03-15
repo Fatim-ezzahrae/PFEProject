@@ -1,30 +1,30 @@
-const Template = require('../models/template');
-const User = require('../models/user');
+const TemplateModel = require('../models/template');
+const UserModel = require('../models/user');
 const latex = require('node-latex');
 const { Readable } = require('stream');
 
 const generatePDF = async (req, res) => {
-
     try {
         const { templateId, userId } = req.params;
 
         // Fetch the LaTeX template
-        const template = await Template.findById(templateId);
+        const template = await TemplateModel.findById(templateId);
         if (!template) {
             return res.status(404).json({ message: "Template not found" });
         }
 
         // Fetch user data
-        const user = await User.findById(userId);
+        const user = await UserModel.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
         // Replace placeholders in the LaTeX code
-        
+        const latexCode = template.latexCode
+        const resume = await resumeModel.fillResume(latexCode, user);        
 
         // Convert LaTeX to a readable stream
-        const input = Readable.from(latexCode);
+        const input = Readable.from(resume);
         const pdfStream = latex(input);
 
         // Set headers to serve as a PDF response

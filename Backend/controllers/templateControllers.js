@@ -43,7 +43,7 @@ const getTemplates = async (req, res) => {
         // Respond with template names and PDF URLs
         const response = templates.map(template => ({
             name: template.name,
-            id: template._id,
+            _id: template._id,
             pdfUrl: `${req.protocol}://${req.get('host')}/api/templates/${template._id}` // Build a URL for the PDF
         }));
 

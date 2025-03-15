@@ -22,7 +22,11 @@ export const useLogin = () => {
         if (response.status === 201) {
             console.log('User signed in successfully:', response.data);
             // You can store the token in localStorage for future use (e.g., token-based authentication)
-            localStorage.setItem('user', response.data.token);  // Save token to localStorage
+            localStorage.setItem('user', JSON.stringify({
+                _id: response.data._id,  // ✅ Now this exists
+                email: response.data.email,
+                token: response.data.token
+              })); // Save token to localStorage
 
             // update the auth context
             dispatch({type: 'LOGIN', payload: response.data})

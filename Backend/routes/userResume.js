@@ -1,8 +1,11 @@
 const express = require('express');
-const { generatePDF } = require('../controllers/userResumeControllers');
+
+const { 
+    generatePDF 
+} = require('../controllers/userResumeControllers');
 
 const router = express.Router();
 
-router.get('/generate/:templateId/:userId', generatePDF);
+router.post("/generate-resume", generatePDF);
 
 module.exports = router;

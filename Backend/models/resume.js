@@ -10,15 +10,16 @@ const resumeSchema = new mongoose.Schema({
 } , { timestamps: true }
 );
 
-resumeSchema.statics.fillResume = async function (latexCode) {
-    let latexCode = template.latexCode
+resumeSchema.statics.fillResume = async function (latexCode, user) {
+    latexCode
     .replace(/{{{first_name}}}/g, user.firstName)
     .replace(/{{{last_name}}}/g, user.lastName)
     .replace(/{{{phone}}}/g, user.phone)
     .replace(/{{{email}}}/g, user.email)
+    .replace(/{{{address}}}/g, user.address)
     .replace(/{{{linkedin}}}/g, user.linkedin)
+    //add summary later
     .replace(/{{{github}}}/g, user.github)
-    .replace(/{{{summary}}}/g, user.summary)
     .replace(/{{{education}}}/g, formatEducation(user.education))
     .replace(/{{{skills}}}/g, formatSkills(user.skills))
     .replace(/{{{certifications}}}/g, formatCertif(user.certifications))
@@ -55,7 +56,9 @@ resumeSchema.statics.fillResume = async function (latexCode) {
                 \\end{itemize}
             }
         `).join('\n');
-    }   
+    }  
+    
+    return latexCode
 }
 
 //export resume model

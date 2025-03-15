@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from 'axios';
-
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const Forms = ({
   userInfo, setUserInfo, 
@@ -15,6 +15,8 @@ const Forms = ({
   showEducationForm, setShowEducationForm,
   showCertificationForm, setShowCertificationForm, setSkills, showSkillForm, skills, setShowskillForm 
 }) =>{
+
+  const { user } = useAuthContext();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -120,7 +122,6 @@ const Forms = ({
     setLanguages([...languages, { language: "", level: "" }]); 
   };
 
-
   const addCertification = () => {
     setCertifications([...certifications, { title: "", description: "" }]);
   };
@@ -130,9 +131,34 @@ const Forms = ({
   };
 
   
+  const handleSubmit = async () => {
+    try {
+      console.log({
+        userId: user._id,
+        userInfo,
+        employmentHistory,
+        educationHistory,
+        skills,
+      }); 
+      const response = await axios.post("http://localhost:4000/api/info", {
+        userId: user._id,
+        userInfo,
+        employmentHistory,
+        educationHistory,
+        skills,
+      });
+  
+      if (response.data.success) {
+        alert("CV submitted successfully!");
+      } else {
+        alert("There was an error submitting your CV.");
+      }
+    } catch (error) {
+      console.error("Error submitting CV:", error);
+      alert("An error occurred while submitting your CV.");
+    }
+  };
 
-  
-  
   return (
     <>
       {/* User Information Form */}
@@ -367,8 +393,6 @@ const Forms = ({
         Add one more language
       </button>
         <button className="next" type="button" onClick={() => setShowCertificationForm(true)}>Next</button>
-
-
         </>
       )}
 
@@ -418,7 +442,7 @@ const Forms = ({
                      
         </div>
         <button  className="add-button" type="button" onClick={addskill}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add one more skill</button>
-        <button className="next" type="button" >Submit</button>
+        <button className="next" type="button" onClick={handleSubmit}>Submit</button>
         </>
         )}
          </>

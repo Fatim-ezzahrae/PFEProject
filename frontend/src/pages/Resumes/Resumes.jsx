@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../../styles/Resumes.css";
 import ProgressSteps from "../../component/ProgressSteps";
 import "../../styles/ProgressSteps.css";
 import Templates from "./Templates";
 import Forms from "./Forms";
 import CVPage from "./Cvpage";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 function Resumes() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [selectedIndex, setSelectedIndex] = useState(0); 
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedTemplateId, setSelectedTemplateId] = useState(null); 
   
   const [userInfo, setUserInfo] = useState({ firstName:"" ,lastName: "", email: "", phone: "", address: "" });
   const [showEmploymentForm, setShowEmploymentForm] = useState(false);
@@ -24,13 +27,8 @@ function Resumes() {
   const [skills, setSkills] = useState([{ category: "", details: "" }]);
 
 
-  const templates = [
-    { name: "Stockholm", userCount: "700K+ users", format: ["PDF", "DOCX"], color: "#ffffff" },
-    { name: "Vancouver", userCount: "590K+ users", format: ["PDF"], color: "#f0f0f0" },
-    { name: "Dublin", userCount: "5.1M+ users", format: ["PDF", "DOCX"], color: "#004d40", textColor: "#ffffff" },
-    { name: "New York", userCount: "4.6M+ users", format: ["PDF", "DOCX"], color: "#ffffff" },
-    { name: "Vienna", userCount: "2.6M+ users", format: ["PDF", "DOCX"], color: "#4CAF50", textColor: "#ffffff" },
-  ];
+  const [templates, setTemplates] = useState([]);
+  const { user } = useAuthContext();
 
   const handlePrev = () => {
     setSelectedIndex((prevIndex) => (prevIndex === 0 ? templates.length - 1 : prevIndex - 1));
@@ -40,8 +38,50 @@ function Resumes() {
     setSelectedIndex((prevIndex) => (prevIndex === templates.length - 1 ? 0 : prevIndex + 1));
   };
 
-  const handleUseTemplate = () => {
-    setCurrentStep(2);
+  useEffect(() => {
+    // Fetch all templates using Axios
+    axios.get('http://localhost:4000/api/templates')
+        .then((response) => {
+            setTemplates(response.data);
+        })
+        .catch((error) => {
+            console.error('Error fetching templates:', error);
+        });
+  }, []);
+
+  const handleUseTemplate = async (templateId) => {
+    
+    const selectedTemplate = templates[selectedIndex];
+    setSelectedTemplateId(templateId);
+        
+    // Sending the selected template ID to the backend using Axios
+    try {
+
+      // Step 1: Check if the user has already entered their data
+      const checkResponse = await axios.get(`http://localhost:4000/api/info/${user._id}`);
+
+      if (checkResponse.data.hasData) {
+        // User has already entered data → Go directly to resume generation
+        const response = await axios.post("http://localhost:4000/api/resume/generate-resume", {
+          templateId,
+          userId: user._id
+        });
+        setCurrentStep(3);
+
+        if (response.status === 200) {
+          console.log("Resume generated successfully:", response.data);
+        } else {
+          console.error("Error generating resume:", response.data);
+        }
+      } else {
+        // User has NOT entered data → Go to Step 2 (Forms)
+        setCurrentStep(2);
+      }
+
+    } catch (error) {
+      console.error("Error during template selection:", error);
+    }
+    
   };
 
   return (
