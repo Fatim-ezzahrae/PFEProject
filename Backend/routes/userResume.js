@@ -1,5 +1,5 @@
 const express = require('express');
-const { generatePDF } = require('../controllers/latexController');
+const { generatePDF } = require('../controllers/userResumeControllers');
 
 const router = express.Router();
 

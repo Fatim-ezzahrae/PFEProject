@@ -1,6 +1,9 @@
 import React from "react";
+import axios from 'axios';
 
 function Templates({ selectedIndex, setSelectedIndex, templates, handlePrev, handleNext, handleUseTemplate }) {
+
+
   return (
     <>
       <div>

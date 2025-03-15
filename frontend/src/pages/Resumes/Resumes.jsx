@@ -4,19 +4,25 @@ import ProgressSteps from "../../component/ProgressSteps";
 import "../../styles/ProgressSteps.css";
 import Templates from "./Templates";
 import Forms from "./Forms";
+import CVPage from "./Cvpage";
 
 function Resumes() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedIndex, setSelectedIndex] = useState(0); 
   
-  const [userInfo, setUserInfo] = useState({ name: "", email: "", phone: "", address: "" });
+  const [userInfo, setUserInfo] = useState({ firstName:"" ,lastName: "", email: "", phone: "", address: "" });
   const [showEmploymentForm, setShowEmploymentForm] = useState(false);
-  const [showSkillsForm, setShowSkillsForm] = useState(false);
+  const [showLanguagesForm, setShowLanguagesForm] = useState(false);
   const [showEducationForm, setShowEducationForm] = useState(false);
-  
-  const [employmentHistory, setEmploymentHistory] = useState([{ jobTitle: "", employer: "", startDate: "", endDate: "", city: "", description: "" }]);
-  const [skills, setSkills] = useState([{ skill: "", level: "" }]);
-  const [educationHistory, setEducationHistory] = useState([{ school: "", degree: "", startDate: "", endDate: "", city: "", description: "" }]);
+  const [showCertificationForm, setShowCertificationForm] = useState(false);
+  const [showSkillForm, setShowskillForm] = useState(false);
+
+  const [employmentHistory, setEmploymentHistory] = useState([{ company: "", position: "", startDate: "", endDate: "", city: "", description: "" }]);
+  const [languages, setLanguages] = useState([{ language: "", level: "" }]);
+  const [educationHistory, setEducationHistory] = useState([{ institute: "", degree: "", startDate: "", endDate: "", city: "", country: "" }]);
+  const [certifications, setCertifications] = useState([{ title: "", description: "" }]);
+  const [skills, setSkills] = useState([{ category: "", details: "" }]);
+
 
   const templates = [
     { name: "Stockholm", userCount: "700K+ users", format: ["PDF", "DOCX"], color: "#ffffff" },
@@ -54,21 +60,39 @@ function Resumes() {
         )}
 
         {currentStep === 2 && (
-          <Forms 
+         <Forms 
+         userInfo={userInfo} 
+         setUserInfo={setUserInfo}
+         employmentHistory={employmentHistory} 
+         setEmploymentHistory={setEmploymentHistory} 
+         languages={languages} 
+         setLanguages={setLanguages} 
+         educationHistory={educationHistory}
+         setEducationHistory={setEducationHistory}
+         certifications={certifications}
+         setCertifications={setCertifications} 
+         skills={skills}
+         setSkills={setSkills}
+         showEmploymentForm={showEmploymentForm}
+         setShowEmploymentForm={setShowEmploymentForm}
+         showLanguagesForm={showLanguagesForm}
+         setShowLanguagesForm={setShowLanguagesForm}
+         showEducationForm={showEducationForm}
+         setShowEducationForm={setShowEducationForm}
+         showCertificationForm={showCertificationForm}
+         setShowCertificationForm={setShowCertificationForm}
+         showSkillForm={showSkillForm}
+         setShowskillForm={setShowskillForm}
+         setCurrentStep={setCurrentStep}  
+       />
+       
+        )}
+        {currentStep === 3 && (
+          <CVPage 
             userInfo={userInfo} 
-            setUserInfo={setUserInfo}
             employmentHistory={employmentHistory} 
-            setEmploymentHistory={setEmploymentHistory} 
-            skills={skills} 
-            setSkills={setSkills} 
+            languages={languages} 
             educationHistory={educationHistory}
-            setEducationHistory={setEducationHistory}
-            showEmploymentForm={showEmploymentForm}
-            setShowEmploymentForm={setShowEmploymentForm}
-            showSkillsForm={showSkillsForm}
-            setShowSkillsForm={setShowSkillsForm}
-            showEducationForm={showEducationForm}
-            setShowEducationForm={setShowEducationForm}
           />
         )}
       </div>

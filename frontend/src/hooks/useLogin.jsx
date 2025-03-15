@@ -30,7 +30,7 @@ export const useLogin = () => {
             // update loading state
             setIsLoading(false)
             
-            navigate('/Home');  // Redirect to dashboard after successful login or sign-up
+            navigate('/');  
 
         } else {
             

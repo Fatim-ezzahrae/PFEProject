@@ -10,7 +10,7 @@ function Home() {
       Kickstart Your Career <br/> with a Powerful Resume <br/> Land Your Dream Job Today!
       </p>
       <div className='animatedGIF'>
-      <img src={gifImage} alt="Animated GIF" />;
+      <img src={gifImage} alt="Animated GIF" />
       </div>
       <Link to="/Resumes"  className="home-button">
         Create your Resume

@@ -24,7 +24,7 @@ export const useSignup = () => {
             // Save token to localStorage
             localStorage.setItem('user', response.data.token); 
             
-            navigate('/Home');  // Redirect to dashboard after successful login or sign-up
+            navigate('/');  // Redirect to dashboard after successful login or sign-up
       
             // update the auth context
             dispatch({type: 'LOGIN', payload: response.data})

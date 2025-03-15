@@ -1,5 +1,5 @@
-const Template = require('../models/templateModel');
-const User = require('../models/userModel');
+const Template = require('../models/template');
+const User = require('../models/user');
 const latex = require('node-latex');
 const { Readable } = require('stream');
 
