@@ -1,52 +1,58 @@
-// src/pages/Resumes/CVPage.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "../../styles/CVPage.css";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
-const Cvpage = ({ userInfo, employmentHistory, skills, educationHistory }) => {
+const CVPage = ({ userInfo, employmentHistory, languages, educationHistory }) => {
+  const { user } = useAuthContext();
+  const [cvData, setCvData] = useState(null);
+
+  useEffect(() => {
+    const fetchCVData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/resume/${user._id}`);
+        setCvData(response.data);
+      } catch (error) {
+        console.error("Error fetching CV data:", error);
+      }
+    };
+    fetchCVData();
+  }, [user._id]);
+
+  if (!cvData) {
+    return <div className="cv-container">Loading CV...</div>;
+  }
+
   return (
-    <div className="cv-page">
-      <h2>Your CV</h2>
-      <div className="user-info">
-        <h3>{userInfo.name}</h3>
-        <p>Email: {userInfo.email}</p>
-        <p>Phone: {userInfo.phone}</p>
-        <p>Address: {userInfo.address}</p>
-      </div>
+    <div className="cv-container">
+      <h1>{cvData.userInfo.firstName} {cvData.userInfo.lastName}</h1>
+      <p>Email: {cvData.userInfo.email}</p>
+      <p>Phone: {cvData.userInfo.phone}</p>
+      <p>Address: {cvData.userInfo.address}</p>
+      
+      <h2>Employment History</h2>
+      {cvData.employmentHistory.map((job, index) => (
+        <div key={index} className="cv-section">
+          <h3>{job.position} at {job.company}</h3>
+          <p>{job.startDate} - {job.endDate} | {job.city}</p>
+          <p>{job.description}</p>
+        </div>
+      ))}
 
-      <div className="employment-history">
-        <h3>Employment History</h3>
-        {employmentHistory.map((employment, index) => (
-          <div key={index}>
-            <h4>{employment.jobTitle} at {employment.employer}</h4>
-            <p>{employment.startDate} - {employment.endDate}</p>
-            <p>{employment.city}</p>
-            <p>{employment.description}</p>
-          </div>
-        ))}
-      </div>
+      <h2>Education</h2>
+      {cvData.educationHistory.map((edu, index) => (
+        <div key={index} className="cv-section">
+          <h3>{edu.degree} from {edu.institute}</h3>
+          <p>{edu.startDate} - {edu.endDate} | {edu.city}, {edu.country}</p>
+        </div>
+      ))}
 
-      <div className="education-history">
-        <h3>Education History</h3>
-        {educationHistory.map((education, index) => (
-          <div key={index}>
-            <h4>{education.degree} from {education.school}</h4>
-            <p>{education.startDate} - {education.endDate}</p>
-            <p>{education.city}</p>
-            <p>{education.description}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="skills">
-        <h3>Skills</h3>
-        {skills.map((skill, index) => (
-          <div key={index}>
-            <h4>{skill.skill}</h4>
-            <p>Level: {skill.level}</p>
-          </div>
-        ))}
-      </div>
+      <h2>Languages</h2>
+      {cvData.languages.map((lang, index) => (
+        <p key={index}>{lang.language} - {lang.level}</p>
+      ))}
     </div>
   );
 };
 
-export default Cvpage;
+export default CVPage;

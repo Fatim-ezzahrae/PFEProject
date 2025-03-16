@@ -10,12 +10,11 @@ function Templates({ selectedIndex, setSelectedIndex, templates, handlePrev, han
       </div>
       
       <div className="template-wrapper">
-        <button className="template-button left" onClick={handlePrev}>&lt;</button>
+        <button className="template-button" onClick={handlePrev}><span class="material-symbols-outlined">arrow_back_ios_new</span></button>
 
         {templates.map((template) => (
             <div key={template._id} className="template-card">
                 <h3 className="template-title">{template.name}</h3>
-                <p className="template-info">{template.userCount} choose this template</p>
                 <button className="select-button" onClick={() => handleUseTemplate(template._id)}>Use this template</button>
                 <iframe
                     src={template.pdfUrl}
@@ -25,11 +24,10 @@ function Templates({ selectedIndex, setSelectedIndex, templates, handlePrev, han
             </div>
         ))}
 
-        <button className="template-button right" onClick={handleNext}>&gt;</button>
+        <button className="template-button" onClick={handleNext}><span class="material-symbols-outlined">arrow_forward_ios</span></button>
       </div>
     </>
   );
 }
 
 export default Templates;
-

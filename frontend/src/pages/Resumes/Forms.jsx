@@ -17,18 +17,33 @@ const Forms = ({
 }) =>{
 
   const { user } = useAuthContext();
+  const [years, setYears] = useState([]);
+  const [selectedStartYear, setSelectedStartYear] = useState('');
+  const [selectedEndYear, setSelectedEndYear] = useState('');
+
+  useEffect(() => {
+    // Populate the years from the current year down to 1900
+    const currentYear = new Date().getFullYear();
+    const yearOptions = [];
+    for (let year = currentYear; year >= 1900; year--) {
+      yearOptions.push(year);
+    }
+    setYears(yearOptions);
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserInfo((prevInfo) => ({ ...prevInfo, [name]: value }));
   };
 
-  const handleEmploymentChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedEmploymentHistory = [...employmentHistory];
-    updatedEmploymentHistory[index][name] = value;
-    setEmploymentHistory(updatedEmploymentHistory);
-  };
+  const handleEmploymentChange = (index, event) => {
+  const { name, value } = event.target;
+  setEmploymentHistory((prevEmploymentHistory) =>
+    prevEmploymentHistory.map((employment, i) =>
+      i === index ? { ...employment, [name]: value } : employment
+    )
+  );
+};
 
   const handleEducationChange = (index, e) => {
     const { name, value } = e.target;
@@ -45,17 +60,16 @@ const Forms = ({
   };
 
 
-  const handleDateChange = (index, name, date) => {
-    const updatedEmploymentHistory = [...employmentHistory];
-    updatedEmploymentHistory[index][name] = date; 
-    setEmploymentHistory(updatedEmploymentHistory);
+  const handleStartYearChange = (e) => {
+    setSelectedStartYear(e.target.value);
   };
+
+  const handleEndYearChange = (e) => {
+    setSelectedEndYear(e.target.value);
+  };
+
   
-  const handleEducationDateChange = (index, name, date) => {
-    const updatedEducationHistory = [...educationHistory];
-    updatedEducationHistory[index][name] = date; 
-    setEducationHistory(updatedEducationHistory);
-  };
+ 
   
   const handleCertificationChange = (index, e) => {
     const { name, value } = e.target;
@@ -73,29 +87,12 @@ const Forms = ({
   };
   
 
-  const [countries, setCountries] = useState([]);
-
-  useEffect(() => {
-    axios.get("https://restcountries.com/v3.1/all")
-      .then((response) => {
-        const sortedCountries = response.data.sort((a, b) => {
-          return a.name.common.localeCompare(b.name.common);
-        });
-        setCountries(sortedCountries);
-      })
-      .catch((error) => {
-        console.error("Error fetching country data", error);
-      });
-  }, []);
-  
-
-
   const addEmployment = () => {
     setEmploymentHistory([
       ...employmentHistory,
       {
         company: "",
-        position: "",
+        jobTitle: "",
         startDate:null,
         endDate: null,
         city: "",
@@ -113,7 +110,7 @@ const Forms = ({
         startDate: null,
         endDate: null,
         city: "",
-        country: "",
+        description: "",
       },
     ]);
   };
@@ -150,6 +147,7 @@ const Forms = ({
   
       if (response.data.success) {
         alert("CV submitted successfully!");
+        setCurrentStep(3); 
       } else {
         alert("There was an error submitting your CV.");
       }
@@ -168,12 +166,12 @@ const Forms = ({
           <h2>Fill in Your Information</h2>          
             <form onSubmit={(e) => e.preventDefault()}>
             <div className="row">
-            <label className="label-form">First Name:<input type="text" name="firstName" value={userInfo.firstName} onChange={handleInputChange} required /></label>
-            <label className="label-form">Last Name:<input type="text" name="lastName" value={userInfo.lastName} onChange={handleInputChange} required /></label>
+            <label className="label-form">First Name:<input type="text" name="firstName" placeholder="Enter your First Name..." value={userInfo.firstName} onChange={handleInputChange} required /></label>
+            <label className="label-form">Last Name:<input type="text" name="lastName"  placeholder="Enter your Last Name..." value={userInfo.lastName} onChange={handleInputChange} required /></label>
             </div>
-            <label className="label-form">Email:<input type="email" name="email" value={userInfo.email} onChange={handleInputChange} required /></label>
-            <label className="label-form">Phone:<input type="tel" name="phone" value={userInfo.phone} onChange={handleInputChange} required /></label>
-            <label className="label-form">Address:<input type="text" name="address" value={userInfo.address} onChange={handleInputChange} required /></label>
+            <label className="label-form">Email:<input type="email" name="email"  placeholder="ex: xx@gmail.com" value={userInfo.email} onChange={handleInputChange} required /></label>
+            <label className="label-form">Phone:<input type="tel" name="phone"  placeholder="ex: XXXXXXXXXX" value={userInfo.phone} onChange={handleInputChange} required /></label>
+            <label className="label-form">Address:<input type="text" name="address"  placeholder="Enter your address..." value={userInfo.address} onChange={handleInputChange} required /></label>
             </form>
             
         </div>
@@ -187,48 +185,54 @@ const Forms = ({
     <div className="employment-wrapper">
       <h2>Employment History</h2>
       {employmentHistory.map((employment, index) => (
-        <div key={index} className="employment-entry">
+        <div key={index} className="form-box">
           <div className="row">
             <label className="label-form">Company:
-              <input type="text" name="company" value={employment.company} onChange={(e) => handleEmploymentChange(index, e)} required />
+              <input type="text" name="company" placeholder="Enter your company name..." value={employment.company} onChange={(e) => handleEmploymentChange(index, e)} required />
             </label>
-            <label className="label-form">Position:
-              <input type="text" name="position" value={employment.position} onChange={(e) => handleEmploymentChange(index, e)} required />
+            <label className="label-form">Job Title:
+              <input type="text" name="jobTitle" placeholder="Enter your Job Title..." value={employment.jobTitle} onChange={(e) => handleEmploymentChange(index, e)} required />
             </label>
           </div>
           <div className="row">
-            <label className="label-form">Start Date:
-              <div className="date-picker-wrapper">
-                <DatePicker 
-                  selected={employment.startDate} 
-                  onChange={(date) => handleDateChange(index, "startDate", date)}
-                  dateFormat="yyyy-MM-dd"
-                  placeholderText=" Select a date"
-                />
-                <span className="calendar-icon" onClick={() => document.querySelector(`#startDate-${index}`).focus()}>
-                  <span className="material-symbols-outlined">calendar_month</span>
-                </span>
-              </div>
-            </label>
-            <label className="label-form">End Date:
-              <div className="date-picker-wrapper">
-                <DatePicker 
-                  selected={employment.endDate} 
-                  onChange={(date) => handleDateChange(index, "endDate", date)}
-                  dateFormat="yyyy-MM-dd"
-                  placeholderText=" Select a date"
-                />
-                <span className="calendar-icon" onClick={() => document.querySelector(`#endDate-${index}`).focus()}>
-                  <span className="material-symbols-outlined">calendar_month</span>
-                </span>
-              </div>
-            </label>
+             {/* Start Year Dropdown */}
+             <label className="label-form">Start Year:
+                <select 
+                  className="date-picker-wrapper" 
+                  name="startYear"
+                  value={selectedStartYear}
+                  onChange={handleStartYearChange}
+                  required
+                >
+                  <option value="">Select Start Year</option>
+                  {years.map((year) => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+                </label>
+
+                {/* End Year Dropdown */}
+                <label className="label-form">End Year:
+                <select  className="date-picker-wrapper"
+                  name="endYear"
+                  value={selectedEndYear}
+                  onChange={handleEndYearChange}
+                  required
+                >
+                  <option value="">Select End Year</option>
+                  <option value="Now">Now</option>
+                  {years.map((year) => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                  </select>
+                  </label>
             <label className="label-form city-wrapper">City:
-              <input type="text" name="city" value={employment.city} onChange={(e) => handleEmploymentChange(index, e)} required />
+              <input type="text" name="city" placeholder="Enter your City..." value={employment.city} onChange={(e) => handleEmploymentChange(index, e)} required />
             </label>
           </div>
           <label className="label-form">Description:
-            <textarea name="description" value={employment.description} onChange={(e) => handleEmploymentChange(index, e)} required />
+            <textarea name="description" placeholder="Ex:                                                                                                                                                                            Studied Software Engineering and specialized in AI.                                                                                                      Graduated with a Master's in Business Administration."
+                value={employment.description} onChange={(e) => handleEmploymentChange(index, e)} required />
           </label>
         </div>
       ))}          
@@ -247,65 +251,55 @@ const Forms = ({
     <div className="education-wrapper">
     <h2>Education History</h2>
     {educationHistory.map((education, index) => (
-      <div key={index} className="education-entry">
+      <div key={index} className="form-box">
         <div className="row">
           <label className="label-form">Institute:
-            <input type="text" name="institute" value={education.institute} onChange={(e) => handleEducationChange(index, e)} required />
+            <input type="text" name="institute" placeholder="Enter your Institute name..." value={education.institute} onChange={(e) => handleEducationChange(index, e)} required />
           </label>
           <label className="label-form">Degree:
-            <input type="text" name="degree" value={education.degree} onChange={(e) => handleEducationChange(index, e)} required />
+            <input type="text" name="degree" placeholder="Enter your Degree..." value={education.degree} onChange={(e) => handleEducationChange(index, e)} required />
           </label>
         </div>
         <div className="row">
-          <label className="label-form">Start Date:
-            <div className="date-picker-wrapper1">
-              <DatePicker 
-                selected={education.startDate} 
-                onChange={(date) => handleEducationDateChange(index, "startDate", date)}
-                dateFormat="yyyy-MM-dd"
-                  placeholderText=" Select a date"
-                customInput={<input type="text" />}
-              />
-              <span className="calendar-icon1" onClick={() => document.querySelector(`#eduStartDate-${index}`).focus()}>
-                <span className="material-symbols-outlined">calendar_month</span>
-              </span>
-            </div>
-          </label>
-          <label className="label-form">End Date:
-            <div className="date-picker-wrapper1">
-              <DatePicker 
-                selected={education.endDate} 
-                onChange={(date) => handleEducationDateChange(index, "endDate", date)}
-                dateFormat="yyyy-MM-dd"
-                placeholderText=" Select a date"
-                customInput={<input type="text" />}
-              />
-              <span className="calendar-icon1" onClick={() => document.querySelector(`#eduEndDate-${index}`).focus()}>
-                <span className="material-symbols-outlined">calendar_month</span>
-              </span>
-            </div>
-          </label>
-          </div>
-          <div className="row">
-          <label className="label-form ">City:
-            <input type="text" name="city" value={education.city} onChange={(e) => handleEducationChange(index, e)} required />
-          </label>        
-           <label className="label-form">Country:
-                  <select 
-                    name="country"
-                    value={education.country}
-                    onChange={(e) => handleEducationChange(index, e)}
-                    required
-                  >
-                    <option value="">Select Country</option>
-                    {countries.map((country) => (
-                      <option key={country.cca2} value={country.name.common}>
-                        {country.name.common}
-                      </option>
-                    ))}
+          {/* Start Year Dropdown */}
+          <label className="label-form">Start Year:
+                <select 
+                  className="date-picker-wrapper" 
+                  name="startYear"
+                  value={selectedStartYear}
+                  onChange={handleStartYearChange}
+                  required
+                >
+                  <option value="">Select Start Year</option>
+                  {years.map((year) => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+                </label>
+
+                {/* End Year Dropdown */}
+                <label className="label-form">End Year:
+                <select  className="date-picker-wrapper"
+                  name="endYear"
+                  value={selectedEndYear}
+                  onChange={handleEndYearChange}
+                  required
+                >
+                  <option value="">Select End Year</option>
+                  <option value="Now">Now</option>
+                  {years.map((year) => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
                   </select>
-        </label>
-        </div>
+                  </label>                  
+          <label className="label-form ">City:
+            <input type="text" name="city"  placeholder="Enter your City..." value={education.city} onChange={(e) => handleEducationChange(index, e)} required />
+          </label>     
+          </div>   
+          <label className="label-form ">Description:
+            <input type="text" name="description" placeholder="Ex: Bachelor's Degree" value={education.description} onChange={(e) => handleEducationChange(index, e)} required />
+          </label>        
+        
       </div>
            ))}
            </div> 
@@ -322,12 +316,13 @@ const Forms = ({
       <h2>Languages</h2>
       
       {languages.map((language, index) => (
-        <div key={index} >
+        <div key={index} className="form-box" >
           <div className="row">
           <label className="label-form-Language">Language:
             <input 
               type="text" 
               name="language" 
+              placeholder="Ex: Arabic, French, English..."
               value={language.language} 
               onChange={(e) => handleLanguageChange(index, e)} 
               required 
@@ -373,11 +368,11 @@ const Forms = ({
             setLanguages(updatedLanguages);
           }}
         >
-          <option value="">Select Level</option>
+          <option value="">Select your Level</option>
           <option value="Beginner">Beginner</option>
           <option value="Intermediate">Intermediate</option>
           <option value="Advanced">Advanced</option>
-          <option value="Other">Other</option> {/* Affiche un input si sélectionné */}
+          <option value="Other">Other</option> 
         </select>
       )}
        </label>
@@ -402,13 +397,13 @@ const Forms = ({
         <div className="skills-wrapper">
           <h2>Certifications</h2>
           {certifications.map((certification, index) => (
-            <div key={index} >
+            <div key={index} className="form-box" >
               <div className="row">
-              <label className="label-form-Language">Title:
-                <input type="text" name="title" value={certification.title} onChange={(e) => handleCertificationChange(index, e)} required />
+              <label className="label-form-Language" >Title:
+                <input type="text" name="title" placeholder="Ex: AWS Certified Solutions Architect"value={certification.title} onChange={(e) => handleCertificationChange(index, e)} required />
               </label>
               <label className="label-form-Language">Description:
-                <input name="description" value={certification.description} onChange={(e) => handleCertificationChange(index, e)} required />
+                <input name="description" placeholder='Enter a brief description' value={certification.description} onChange={(e) => handleCertificationChange(index, e)} required />
               </label>
             </div>
             </div>
@@ -428,13 +423,13 @@ const Forms = ({
           <h2>Skills</h2>
 
           {skills.map((skill, index) => (
-            <div key={index} >
+            <div key={index} className="form-box">
               <div className="row">
               <label className="label-form-Language">Category:
-                <input type="text" name="category" value={skill.category} onChange={(e) => handleskillChange(index, e)} required />
+                <input type="text" name="category" placeholder="Ex: Web Development, Graphic Design..." value={skill.category} onChange={(e) => handleskillChange(index, e)} required />
               </label>
               <label className="label-form-Language">Details:
-                <input name="details" value={skill.details} onChange={(e) => handleskillChange(index, e)} required />
+                <input name="details" placeholder="Ex: 3 years of JavaScript experience" value={skill.details} onChange={(e) => handleskillChange(index, e)} required />
               </label>
               </div>
             </div>

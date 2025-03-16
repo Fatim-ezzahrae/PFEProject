@@ -78,6 +78,27 @@
 .nav-button:hover {
     transform: scale(1.05);
 }
+  .nav-button1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 7px 20px;
+    text-decoration: none; 
+    background: #FEFBF3;
+    border-radius: 50px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    border: none;
+    font-size: 22px;
+    font-weight: bold;
+    color: #000000;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-button1:hover {
+    transform: scale(1.05);
+}
 
 .nav-button .icon {
     display: flex;
@@ -187,6 +208,28 @@
       }
    
       .nav-button:hover {
+      transition: all 0.3s ease-out;
+      background: #fff;
+      color: #242424;
+      transition: 250ms;
+    }
+    .nav-button1{ 
+      background-color: transparent;
+      text-align: center;
+      align-items: center;
+      color: #000000;
+      width: auto;
+      text-decoration: none;
+      padding: 15px 50px;
+      border: 1px solid white;
+      border-radius: 40px;
+      font-size: 1.5rem;
+      margin-left: 320px;
+      outline: none;
+      cursor: pointer;
+      }
+   
+      .nav-button1:hover {
       transition: all 0.3s ease-out;
       background: #fff;
       color: #242424;

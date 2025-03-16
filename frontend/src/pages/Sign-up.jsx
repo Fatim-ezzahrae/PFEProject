@@ -117,12 +117,13 @@ const Signup = () => {
               value={password}  // Bind to the 'password' state variable
               onChange={(e) => setPassword(e.target.value)}  // Update the 'password' state when user types
             />
-             <button 
-               type="button" 
-                className="toggle-password" 
-                onClick={() => setShowPasswordSignIn(!showPasswordSignIn)}
-             >
-                <FontAwesomeIcon icon={showPasswordSignIn ? faEye : faEyeSlash} />
+            <button 
+              type="button" 
+              className="toggle-password" 
+              onClick={() => setShowPasswordSignUp(!showPasswordSignUp)}
+            >
+              <FontAwesomeIcon icon={showPasswordSignUp ? faEye : faEyeSlash} />
+          
               </button>
             </div>
 
