@@ -19,6 +19,7 @@
     "katex": "^0.16.21",
     "latex": "^0.0.1",
     "latex.js": "^0.12.6",
+    "pdfjs-dist": "^5.0.375",
     "react": "^19.0.0",
     "react-datepicker": "^8.1.0",
     "react-dom": "^19.0.0",

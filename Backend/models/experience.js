@@ -25,7 +25,7 @@ experienceSchema.statics.fillExperience = async function (userId, experienceInfo
     // Validate the data and prepare the experience array
     const experiences = experienceInfo.map(exp => {
         
-        const { jobTitle, company,  startDate, endDate, city, description = []} = exp;
+        const { company, jobTitle, startDate, endDate, city, description = []} = exp;
 
         // Validate required fields (You can add more checks here if necessary)
         if (!company || !jobTitle || !city || !startDate || !endDate) {
@@ -39,15 +39,23 @@ experienceSchema.statics.fillExperience = async function (userId, experienceInfo
             description,
             city,
             startDate: new Date(startDate),
-            endDate: endDate ? new Date(endDate) : null
+            endDate: endDate && endDate.toLowerCase() !== 'now' ? new Date(endDate) : null // Handle 'now' as null
         };
     });
 
-    // Create a new experience document and associate it with the user
-    const experienceDocument = new this({
-        userId,
-        experience: experiences
-    });
+    // Check if an experience document for this user already exists
+    let experienceDocument = await this.findOne({ userId });
+
+    if (experienceDocument) {
+        // Append new experiences to the existing document
+        experienceDocument.experience.push(...experiences);
+    } else {
+        // Create a new document
+        experienceDocument = new this({
+            userId,
+            experience: experiences
+        });
+    }
 
     // Save the document to the database
     await experienceDocument.save();

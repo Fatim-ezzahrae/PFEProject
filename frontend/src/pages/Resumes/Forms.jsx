@@ -173,6 +173,8 @@ const Forms = ({
         employmentHistory,
         educationHistory,
         skills,
+        languages,
+        certifications
       }); 
       const response = await axios.post("http://localhost:4000/api/info", {
         userId: user._id,
@@ -180,6 +182,8 @@ const Forms = ({
         employmentHistory,
         educationHistory,
         skills,
+        languages,
+        certifications
       });
   
       if (response.data.success) {

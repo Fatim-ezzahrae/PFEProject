@@ -22,11 +22,11 @@ const hasFilledInfo = async (req, res) => {
 
 const fillUserInfo = async (req, res) => {
 
-    const { userId, userInfo, employmentHistory, educationHistory, languages } = req.body;
+    const { userId, userInfo, employmentHistory, educationHistory, skills, languages, certifications } = req.body;
 
     try {
-        const personal = await personalModel.fillPersonal(userId, userInfo, languages);
-        //const certifications = await certifModel.create(certifications);
+        const personal = await personalModel.fillPersonal(userId, userInfo, skills, languages);
+        const certifications = await certifModel.create(certifications);
         const experiences = await experienceModel.fillExperience(userId, employmentHistory); 
         const educations = await educationModel.fillEducation(userId, educationHistory);
         

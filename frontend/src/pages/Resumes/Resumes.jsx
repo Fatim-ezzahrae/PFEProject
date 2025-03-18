@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../styles/Resumes.css";
 import ProgressSteps from "../../component/ProgressSteps";
@@ -29,6 +30,7 @@ function Resumes() {
 
   const [templates, setTemplates] = useState([]);
   const { user } = useAuthContext();
+  const navigate = useNavigate();
 
   const handlePrev = () => {
     setSelectedIndex((prevIndex) => (prevIndex === 0 ? templates.length - 1 : prevIndex - 1));
@@ -51,20 +53,31 @@ function Resumes() {
 
   const handleUseTemplate = async (templateId) => {
     
-    const selectedTemplate = templates[selectedIndex];
+    const selectedTemplate = templates[selectedIndex]; // Ensure we use the selectedIndex
     setSelectedTemplateId(templateId);
         
     // Sending the selected template ID to the backend using Axios
     try {
 
+      if (!user) {
+        console.log("Invalid user data, redirecting to signup...");
+        navigate("/sign-up");
+        return;
+      }
+
+      const userId = user._id;
+
+      console.log("User ID:", userId, "Type:", typeof userId);
+
       // Step 1: Check if the user has already entered their data
-      const checkResponse = await axios.get(`http://localhost:4000/api/info/${user._id}`);
+      const checkResponse = await axios.get(`http://localhost:4000/api/info/${userId}`);
 
       if (checkResponse.data.hasData) {
+        console.log("User ID:", userId, "Type:", typeof userId);
         // User has already entered data → Go directly to resume generation
         const response = await axios.post("http://localhost:4000/api/resume/generate-resume", {
-          templateId,
-          userId: user._id
+          templateId: selectedTemplate._id, // Use the template ID of the selected template
+          userId
         });
         setCurrentStep(3);
 
