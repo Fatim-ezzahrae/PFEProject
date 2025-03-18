@@ -1,0 +1,62 @@
+.button-add {
+  --font-color: #323232;
+  --bg-color-sub: #66cdaa;
+  --bg-color: #ffffff;
+  --main-color: #323232;
+  position: relative;
+  width: 200px; /* Increased width */
+  height: 50px; /* Increased height */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--main-color);
+  box-shadow: 4px 4px var(--main-color);
+  background-color: var(--bg-color);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.button-add, .button__icon, .button__text {
+  transition: all 0.3s;
+}
+
+.button-add .button__text {
+  transform: translateX(22px);
+  color: var(--font-color);
+  font-weight: 600;
+  font-size: 16px; /* Adjusted font size for larger button */
+}
+
+.button-add .button__icon {
+  position: absolute;
+  transform: translateX(153px);
+  height: 100%;
+  width: 45px; /* Increased icon width */
+  background-color: var(--bg-color-sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-add .svg {
+  width: 27px; /* Adjusted SVG icon size */
+  fill: var(--main-color);
+}
+
+.button-add:hover {
+  background: var(--bg-color);
+}
+
+.button-add:hover .button__text {
+  color: transparent;
+}
+
+.button-add:hover .button__icon {
+  width: 195px; /* Adjusted hover state width */
+  transform: translateX(0);
+}
+
+.button-add:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px var(--main-color);
+}

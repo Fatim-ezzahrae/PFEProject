@@ -46,7 +46,7 @@ function Navbar() {
            </Link>
           </li>
           <li className='nav-item'>
-           <Link to='/job' className='nav-links' onClick={closeMobileMenu}>
+           <Link to='/Job' className='nav-links' onClick={closeMobileMenu}>
            <span class="material-symbols-outlined">
             work
             </span> Job offers

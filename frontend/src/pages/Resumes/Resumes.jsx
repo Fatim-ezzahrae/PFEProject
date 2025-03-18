@@ -20,7 +20,7 @@ function Resumes() {
   const [showCertificationForm, setShowCertificationForm] = useState(false);
   const [showSkillForm, setShowskillForm] = useState(false);
 
-  const [employmentHistory, setEmploymentHistory] = useState([{ company: "", position: "", startDate: "", endDate: "", city: "", description: "" }]);
+  const [employmentHistory, setEmploymentHistory] = useState([{ company: "", position: "", startDate: "", endDate: "", city: "", description: [] }]);
   const [languages, setLanguages] = useState([{ language: "", level: "" }]);
   const [educationHistory, setEducationHistory] = useState([{ institute: "", degree: "", startDate: "", endDate: "", city: "", country: "" }]);
   const [certifications, setCertifications] = useState([{ title: "", description: "" }]);

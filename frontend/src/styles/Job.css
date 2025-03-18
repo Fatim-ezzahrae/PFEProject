@@ -1,0 +1,14 @@
+.job-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative; 
+    overflow-x: hidden; 
+  }
+  
+  .addbutton{
+    position: absolute; 
+    right: 70px; 
+    margin-top: 42%;
+  }

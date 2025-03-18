@@ -112,7 +112,7 @@ const Forms = ({
         startDate:null,
         endDate: null,
         city: "",
-        description: "",
+        description: [""],
       },
     ]);
   };
@@ -143,6 +143,27 @@ const Forms = ({
     setSkills([...skills, { category: "", details: "" }]);
   };
 
+
+  const handleAddDescription = (index) => {
+    setEmploymentHistory((prevEmploymentHistory) =>
+      prevEmploymentHistory.map((employment, i) =>
+        i === index
+          ? { 
+              ...employment, 
+              description: [...employment.description, ""] 
+            }
+          : employment
+      )
+    );
+  };
+  
+  
+  
+  const handleDescriptionChange = (empIndex, descIndex, e) => {
+    const updatedEmploymentHistory = [...employmentHistory];
+    updatedEmploymentHistory[empIndex].description[descIndex] = e.target.value;
+    setEmploymentHistory(updatedEmploymentHistory);
+  };
   
   const handleSubmit = async () => {
     try {
@@ -246,10 +267,22 @@ const Forms = ({
               <input type="text" name="city" placeholder="Enter your City..." value={employment.city} onChange={(e) => handleEmploymentChange(index, e)} required />
             </label>
           </div>
-          <label className="label-form">Description:
-            <textarea name="description" placeholder="Ex:                                                                                                                                                                            Studied Software Engineering and specialized in AI.                                                                                                      Graduated with a Master's in Business Administration."
-                value={employment.description} onChange={(e) => handleEmploymentChange(index, e)} required />
-          </label>
+                {/* Description*/}
+                <label className="label-form">Description:</label>
+                {(employment.description.length === 0 ? [""] : employment.description).map((desc, descIndex) => (
+                 
+                    <textarea
+                      name="description"
+                      placeholder="Enter job description..."
+                      value={desc}
+                      onChange={(e) => handleDescriptionChange(index, descIndex, e)}
+                      required
+                    />
+                
+                ))}
+
+
+    <button className="descButt" type="button" onClick={() => handleAddDescription(index)}><span class="material-symbols-outlined">add_circle</span></button>
         </div>
       ))}          
     </div>

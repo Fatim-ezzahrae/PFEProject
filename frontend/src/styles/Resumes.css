@@ -92,6 +92,7 @@
   justify-content: space-between;
   gap: 30px;
   margin-top: -75px;
+  
 }
 
 .template-button{
@@ -126,7 +127,7 @@ font-size: 50px;
 }
 .pdf-iframe {
   width: 80%;
-  height: 100%;
+  height: 95%;
   border: none; 
   object-fit: cover;
 }
@@ -344,6 +345,25 @@ font-size: 50px;
 .add-button:hover {
   transform: scale(1.05);
   color: #4A7C59;
+}
+.descButt{
+  color: #000000;
+  border: none;
+  padding: 10px;
+  background: transparent;
+  }
+.descButt:hover{
+  transform: scale(1.05);
+}
+
+.descButt .material-symbols-outlined {
+  font-size: 32px;    
+  color: #4A7C59;   
+  transition: transform 0.2s ease-in-out;
+}
+
+.descButt:hover .material-symbols-outlined {
+  transform: scale(1.1); /* Effet zoom au survol */
 }
 
 .next {
