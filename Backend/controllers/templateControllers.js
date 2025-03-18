@@ -65,13 +65,15 @@ const getTemplate = async (req, res) => {
             return res.status(404).json({ message: 'Template not found' });
         }
 
-        res.contentType("application/pdf"); // Set response type
-        res.send(template.pdfFile); // Send binary PDF data
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `inline; filename=${template.name}.pdf`);
+        res.send(template.pdfFile);
 
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 //export controllers
 module.exports = { uploadTemplate, getTemplates, getTemplate};

@@ -5,12 +5,15 @@ const mongoose = require('mongoose');
 const educationSchema = new mongoose.Schema({
     
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },   // Reference to User
-    institute: String,
-    degree: String,
-    startDate: Date,
-    endDate: Date,
-    city: String,
-    country: String
+    education: [{
+        institute: String,
+        degree: String,
+        startDate: Date,
+        endDate: Date,
+        city: String,
+        country: String
+    }]
+    
 }, { timestamps: true }
 );
 
@@ -40,11 +43,19 @@ educationSchema.statics.fillEducation = async function (userId, educationInfo) {
         };
     });
 
-    // Create a new education document and associate it with the user
-    const educationDocument = new this({
-        userId,
-        education: educationEntries
-    });
+    // Check if an education document for this user already exists
+    let educationDocument = await this.findOne({ userId });
+
+    if (educationDocument) {
+        // Append new education entries to the existing document
+        educationDocument.education.push(...educationEntries);
+    } else {
+        // Create a new document
+        educationDocument = new this({
+            userId,
+            education: educationEntries
+        });
+    }
 
     // Save the document to the database
     await educationDocument.save();

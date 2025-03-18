@@ -32,8 +32,7 @@ const personalSchema = new mongoose.Schema({
 );
 
 
-personalSchema.statics.fillPersonal = async function (userId, userInfo, languages) {
-  const [firstName = '', lastName = ''] = userInfo.name ? userInfo.name.split(' ') : [];
+personalSchema.statics.fillPersonal = async function (userId, userInfo, skills, languages) {
   
   if (!validator.isEmail(userInfo.email)) {
     throw Error('Email is not valid');
@@ -44,15 +43,25 @@ personalSchema.statics.fillPersonal = async function (userId, userInfo, language
     throw new Error('Phone number is not valid');
   }
 
+  // validate skills
+  if (!Array.isArray(skills)) {
+    throw new Error('Skills should be an array');
+  }
+
+  // validate languages
+  if (!Array.isArray(languages)) {
+    throw new Error('Languages should be an array');
+  }
+
   // Create a new personal document using the provided data
   const personalData = new this({
     userId,  // The userId from the parameters
-    firstName,
-    lastName,
+    firstName: userInfo.firstName,
+    lastName: userInfo.lastName,
     email: userInfo.email,          
     phone: userInfo.phone,          
     address: userInfo.address,      
-    skills: [],                 // skills passed from parameters (array)
+    skills: skills,                 // skills passed from parameters (array)
     languages: languages, 
   });
 
