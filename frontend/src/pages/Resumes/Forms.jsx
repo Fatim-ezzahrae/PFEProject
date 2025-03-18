@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from 'axios';
+import ButtonBack from '../../component/ButtonBack.jsx';
 import { useAuthContext } from "../../hooks/useAuthContext";
 
 const Forms = ({
@@ -87,6 +87,22 @@ const Forms = ({
   };
   
 
+   const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    axios.get("https://restcountries.com/v3.1/all")
+      .then((response) => {
+        const sortedCountries = response.data.sort((a, b) => {
+          return a.name.common.localeCompare(b.name.common);
+        });
+        setCountries(sortedCountries);
+      })
+      .catch((error) => {
+        console.error("Error fetching country data", error);
+      });
+  }, []);
+  
+
   const addEmployment = () => {
     setEmploymentHistory([
       ...employmentHistory,
@@ -110,7 +126,7 @@ const Forms = ({
         startDate: null,
         endDate: null,
         city: "",
-        description: "",
+        country: "",
       },
     ]);
   };
@@ -239,6 +255,7 @@ const Forms = ({
     </div>
     <button  className="add-button" type="button" onClick={addEmployment}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add one more employment</button>
     <button className="next" type="button" onClick={() => setShowEducationForm(true)}>Next</button>
+    <ButtonBack onClick={() => { setShowEmploymentForm(false); }} />
              
       </>
       )}
@@ -291,20 +308,35 @@ const Forms = ({
                     <option key={year} value={year}>{year}</option>
                   ))}
                   </select>
-                  </label>                  
+                  </label> 
+               </div>                      
+           <div className="row">
           <label className="label-form ">City:
-            <input type="text" name="city"  placeholder="Enter your City..." value={education.city} onChange={(e) => handleEducationChange(index, e)} required />
-          </label>     
-          </div>   
-          <label className="label-form ">Description:
-            <input type="text" name="description" placeholder="Ex: Bachelor's Degree" value={education.description} onChange={(e) => handleEducationChange(index, e)} required />
+            <input type="text" placeholder="Enter your City..." name="city" value={education.city} onChange={(e) => handleEducationChange(index, e)} required />
           </label>        
+           <label className="label-form">Country:
+                  <select 
+                    name="country"
+                    value={education.country}
+                    onChange={(e) => handleEducationChange(index, e)}
+                    required
+                  >
+                    <option value="">Select Country</option>
+                    {countries.map((country) => (
+                      <option key={country.cca2} value={country.name.common}>
+                        {country.name.common}
+                      </option>
+                    ))}
+                  </select>
+        </label>
+        </div>      
         
       </div>
            ))}
            </div> 
          <button className="add-button" type="button" onClick={addEducation}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add one more education</button>
          <button className="next" type="button" onClick={() => setShowLanguagesForm(true)}>Next</button>
+         <ButtonBack onClick={() => { setShowEducationForm(false); setShowEmploymentForm(true); }}/>
         </>
       )}
 
@@ -387,6 +419,7 @@ const Forms = ({
         </div>
         Add one more language
       </button>
+      <ButtonBack onClick={() => { setShowLanguagesForm(false); setShowEducationForm(true); }}/>
         <button className="next" type="button" onClick={() => setShowCertificationForm(true)}>Next</button>
         </>
       )}
@@ -412,6 +445,7 @@ const Forms = ({
           </div>
           <button className="add-button" type="button" onClick={addCertification}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add a certification</button>
           <button className="next" type="button" onClick={() => setShowskillForm(true)}>Next</button>
+          <ButtonBack onClick={() => { setShowCertificationForm(false); setShowLanguagesForm(true); }}/>
         </>
         )}
 
@@ -426,10 +460,10 @@ const Forms = ({
             <div key={index} className="form-box">
               <div className="row">
               <label className="label-form-Language">Category:
-                <input type="text" name="category" placeholder="Ex: Web Development, Graphic Design..." value={skill.category} onChange={(e) => handleskillChange(index, e)} required />
+                <input type="text" name="category" placeholder="Ex: Programming..." value={skill.category} onChange={(e) => handleskillChange(index, e)} required />
               </label>
               <label className="label-form-Language">Details:
-                <input name="details" placeholder="Ex: 3 years of JavaScript experience" value={skill.details} onChange={(e) => handleskillChange(index, e)} required />
+                <input name="details" placeholder="Ex: Phyton,Javascript..." value={skill.details} onChange={(e) => handleskillChange(index, e)} required />
               </label>
               </div>
             </div>
@@ -438,6 +472,7 @@ const Forms = ({
         </div>
         <button  className="add-button" type="button" onClick={addskill}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add one more skill</button>
         <button className="next" type="button" onClick={handleSubmit}>Submit</button>
+        <ButtonBack onClick={() => { setShowskillForm(false); setShowCertificationForm(true); }}/>
         </>
         )}
          </>

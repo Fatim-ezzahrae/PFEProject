@@ -1,0 +1,49 @@
+.button-container {
+    background-color: rgb(255, 255, 255);
+    text-align: center;
+    width: 12rem; /* 48px * 4 */
+    height: 3.5rem; /* 14px * 4 */
+    border-radius: 1rem; /* rounded-2xl */
+    position: relative;
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600;
+    color: black;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
+  .button-container:hover{
+    transform: scale(1.05);
+  }
+  .button-container:hover .button-bg {
+    width: 11.5rem; /* Expands */
+  }
+  
+  .button-bg {
+    background-color: #8FC0A9; /* Green-400 */
+    border-radius: 0.75rem;
+    height: 3rem;
+    width: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 0.25rem;
+    top: 4px;
+    z-index: 10;
+    transition: width 0.3s ease-in-out;
+  }
+  
+  .button-icon svg {
+    width: 25px;
+    height: 25px;
+    fill: rgb(0, 0, 0);
+  }
+  
+
+  
+  .button-container:hover .button-text {
+    opacity: 0; /* Hide text on hover */
+  }

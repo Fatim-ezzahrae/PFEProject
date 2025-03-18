@@ -74,7 +74,7 @@ function Resumes() {
           console.error("Error generating resume:", response.data);
         }
       } else {
-        // User has NOT entered data → Go to Step 2 (Forms)
+       
         setCurrentStep(2);
       }
 
