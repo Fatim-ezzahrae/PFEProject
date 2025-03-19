@@ -10,8 +10,8 @@ const experienceSchema = new mongoose.Schema({
         jobTitle: String,
         description: [String],
         city: String,
-        startDate: Date,
-        endDate: Date
+        startDate: String,
+        endDate: String
     }]
 }, { timestamps: true }
 );
@@ -39,7 +39,7 @@ experienceSchema.statics.fillExperience = async function (userId, experienceInfo
             description,
             city,
             startDate: new Date(startDate),
-            endDate: endDate && endDate.toLowerCase() !== 'now' ? new Date(endDate) : null // Handle 'now' as null
+            endDate: endDate && endDate.toLowerCase() !== 'now' ? new Date(endDate) : null
         };
     });
 

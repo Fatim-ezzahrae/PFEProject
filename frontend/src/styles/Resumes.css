@@ -209,7 +209,7 @@ font-size: 50px;
   gap: 1px;
   margin-top: -10%;
   background: var(--primary-light);
-  padding: 40px;
+  padding: 39px;
   border-radius: var(--border-radius);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }

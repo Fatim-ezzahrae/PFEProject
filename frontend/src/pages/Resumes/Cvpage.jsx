@@ -33,7 +33,7 @@ const CVPage = ({ userInfo, employmentHistory, languages, educationHistory }) =>
       <h2>Employment History</h2>
       {cvData.employmentHistory.map((job, index) => (
         <div key={index} className="cv-section">
-          <h3>{job.position} at {job.company}</h3>
+          <h3>{job.JobTitle} at {job.company}</h3>
           <p>{job.startDate} - {job.endDate} | {job.city}</p>
           <p>{job.description}</p>
         </div>

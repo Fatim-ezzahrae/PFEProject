@@ -7,17 +7,20 @@ function Job() {
   const [showForm, setShowForm] = useState(false);
 
   const handleButtonClick = () => {
-    setShowForm(!showForm);  
+    setShowForm(true);  
+
   };
+  
 
   return (
     <div className="job-page">
-
-      <div className="addbutton">
-        <AddButton onClick={handleButtonClick} /> {/* Pass the onClick to your button */}
-      </div>
-
-      {showForm && <JobOfferForm />} {/* Conditionally render the form based on state */}
+      {!showForm && (
+        <div className="addbutton">
+          <AddButton onClick={handleButtonClick} />
+        </div>
+      )}
+      
+      {showForm && <JobOfferForm setShowForm={setShowForm} />}
     </div>
   );
 }

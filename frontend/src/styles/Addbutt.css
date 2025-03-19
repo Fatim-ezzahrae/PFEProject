@@ -29,7 +29,7 @@
 
 .button-add .button__icon {
   position: absolute;
-  transform: translateX(153px);
+  transform: translateX(154px);
   height: 100%;
   width: 45px; /* Increased icon width */
   background-color: var(--bg-color-sub);
@@ -52,7 +52,7 @@
 }
 
 .button-add:hover .button__icon {
-  width: 195px; /* Adjusted hover state width */
+  width: 198px; /* Adjusted hover state width */
   transform: translateX(0);
 }
 

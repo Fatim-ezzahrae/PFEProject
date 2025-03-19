@@ -18,8 +18,6 @@ const Forms = ({
 
   const { user } = useAuthContext();
   const [years, setYears] = useState([]);
-  const [selectedStartYear, setSelectedStartYear] = useState('');
-  const [selectedEndYear, setSelectedEndYear] = useState('');
 
   useEffect(() => {
     // Populate the years from the current year down to 1900
@@ -37,13 +35,14 @@ const Forms = ({
   };
 
   const handleEmploymentChange = (index, event) => {
-  const { name, value } = event.target;
-  setEmploymentHistory((prevEmploymentHistory) =>
-    prevEmploymentHistory.map((employment, i) =>
-      i === index ? { ...employment, [name]: value } : employment
-    )
-  );
-};
+    const { name, value } = event.target;
+    setEmploymentHistory((prevEmploymentHistory) =>
+      prevEmploymentHistory.map((employment, i) =>
+        i === index ? { ...employment, [name]: value } : employment
+      )
+    );
+  };
+  
 
   const handleEducationChange = (index, e) => {
     const { name, value } = e.target;
@@ -58,18 +57,6 @@ const Forms = ({
     newLanguages[index][name] = value;
     setLanguages(newLanguages);
   };
-
-
-  const handleStartYearChange = (e) => {
-    setSelectedStartYear(e.target.value);
-  };
-
-  const handleEndYearChange = (e) => {
-    setSelectedEndYear(e.target.value);
-  };
-
-  
- 
   
   const handleCertificationChange = (index, e) => {
     const { name, value } = e.target;
@@ -109,8 +96,8 @@ const Forms = ({
       {
         company: "",
         jobTitle: "",
-        startDate:null,
-        endDate: null,
+        startDateEmp:null,
+        endDateEmp: null,
         city: "",
         description: [""],
       },
@@ -123,8 +110,8 @@ const Forms = ({
       {
         institute: "",
         degree: "",
-        startDate: null,
-        endDate: null,
+        startDateEdu: null,
+        endDateEdu: null,
         city: "",
         country: "",
       },
@@ -238,35 +225,35 @@ const Forms = ({
           <div className="row">
              {/* Start Year Dropdown */}
              <label className="label-form">Start Year:
-                <select 
-                  className="date-picker-wrapper" 
-                  name="startYear"
-                  value={selectedStartYear}
-                  onChange={handleStartYearChange}
-                  required
-                >
-                  <option value="">Select Start Year</option>
-                  {years.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-                </label>
+              <select 
+                className="date-picker-wrapper" 
+                name="startDateEmp" 
+                value={employment.startDateEmp} 
+                onChange={(e) => handleEmploymentChange(index, e)}
+                required
+              >
+                <option value="">Select Start Year</option>
+                {years.map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </label>
 
-                {/* End Year Dropdown */}
-                <label className="label-form">End Year:
-                <select  className="date-picker-wrapper"
-                  name="endYear"
-                  value={selectedEndYear}
-                  onChange={handleEndYearChange}
-                  required
-                >
-                  <option value="">Select End Year</option>
-                  <option value="Now">Now</option>
-                  {years.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                  </select>
-                  </label>
+            <label className="label-form">End Year:
+              <select 
+                className="date-picker-wrapper"
+                name="endDateEmp" 
+                value={employment.endDateEmp} 
+                onChange={(e) => handleEmploymentChange(index, e)}
+                required
+              >
+                <option value="">Select End Year</option>
+                <option value="Now">Now</option>
+                {years.map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </label>
             <label className="label-form city-wrapper">City:
               <input type="text" name="city" placeholder="Enter your City..." value={employment.city} onChange={(e) => handleEmploymentChange(index, e)} required />
             </label>
@@ -277,7 +264,7 @@ const Forms = ({
                  
                     <textarea
                       name="description"
-                      placeholder="Enter job description..."
+                      placeholder="Ex: Provided customer support and resolved technical issues"
                       value={desc}
                       onChange={(e) => handleDescriptionChange(index, descIndex, e)}
                       required
@@ -317,35 +304,36 @@ const Forms = ({
         <div className="row">
           {/* Start Year Dropdown */}
           <label className="label-form">Start Year:
-                <select 
-                  className="date-picker-wrapper" 
-                  name="startYear"
-                  value={selectedStartYear}
-                  onChange={handleStartYearChange}
-                  required
-                >
-                  <option value="">Select Start Year</option>
-                  {years.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-                </label>
+              <select 
+                className="date-picker-wrapper" 
+                name="startYearEdu"
+                value={education.startYearEdu}
+                onChange={(e) => handleEducationChange(index, e)}
+                required
+              >
+                <option value="">Select Start Year</option>
+                {years.map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </label>
 
-                {/* End Year Dropdown */}
-                <label className="label-form">End Year:
-                <select  className="date-picker-wrapper"
-                  name="endYear"
-                  value={selectedEndYear}
-                  onChange={handleEndYearChange}
-                  required
-                >
-                  <option value="">Select End Year</option>
-                  <option value="Now">Now</option>
-                  {years.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                  </select>
-                  </label> 
+            {/* End Year Dropdown */}
+            <label className="label-form">End Year:
+              <select  
+                className="date-picker-wrapper"
+                name="endYearEdu"
+                value={education.endYearEdu}
+                onChange={(e) => handleEducationChange(index, e)}
+                required
+              >
+                <option value="">Select End Year</option>
+                <option value="Now">Now</option>
+                {years.map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </label> 
                </div>                      
            <div className="row">
           <label className="label-form ">City:
@@ -456,9 +444,9 @@ const Forms = ({
         </div>
         Add one more language
       </button>
-      <ButtonBack onClick={() => { setShowLanguagesForm(false); setShowEducationForm(true); }}/>
-        <button className="next" type="button" onClick={() => setShowCertificationForm(true)}>Next</button>
-        </>
+      <button className="next" type="button" onClick={() => setShowCertificationForm(true)}>Next</button>
+      <ButtonBack onClick={() => { setShowLanguagesForm(false); setShowEducationForm(true); }}/> 
+       </>
       )}
 
       {/* Certifications Form */}

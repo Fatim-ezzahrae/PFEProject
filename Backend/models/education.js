@@ -8,8 +8,8 @@ const educationSchema = new mongoose.Schema({
     education: [{
         institute: String,
         degree: String,
-        startDate: Date,
-        endDate: Date,
+        startDate: String,
+        endDate: String,
         city: String,
         country: String
     }]
