@@ -262,7 +262,8 @@ const Forms = ({
                 <label className="label-form">Description:</label>
                 {(employment.description.length === 0 ? [""] : employment.description).map((desc, descIndex) => (
                  
-                    <textarea
+                    <input type="text"
+                    className='descp'
                       name="description"
                       placeholder="Ex: Provided customer support and resolved technical issues"
                       value={desc}

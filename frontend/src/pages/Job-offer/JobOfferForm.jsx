@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ButtonBack from '../../component/ButtonBack';
+import axios from 'axios';
 
 function JobOfferForm() {
   const [step, setStep] = useState(1);
@@ -24,13 +25,16 @@ function JobOfferForm() {
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Job Offer Submitted:', formData);
-    setSubmitted(true);
-    setShowForm(false); 
+    try {
+      const response = await axios.post('http://localhost:4000/job-offers', formData);
+      console.log('Job Offer Submitted:', response.data);
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting job offer:', error);
+    }
   };
-  
 
   return (
     <>
@@ -39,42 +43,49 @@ function JobOfferForm() {
       {!submitted ? (
         <form onSubmit={handleSubmit}>
           {step === 1 && (
+            <>
             <div className='Jobinfo-wrapper'>
                   <h2>Create a Job Offer</h2>
-              <label className="label-Job">Job Title:</label>
-              <input type="text" name="jobTitle" value={formData.jobTitle} onChange={handleChange} required />
+              <label className="label-Job">Job Title:
+              <input type="text" name="jobTitle" value={formData.jobTitle} onChange={handleChange} required /></label>
               
-              <label className="label-Job">Company Name:</label>
-              <input type="text" name="companyName" value={formData.companyName} onChange={handleChange} required />
+              <label className="label-Job">Company Name:
+              <input type="text" name="companyName" value={formData.companyName} onChange={handleChange} required /></label>
               
-              <label className="label-Job">Location:</label>
-              <input type="text" name="location" value={formData.location} onChange={handleChange} required />
-              
-              <button className="nextJob" type="button" onClick={nextStep}>Next</button>
+              <label className="label-Job">Location:
+              <input type="text" name="location" value={formData.location} onChange={handleChange} required /></label>
+
             </div>
+            <button className="nextJob" type="button" onClick={nextStep}>Next</button>
+            </>
           )}
         
           {step === 2 && (
+            <>
             <div className='descp-wrapper'>
-              <label className="label-Job" >Description:</label>
-              <textarea name="description" value={formData.description} onChange={handleChange} required />
-              
-              <ButtonBack onClick={prevStep}/>
-              <button  className="nextJob" type="button" onClick={nextStep}>Next</button>
-            </div>
+              <label className="label-Job" >Description:
+              <textarea name="description" value={formData.description} onChange={handleChange} required /></label>
+                            
+             </div>
+             <button  className="nextJob" type="button" onClick={nextStep}>Next</button>
+             <div className="button-back">
+             <ButtonBack  onClick={prevStep}/></div>
+            </>
           )}
 
           {step === 3 && (
-            <div>
-              <label className="label-Job">Application Deadline:</label>
-              <input type="date" name="applicationDeadline" value={formData.applicationDeadline} onChange={handleChange} required />
+            <>
+            <div className='app-wrapper'>
+              <label className="label-Job">Application Deadline:
+              <input type="date" name="applicationDeadline" value={formData.applicationDeadline} onChange={handleChange} required /></label>
               
-              <label className="label-Job" >Contact Information:</label>
-              <input type="text" name="contactInfo" value={formData.contactInfo} onChange={handleChange} required />
+              <label className="label-Job" >Contact Information:
+              <input type="text" name="contactInfo" value={formData.contactInfo} onChange={handleChange} required /></label>
+              </div>
               
-              <ButtonBack onClick={prevStep}/>
               <button  className="nextJob" type="submit">Submit Job Offer</button>
-            </div>
+             <ButtonBack onClick={prevStep}/>
+            </>
           )}
         </form>
       ) : (

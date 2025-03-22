@@ -279,7 +279,9 @@ font-size: 50px;
   margin-bottom: 25px;
   color: #333;
 }
-
+.descp {
+  margin-bottom: 10px; 
+}
 .label-form-Language {
   margin-left: 1%;
   display: flex;

@@ -69,6 +69,9 @@ function Navbar() {
                   logout
                 </span>
               </Link>
+              <Link to='/Profile' className='prof-butt'>
+              <span class="material-symbols-outlined">account_circle</span>              
+              </Link>
             </li>
           )}
           

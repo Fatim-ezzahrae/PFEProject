@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Resumes from "./pages/Resumes/Resumes.jsx";
 import Job from "./pages/Job-offer/Job.jsx";
 import SignUp from "./pages/Sign-up"; 
+import Profile from "./pages/Profile/Profile.jsx";
 function App() {
   return (
     <div className="App">
@@ -16,6 +17,7 @@ function App() {
           <Route path="/Resumes" element={<Resumes />} />
           <Route path="/Job" element={<Job />} />
           <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/Profile" element={<Profile/>} />
         </Routes>
     </div>
   );

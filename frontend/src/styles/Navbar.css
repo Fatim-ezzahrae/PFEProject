@@ -119,6 +119,26 @@
   .menu-icon {
     display: none;
   }
+
+  .prof-butt {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between icon and text */
+    padding: 20px;
+    margin-right: -70px;
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    transition: 0.3s ease;
+  }
+  
+  .prof-butt:hover {
+   color: #4a7c59; /* Darker blue on hover */
+   transform: scale(1.05);
+  }
+  
+  .prof-butt .material-symbols-outlined {
+    font-size: 37px; /* Adjust icon size */
+  }
   
   @media screen and (max-width: 1000px) {
     .navbar {
