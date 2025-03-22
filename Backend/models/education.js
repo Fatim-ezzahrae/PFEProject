@@ -8,8 +8,8 @@ const educationSchema = new mongoose.Schema({
     education: [{
         institute: String,
         degree: String,
-        startDate: String,
-        endDate: String,
+        startDateEdu: String,
+        endDateEdu: String,
         city: String,
         country: String
     }]
@@ -18,17 +18,17 @@ const educationSchema = new mongoose.Schema({
 );
 
 // The function to fill the user's education information
-educationSchema.statics.fillEducation = async function (userId, educationInfo) {
+educationSchema.statics.prepareEducation = async function (userId, educationInfo) {
     if (!Array.isArray(educationInfo)) {
         throw new Error('Education data should be an array');
     }
 
     // Validate and prepare the education array
     const educationEntries = educationInfo.map(edu => {
-        const { institute, degree, startDate, endDate, city, description } = edu;
+        const { institute, degree, startDateEdu, endDateEdu, city, country } = edu;
 
         // Validate required fields (You can add more checks here if necessary)
-        if (!institute || !degree || !city || !startDate || !endDate) {
+        if (!institute || !degree || !city || !startDateEdu || !endDateEdu || !country) {
             throw new Error('Missing required fields in education');
         }
 
@@ -36,32 +36,27 @@ educationSchema.statics.fillEducation = async function (userId, educationInfo) {
         return {
             institute,
             degree,
-            startDate: new Date(startDate),
-            endDate: new Date(endDate),
+            startDateEdu,
+            endDateEdu,
             city,
-            description
+            country
         };
     });
 
-    // Check if an education document for this user already exists
-    let educationDocument = await this.findOne({ userId });
+    let educationDocument = {
+        userId,
+        education: educationEntries
+    };
 
-    if (educationDocument) {
-        // Append new education entries to the existing document
-        educationDocument.education.push(...educationEntries);
-    } else {
-        // Create a new document
-        educationDocument = new this({
-            userId,
-            education: educationEntries
-        });
-    }
-
-    // Save the document to the database
-    await educationDocument.save();
-
-    // Return the saved education document
+    // Return the education document
     return educationDocument;
 };
+
+educationSchema.statics.saveEducation = async function (educationData) {
+    const educationDoc = new this(educationData);
+    await educationDoc.save();
+    return educationDoc;  // Return the saved education document
+};
+
 //export education model        
 module.exports = mongoose.model('Education', educationSchema);

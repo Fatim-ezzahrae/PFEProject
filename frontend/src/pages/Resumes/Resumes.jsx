@@ -13,6 +13,8 @@ function Resumes() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedTemplateId, setSelectedTemplateId] = useState(null); 
+
+  const [generatedResumeURL, setGeneratedResumeURL] = useState(null);
   
   const [userInfo, setUserInfo] = useState({ firstName:"" ,lastName: "", email: "", phone: "", address: "" });
   const [showEmploymentForm, setShowEmploymentForm] = useState(false);
@@ -31,6 +33,12 @@ function Resumes() {
   const [templates, setTemplates] = useState([]);
   const { user } = useAuthContext();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (generatedResumeURL) {
+      console.log("Updated generatedResumeURL:", generatedResumeURL);
+    }
+  }, [generatedResumeURL]);  // This will run every time generatedResumeURL changes
 
   const handlePrev = () => {
     setSelectedIndex((prevIndex) => (prevIndex === 0 ? templates.length - 1 : prevIndex - 1));
@@ -67,21 +75,23 @@ function Resumes() {
 
       const userId = user._id;
 
-      console.log("User ID:", userId, "Type:", typeof userId);
-
       // Step 1: Check if the user has already entered their data
       const checkResponse = await axios.get(`http://localhost:4000/api/info/${userId}`);
 
       if (checkResponse.data.hasData) {
-        console.log("User ID:", userId, "Type:", typeof userId);
+      
         // User has already entered data → Go directly to resume generation
-        const response = await axios.post("http://localhost:4000/api/resume/generate-resume", {
-          templateId: selectedTemplate._id, // Use the template ID of the selected template
-          userId
+        const response = await axios.get(`http://localhost:4000/api/resume/generate-resume/${templateId}/${userId}`, {
+          responseType: 'arraybuffer', // Get the PDF as binary data
         });
-        setCurrentStep(3);
 
         if (response.status === 200) {
+          // Create a Blob from the binary data
+          const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+          const fileUrl = URL.createObjectURL(pdfBlob); // Create a URL for the Blob
+          setGeneratedResumeURL(fileUrl); // Set the Blob URL to be used in the PDF viewer
+          console.log("url", generatedResumeURL);
+          setCurrentStep(3);
           console.log("Resume generated successfully:", response.data);
         } else {
           console.error("Error generating resume:", response.data);
@@ -136,7 +146,11 @@ function Resumes() {
          setShowCertificationForm={setShowCertificationForm}
          showSkillForm={showSkillForm}
          setShowskillForm={setShowskillForm}
-         setCurrentStep={setCurrentStep}  
+         setCurrentStep={setCurrentStep} 
+         templateId={selectedTemplateId}
+         generatedResumeURL={generatedResumeURL}
+         setGeneratedResumeURL={setGeneratedResumeURL}
+          
        />
        
         )}
@@ -146,6 +160,8 @@ function Resumes() {
             employmentHistory={employmentHistory} 
             languages={languages} 
             educationHistory={educationHistory}
+            generatedResumeURL={generatedResumeURL}
+            setGeneratedResumeURL={setGeneratedResumeURL}
           />
         )}
       </div>

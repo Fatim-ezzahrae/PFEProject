@@ -22,7 +22,7 @@ const personalSchema = new mongoose.Schema({
     languages: { 
       type: [ { 
         language: String, 
-        level: String 
+        level: String
       } ], 
       default: []  // Default to an empty array if not provided
     },
@@ -31,8 +31,7 @@ const personalSchema = new mongoose.Schema({
 } , { timestamps: true }
 );
 
-
-personalSchema.statics.fillPersonal = async function (userId, userInfo, skills, languages) {
+personalSchema.statics.preparePersonal = async function (userId, userInfo, skills, languages) {
   
   if (!validator.isEmail(userInfo.email)) {
     throw Error('Email is not valid');
@@ -53,26 +52,27 @@ personalSchema.statics.fillPersonal = async function (userId, userInfo, skills, 
     throw new Error('Languages should be an array');
   }
 
-  // Create a new personal document using the provided data
-  const personalData = new this({
-    userId,  // The userId from the parameters
+ // Process the personal info (but don't save yet)
+ const personalData = {
+    userId,
     firstName: userInfo.firstName,
     lastName: userInfo.lastName,
-    email: userInfo.email,          
-    phone: userInfo.phone,          
-    address: userInfo.address,      
-    skills: skills,                 // skills passed from parameters (array)
-    languages: languages, 
-  });
-
-  // Save the document to the database
-  await personalData.save();
-
-  // Return the saved document or success message
-  return personalData;
+    email: userInfo.email,
+    phone: userInfo.phone,
+    address: userInfo.address,
+    skills,
+    languages,
+  };
   
-   
+  // Return the saved document or success message
+  return personalData;   
 }
+
+personalSchema.statics.savePersonal = async function (personalData) {
+  const personalDoc = new this(personalData);
+  await personalDoc.save();
+  return personalDoc;  // Return the saved document
+};
 
 
 //export personal model

@@ -5,6 +5,7 @@ import ButtonBack from '../../component/ButtonBack.jsx';
 import { useAuthContext } from "../../hooks/useAuthContext";
 
 const Forms = ({
+  currentStep, setCurrentStep,
   userInfo, setUserInfo, 
   employmentHistory, setEmploymentHistory, 
   languages, setLanguages, 
@@ -13,11 +14,14 @@ const Forms = ({
   showEmploymentForm, setShowEmploymentForm,
   showLanguagesForm, setShowLanguagesForm,
   showEducationForm, setShowEducationForm,
-  showCertificationForm, setShowCertificationForm, setSkills, showSkillForm, skills, setShowskillForm 
+  showCertificationForm, setShowCertificationForm, setSkills, showSkillForm, skills, setShowskillForm,
+  selectedTemplateId, generatedResumeURL, setGeneratedResumeURL 
 }) =>{
 
   const { user } = useAuthContext();
   const [years, setYears] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [countries, setCountries] = useState([]);
 
   useEffect(() => {
     // Populate the years from the current year down to 1900
@@ -72,9 +76,6 @@ const Forms = ({
     updatedskill[index][name] = value;
     setSkills(updatedskill);
   };
-  
-
-   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
     axios.get("https://restcountries.com/v3.1/all")
@@ -163,6 +164,7 @@ const Forms = ({
         languages,
         certifications
       }); 
+      // step 1: send informations to backend
       const response = await axios.post("http://localhost:4000/api/info", {
         userId: user._id,
         userInfo,
@@ -174,15 +176,42 @@ const Forms = ({
       });
   
       if (response.data.success) {
-        alert("CV submitted successfully!");
-        setCurrentStep(3); 
+        setErrorMessage(""); // Clear any previous errors
+
+        // step 2: generate resume from template and user information
+        const response = await axios.get(`http://localhost:4000/api/resume/generate-resume/${selectedTemplateId}/${user._id}`, {
+          responseType: 'arraybuffer', // Get the PDF as binary data
+        });
+
+        if (response.status === 200) {
+          // Create a Blob from the binary data
+          const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+          const fileUrl = URL.createObjectURL(pdfBlob); // Create a URL for the Blob
+          setGeneratedResumeURL(fileUrl); // Set the Blob URL to be used in the PDF viewer
+          setCurrentStep(3);
+          console.log("Resume generated successfully:", response.data);
+        } else {
+          console.error("Error generating resume:", response.data);
+        }
+        
       } else {
-        alert("There was an error submitting your CV.");
+        setErrorMessage(response.data.error || "An unknown error occurred.");
       }
     } catch (error) {
       console.error("Error submitting CV:", error);
-      alert("An error occurred while submitting your CV.");
+      if (error.response) {
+        setErrorMessage(error.response.data.error || "Server error occurred.");
+        console.error("Full Error Response:", error.response.data);
+      } else if (error.request) {
+        setErrorMessage("No response from server. Please try again later.");
+        console.error("No response received:", error.request);
+      } else {
+        setErrorMessage("Request failed: " + error.message);
+        console.error("Request Error:", error.message);
+      }
     }
+
+
   };
 
   return (
@@ -307,8 +336,8 @@ const Forms = ({
           <label className="label-form">Start Year:
               <select 
                 className="date-picker-wrapper" 
-                name="startYearEdu"
-                value={education.startYearEdu}
+                name="startDateEdu"
+                value={education.startDateEdu}
                 onChange={(e) => handleEducationChange(index, e)}
                 required
               >
@@ -323,8 +352,8 @@ const Forms = ({
             <label className="label-form">End Year:
               <select  
                 className="date-picker-wrapper"
-                name="endYearEdu"
-                value={education.endYearEdu}
+                name="endDateEdu"
+                value={education.endDateEdu}
                 onChange={(e) => handleEducationChange(index, e)}
                 required
               >
@@ -497,6 +526,7 @@ const Forms = ({
                      
         </div>
         <button  className="add-button" type="button" onClick={addskill}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add one more skill</button>
+        {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
         <button className="next" type="button" onClick={handleSubmit}>Submit</button>
         <ButtonBack onClick={() => { setShowskillForm(false); setShowCertificationForm(true); }}/>
         </>
@@ -508,3 +538,4 @@ const Forms = ({
     
 
 export default Forms;
+

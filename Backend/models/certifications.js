@@ -5,14 +5,14 @@ const mongoose = require('mongoose');
 const certificationSchema = new mongoose.Schema({
     
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },   // Reference to User
-    certificatons:[{ 
+    certifications:[{ 
         title: String,
         description: String
     }]
 }, { timestamps: true }
 );
 
-certificationSchema.statics.fillCertifications = async function (userId, certifications) {
+certificationSchema.statics.prepareCertifications = async function (userId, certifications) {
     if (!Array.isArray(certifications)) {
         throw new Error('Certifications data should be an array');
     }
@@ -29,24 +29,21 @@ certificationSchema.statics.fillCertifications = async function (userId, certifi
         return { title, description };
     });
 
-    // Check if a certification document for this user already exists
-    let certificationDocument = await this.findOne({ userId });
-
-    if (certificationDocument) {
-        // Append new certifications to the existing document
-        certificationDocument.certificatons.push(...certificationEntries);
-    } else {
-        // Create a new document
-        certificationDocument = new this({
-            userId,
-            certificatons: certificationEntries
-        });
-    }
-
-    // Save the document
-    await certificationDocument.save();
+    // Create a new document
+    let certificationDocument = {
+        userId,
+        certifications: certificationEntries
+    };
+    
 
     return certificationDocument;
+};
+
+
+certificationSchema.statics.saveCertifications = async function (certificationData) {
+    const certifDoc = new this(certificationData);
+    await certifDoc.save();
+    return certifDoc;  // Return the saved certification document
 };
 
 

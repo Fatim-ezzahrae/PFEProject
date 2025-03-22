@@ -10,13 +10,13 @@ const experienceSchema = new mongoose.Schema({
         jobTitle: String,
         description: [String],
         city: String,
-        startDate: String,
-        endDate: String
+        startDateEmp: String,
+        endDateEmp: String
     }]
 }, { timestamps: true }
 );
 
-experienceSchema.statics.fillExperience = async function (userId, experienceInfo) {
+experienceSchema.statics.prepareExperience = async function (userId, experienceInfo) {
 
     if (!Array.isArray(experienceInfo)) {
         throw new Error('Experience data should be an array');
@@ -25,10 +25,10 @@ experienceSchema.statics.fillExperience = async function (userId, experienceInfo
     // Validate the data and prepare the experience array
     const experiences = experienceInfo.map(exp => {
         
-        const { company, jobTitle, startDate, endDate, city, description = []} = exp;
+        const { company, jobTitle, startDateEmp, endDateEmp, city, description = []} = exp;
 
         // Validate required fields (You can add more checks here if necessary)
-        if (!company || !jobTitle || !city || !startDate || !endDate) {
+        if (!company || !jobTitle || !city || !startDateEmp || !endDateEmp) {
             throw new Error('Missing required fields in experience');
         }
 
@@ -38,32 +38,27 @@ experienceSchema.statics.fillExperience = async function (userId, experienceInfo
             jobTitle,
             description,
             city,
-            startDate: new Date(startDate),
-            endDate: endDate && endDate.toLowerCase() !== 'now' ? new Date(endDate) : null
+            startDateEmp,
+            endDateEmp
         };
     });
 
-    // Check if an experience document for this user already exists
-    let experienceDocument = await this.findOne({ userId });
+ 
+    let experienceDocument = {
+        userId,
+        experience: experiences
+    };
 
-    if (experienceDocument) {
-        // Append new experiences to the existing document
-        experienceDocument.experience.push(...experiences);
-    } else {
-        // Create a new document
-        experienceDocument = new this({
-            userId,
-            experience: experiences
-        });
-    }
-
-    // Save the document to the database
-    await experienceDocument.save();
-
-    // Return the saved experience document
+    // Return the experience document
     return experienceDocument;
 
 }
+
+experienceSchema.statics.saveExperience = async function (experienceData) {
+    const experienceDoc = new this(experienceData);
+    await experienceDoc.save();
+    return experienceDoc;  // Return the saved experience document
+};
 
 //export experience model        
 module.exports = mongoose.model('Experience', experienceSchema);

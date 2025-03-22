@@ -1,8 +1,9 @@
+const mongoose = require('mongoose'); 
+
 const personalModel = require('../models/personal');
 const certifModel = require('../models/certifications');
 const educationModel = require('../models/education');
 const experienceModel = require('../models/experience');
-
 
 
 const hasFilledInfo = async (req, res) => {
@@ -21,20 +22,33 @@ const hasFilledInfo = async (req, res) => {
 }
 
 const fillUserInfo = async (req, res) => {
+  console.log(req.body);
 
-    const { userId, userInfo, employmentHistory, educationHistory, skills, languages, certifications } = req.body;
+  const { userId, userInfo, employmentHistory, educationHistory, skills, languages, certifications } = req.body;
 
-    try {
-        const personal = await personalModel.fillPersonal(userId, userInfo, skills, languages);
-        const certifications = await certifModel.create(certifications);
-        const experiences = await experienceModel.fillExperience(userId, employmentHistory); 
-        const educations = await educationModel.fillEducation(userId, educationHistory);
-        
-        res.status(201).json({personal, educations, experiences});
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
+  try {
+      // Validate and prepare all the data first (no saving yet)
+      const personalData = await personalModel.preparePersonal(userId, userInfo, skills, languages);
+      const certifData = await certifModel.prepareCertifications(userId, certifications);
+      const experienceData = await experienceModel.prepareExperience(userId, employmentHistory);
+      const educationData = await educationModel.prepareEducation(userId, educationHistory);
+
+      // If all data is valid and processed, save everything at once
+      const personalDoc = await personalModel.savePersonal(personalData);
+      const certifDoc = await certifModel.saveCertifications(certifData);
+      const experiencesDoc = await experienceModel.saveExperience(experienceData);
+      const educationsDoc = await educationModel.saveEducation(educationData);
+
+      // Respond with success and the saved data
+      res.status(201).json({ success: true, personalDoc, certifDoc, experiencesDoc, educationsDoc });
+
+  } catch (error) {
+      // Handle any errors during validation or saving
+      console.error("Backend error:", error);
+      res.status(500).json({ message: error.message || "An error occurred" });
+  }
+};
+
 
 
 module.exports = {hasFilledInfo, fillUserInfo}

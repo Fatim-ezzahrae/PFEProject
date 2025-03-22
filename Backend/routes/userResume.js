@@ -6,6 +6,6 @@ const {
 
 const router = express.Router();
 
-router.post("/generate-resume", generatePDF);
+router.get("/generate-resume/:templateId/:userId", generatePDF);
 
 module.exports = router;
