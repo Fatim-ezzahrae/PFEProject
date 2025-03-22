@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import ButtonBack from '../../component/ButtonBack';
 import axios from 'axios';
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 function JobOfferForm() {
+  const { user } = useAuthContext();
   const [step, setStep] = useState(1);
+  const [errorMessage, setErrorMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     jobTitle: '',
@@ -28,10 +31,14 @@ function JobOfferForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/job-offers', formData);
+      
+      const response = await axios.post('http://localhost:4000/api/jobs', { publisherId: user._id, ...formData });
       console.log('Job Offer Submitted:', response.data);
+      setErrorMessage("");
       setSubmitted(true);
+
     } catch (error) {
+      setErrorMessage(error.response.data.message);
       console.error('Error submitting job offer:', error);
     }
   };
@@ -84,6 +91,7 @@ function JobOfferForm() {
               </div>
               
               <button  className="nextJob" type="submit">Submit Job Offer</button>
+              {errorMessage && <p className="error-message">{errorMessage}</p>}
              <ButtonBack onClick={prevStep}/>
             </>
           )}

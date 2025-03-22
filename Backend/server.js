@@ -11,6 +11,7 @@ const adminRoutes = require('./routes/admin');
 const userRoutes = require('./routes/user');
 const userResumeRoutes = require('./routes/userResume');
 const userInfoRoutes = require('./routes/userInfo');
+const jobOfferRoutes = require('./routes/jobOffer');
 
 
 require('./config/db');
@@ -44,6 +45,9 @@ app.use('/api/resume', userResumeRoutes);
 
 //set up a route for user info
 app.use('/api/info', userInfoRoutes);
+
+//set up a route for job offer
+app.use('/api/jobs', jobOfferRoutes);
 
 app.listen(process.env.PORT, () => { // start the server and listen on the specified port
   console.log(`Server started on port`, process.env.PORT); // log a message to the console indicating that the server has started

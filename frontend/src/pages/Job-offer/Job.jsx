@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AddButton from "../../component/Addbutton.jsx";
 import JobOfferForm from "./JobOfferForm.jsx"; 
 import "../../styles/Job.css";
+import axios from 'axios';
 
 function Job() {
   const [showForm, setShowForm] = useState(false);
@@ -11,12 +12,8 @@ function Job() {
   useEffect(() => {
     const fetchJobOffers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/job-offers");
-        if (!response.ok) {
-          throw new Error("Failed to fetch job offers");
-        }
-        const data = await response.json();
-        setJobOffers(data);
+        const response = await axios.get("http://localhost:4000/api/jobs");
+        setJobOffers(response.data);
       } catch (error) {
         console.error("Error fetching job offers:", error);
       }
