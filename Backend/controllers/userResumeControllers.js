@@ -5,7 +5,6 @@ const EducationModel = require('../models/education');
 const CertificationModel = require('../models/certifications');
 const resumeModel = require('../models/resume');
 
-
 const latex = require('node-latex');
 const { Readable } = require('stream');
 

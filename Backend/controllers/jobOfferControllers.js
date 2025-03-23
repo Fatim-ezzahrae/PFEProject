@@ -16,6 +16,25 @@ const getjobOffers = async (req, res) => {
     }
 }
 
+// get user job offers
+const getUserJobOffers = async (req, res) => {
+    try{
+
+        const jobOffers = await jobOfferModel.find({publisherId: req.params.id});
+
+        if(!jobOffers || jobOffers.length === 0){
+            return res.status(404).json({message: 'User has no job offers found'});
+        }
+
+        res.status(200).json(jobOffers);
+
+    } catch(error){
+
+        res.status(500).json({message: error.message});
+
+    }
+}
+
 
 // create job offer
 const createjobOffer = async (req, res) => {
@@ -47,4 +66,4 @@ const createjobOffer = async (req, res) => {
 
 }
 
-module.exports = {createjobOffer, getjobOffers};
+module.exports = {createjobOffer, getjobOffers, getUserJobOffers};
