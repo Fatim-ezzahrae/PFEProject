@@ -84,16 +84,6 @@
   color: var(--text-color);
 }
 
-.jobOffer-descp {
-  font-size: 18px;
-  color: var(--secondary-dark);
-  margin-top: 15px;
-  padding: 20px;
-  background-color: var(--primary-medium);
-  border-radius: var(--border-radius);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  white-space: pre-wrap;
-}
 
 .no-job-offers {
   display: flex;
@@ -112,5 +102,48 @@
 .no-job-offers .material-symbols-outlined {
   font-size: 24px;
   color: var(--secondary-dark);
+}
+
+
+.job-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  margin-left:550px ;
+}
+
+.job-actions button {
+  background-color: transparent; 
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 5px;
+  transition: transform 0.2s;
+}
+
+.job-actions button:hover {
+  background-color: #e0e0e0; 
+  transform: scale(1.05); 
+}
+
+.job-actions button:focus {
+  outline: none;
+}
+
+.job-actions .material-symbols-outlined {
+  font-size: 26px;
+  vertical-align: middle;
+}
+
+.delete-jobOffer {
+  font-weight: bold;
+  color: #e57373; 
+}
+
+.update-jobOffer {
+  color: #3c723f;
 }
 

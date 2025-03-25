@@ -54,7 +54,7 @@ function Job() {
                 <p><span class="material-symbols-outlined">apartment</span><strong>Company:</strong> {job.companyName}</p>
                 <p><span class="material-symbols-outlined">location_on</span><strong>Location:</strong> {job.location}</p>
                 {expandedJob === job._id && (
-                  <p className="jobOffer-descp"><strong>Job Description:</strong> {job.description}</p>
+                  <p className="job-description"><strong>Job Description:</strong> {job.description}</p>
                 )}
                 <p><strong>Deadline:</strong> {job.applicationDeadline}</p>
                 <p><span class="material-symbols-outlined">contacts</span><strong>Contact:</strong> {job.contactInfo}</p>

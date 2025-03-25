@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 
-const CreatedJobOffers = ({ jobOffers }) => {
-  const [expandedJob, setExpandedJob] = useState(null); // State to track the expanded job
+const CreatedJobOffers = ({ jobOffers, setJobOffers }) => {
+  const [expandedJob, setExpandedJob] = useState(null);
 
   if (!jobOffers) {
     console.error("Job offers not found");
@@ -10,7 +10,23 @@ const CreatedJobOffers = ({ jobOffers }) => {
   }
 
   const toggleDescription = (id) => {
-    setExpandedJob(expandedJob === id ? null : id); // Toggle job description
+    setExpandedJob(expandedJob === id ? null : id);
+  };
+
+  const handleDelete = async (id, event) => {
+    event.stopPropagation(); 
+    try {
+      await axios.delete(`/api/jobOffers/${id}`);
+      setJobOffers((prevOffers) => prevOffers.filter((job) => job._id !== id));
+      console.log("Job offer deleted successfully");
+    } catch (error) {
+      console.error("Error deleting job offer:", error);
+    }
+  };
+
+  const handleUpdate = (id, event) => {
+    event.stopPropagation();
+    console.log(`Update job offer with ID: ${id}`);
   };
 
   return (
@@ -21,13 +37,35 @@ const CreatedJobOffers = ({ jobOffers }) => {
           jobOffers.map((job) => (
             <div key={job._id} className="job-post-profile" onClick={() => toggleDescription(job._id)}>
               <h3 className="job-title-profile">{job.jobTitle}</h3>
-              <p><span className="material-symbols-outlined">apartment</span><strong>Company:</strong> {job.companyName}</p>
-              <p><span className="material-symbols-outlined">location_on</span><strong>Location:</strong> {job.location}</p>
-               {expandedJob === job._id && (
-                <p className="job-description"><strong>Job Description:</strong> {job.description}</p>
+              <p>
+                <span className="material-symbols-outlined">apartment</span>
+                <strong>Company:</strong> {job.companyName}
+              </p>
+              <p>
+                <span className="material-symbols-outlined">location_on</span>
+                <strong>Location:</strong> {job.location}
+              </p>
+              {expandedJob === job._id && (
+                <p className="job-description">
+                  <strong>Job Description:</strong> {job.description}
+                </p>
               )}
-              <p><strong>Deadline:</strong> {job.applicationDeadline}</p>
-              <p><strong>Contact:</strong> {job.contactInfo}</p>
+              <p>
+                <strong>Deadline:</strong> {job.applicationDeadline}
+              </p>
+              <p>
+                <strong>Contact:</strong> {job.contactInfo}
+              </p>
+
+              {/* Delete and Update buttons */}
+              <div className="job-actions">
+                <button className="delete-jobOffer" onClick={(event) => handleDelete(job._id, event)}>
+                  <span className="material-symbols-outlined">delete</span>
+                </button>
+                <button className="update-jobOffer" onClick={(event) => handleUpdate(job._id, event)}>
+                  <span className="material-symbols-outlined">edit</span>
+                </button>
+              </div>
             </div>
           ))
         ) : (
