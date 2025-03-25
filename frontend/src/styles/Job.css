@@ -19,7 +19,7 @@
   }
   
   .addbutton{
-    position: absolute; 
+    position: fixed; 
     right: 70px; 
     margin-top: 42%;
   }
@@ -139,15 +139,31 @@
   font-size: 17px;
   }
 
-  .job-offers-container-h2 {
-    text-align: center;
-    margin-top: -350px;
-    color: var(--secondary-dark);
-    margin-bottom: 20px;
-    font-family: "Iansui", cursive;
-    font-size: 40px;
-    font-weight: 600;
+  .job-offers-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); 
+    gap: 20px;
+    padding: 20px;
+    width: 80%;
+    margin: 140px auto 0;
+    word-wrap: break-word;
   }
+  
+
+  .job-offers-container-h2 {
+    position: fixed; 
+    top: 100px; 
+    left: 50%; 
+    transform: translateX(-50%);
+    color: var(--secondary-dark);
+    font-family: "Iansui", cursive;
+    font-size: 50px;
+    font-weight: 600;
+    padding: 10px 20px; 
+    z-index: 1000; 
+    width: max-content; 
+  }
+  
   
   .no-job-offers {
     display: flex; 
@@ -171,4 +187,37 @@
     font-size: 24px;
     color: var(--secondary-dark); 
   }
+
+  .job-post {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary-light);
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%; 
+  }
   
+  .job-post:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .job-post h3 {
+    font-family: "Roboto Slab", serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    font-size: 28px;
+    color: #396245;
+    margin-bottom: 10px;
+    text-align: center;  /* Centers the text inside the h3 element */
+    width: 100%; 
+  }
+  
+  .job-post p {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }

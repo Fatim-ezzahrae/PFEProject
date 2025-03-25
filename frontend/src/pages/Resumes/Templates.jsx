@@ -16,11 +16,11 @@ function Templates({ selectedIndex, setSelectedIndex, templates, handlePrev, han
             <div key={template._id} className="template-card">
                 <h3 className="template-title">{template.name}</h3>
                 <button className="select-button" onClick={() => handleUseTemplate(template._id)}>Use this template</button>
-                <iframe
+                <img
                     src={template.pdfUrl}
                     className="pdf-iframe"
-                    title={template.name}
-                ></iframe>
+                    alt={template.name}
+                ></img>
             </div>
         ))}
 

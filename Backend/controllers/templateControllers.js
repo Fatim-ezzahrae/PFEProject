@@ -65,8 +65,8 @@ const getTemplate = async (req, res) => {
             return res.status(404).json({ message: 'Template not found' });
         }
 
-        res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", `inline; filename=${template.name}.pdf`);
+        res.setHeader("Content-Type", "image/png");
+        res.setHeader("Content-Disposition", `inline; filename=${template.name}.png`);
         res.send(template.pdfFile);
 
     } catch (error) {

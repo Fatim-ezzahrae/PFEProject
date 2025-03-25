@@ -1,0 +1,116 @@
+:root {
+  --primary-light: #ffffff;
+  --primary-medium: #C8D5B9;
+  --primary-dark: #8FC0A9;
+  --secondary-light: #68B0AB;
+  --secondary-dark: #4A7C59;
+  --text-color: #000000;
+  --border-radius: 10px;
+  --transition: all 0.3s ease-in-out;
+}
+
+.job-page-profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 40px 20px;
+  background-color: var(--primary-light);
+}
+
+.job-offers-profile-h2 {
+  position: fixed; 
+  top: 100px; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  color: var(--secondary-dark);
+  font-family: "Iansui", cursive;
+  font-size: 50px;
+  font-weight: 600;
+  padding: 10px 20px; 
+  z-index: 1000; 
+  width: max-content; 
+}
+
+.job-offer-profile {
+   display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); 
+    gap: 20px;
+    padding: 20px;
+    width: 80%;
+    margin: 140px auto 0;
+    word-wrap: break-word;
+}
+
+
+
+.job-post-profile {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--primary-light);
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%; 
+}
+
+.job-post-profile:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.job-title-profile {
+  font-family: "Roboto Slab", serif;
+  font-size: 24px;
+  color: var(--secondary-dark);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.job-post-profile p {
+  font-size: 16px;
+  color: var(--text-color);
+  margin-bottom: 10px;
+}
+
+.job-post-profile p span {
+  color: var(--text-color);
+  margin-right: 5px;
+}
+
+.job-post-profile p strong {
+  color: var(--text-color);
+}
+
+.jobOffer-descp {
+  font-size: 18px;
+  color: var(--secondary-dark);
+  margin-top: 15px;
+  padding: 20px;
+  background-color: var(--primary-medium);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  white-space: pre-wrap;
+}
+
+.no-job-offers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  color: var(--secondary-dark);
+  background-color: #e9ffdb;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.no-job-offers .material-symbols-outlined {
+  font-size: 24px;
+  color: var(--secondary-dark);
+}
+
