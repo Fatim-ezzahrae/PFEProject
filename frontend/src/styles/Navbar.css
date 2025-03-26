@@ -62,7 +62,8 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 7px 20px;
+    height: 60px;
+    padding: 0px 10px;
     text-decoration: none; 
     background: #FEFBF3;
     border-radius: 50px;

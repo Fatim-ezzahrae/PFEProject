@@ -221,3 +221,74 @@
     font-size: 16px;
     margin-bottom: 5px;
   }
+
+
+  /* General form container */
+.update-job-offer-form {
+  max-width: 500px;
+  margin-top: 100px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Heading styling */
+.update-job-offer-form h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Form label styling */
+.update-job-offer-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+/* Form input fields */
+.update-job-offer-form input,
+.update-job-offer-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* Textarea styling */
+.update-job-offer-form textarea {
+  resize: vertical;
+  height: 150px;
+}
+
+/* Buttons styling */
+.update-job-offer-form button {
+  width: 48%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.update-job-offer-form button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.update-job-offer-form button[type="button"] {
+  background-color: #f44336;
+  color: white;
+  margin-left: 4%;
+}
+
+/* Button hover effect */
+.update-job-offer-form button:hover {
+  opacity: 0.9;
+}
