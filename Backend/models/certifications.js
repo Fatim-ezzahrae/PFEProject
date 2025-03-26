@@ -21,8 +21,8 @@ certificationSchema.statics.prepareCertifications = async function (userId, cert
     const certificationEntries = certifications.map(cert => {
         const { title, description } = cert;
 
-        // Validate required fields
-        if (!title) {
+        // either both or neither title and description should be provided
+        if (!!title !== !!description) {
             throw new Error('Missing required fields in certification');
         }
 

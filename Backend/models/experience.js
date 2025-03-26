@@ -23,23 +23,26 @@ experienceSchema.statics.prepareExperience = async function (userId, experienceI
     }
     
     // Validate the data and prepare the experience array
-    const experiences = experienceInfo.map(exp => {
+    const experiences = experienceInfo.map((exp, index)  => {
         
         const { company, jobTitle, startDateEmp, endDateEmp, city, description = []} = exp;
 
-        // Validate required fields (You can add more checks here if necessary)
-        if (!company || !jobTitle || !city || !startDateEmp || !endDateEmp) {
-            throw new Error('Missing required fields in experience');
-        }
+         // Check if at least one field is filled
+         const hasAnyField = company || jobTitle || city || startDateEmp || endDateEmp || description.length > 0;
+         const hasAllFields = company && jobTitle && city && startDateEmp && endDateEmp;
+ 
+         if (hasAnyField && !hasAllFields) {
+             throw new Error(`Missing required fields in experience entry #${index + 1}`);
+         }
 
         // Return the experience object
         return {
-            company,
-            jobTitle,
-            description,
-            city,
-            startDateEmp,
-            endDateEmp
+            company: company || null,
+            jobTitle: jobTitle || null,
+            startDateEmp: startDateEmp || null,
+            endDateEmp: endDateEmp || null,
+            city: city || null,
+            description: Array.isArray(description) ? description : [],
         };
     });
 

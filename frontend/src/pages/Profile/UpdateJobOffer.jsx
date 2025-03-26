@@ -10,7 +10,7 @@ const UpdateJobOffer = ({ jobOfferId, setJobOffers, updatedJob, setUpdatedJob, c
     if (jobOfferId) {
       setLoading(true); // Start loading when fetching data
       axios
-        .get(`/api/jobOffers/${jobOfferId}`)
+        .get(`/api/jobs/${jobOfferId}`)
         .then((response) => {
           setUpdatedJob(response.data); // Populate the form with existing data
           setLoading(false); // Stop loading after data is set
@@ -26,7 +26,7 @@ const UpdateJobOffer = ({ jobOfferId, setJobOffers, updatedJob, setUpdatedJob, c
     e.preventDefault();
 
     try {
-      const response = await axios.put(`/api/jobOffers/${jobOfferId}`, updatedJob);
+      const response = await axios.put(`http://localhost:4000/api/jobs/${jobOfferId}`, updatedJob);
       setJobOffers((prevOffers) =>
         prevOffers.map((job) =>
           job._id === jobOfferId ? { ...job, ...response.data } : job

@@ -1,86 +1,44 @@
+/* CVPage.css */
 .cv-container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-  }
-  
-  .cv-header {
-    text-align: center;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #007bff;
-  }
-  
-  .cv-header h1 {
-    font-size: 28px;
-    color: #333;
-  }
-  
-  .cv-section {
-    margin-top: 20px;
-  }
-  
-  .cv-section h2 {
-    font-size: 22px;
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .cv-item {
-    margin-bottom: 15px;
-  }
-  
-  .cv-item h3 {
-    font-size: 18px;
-    color: #333;
-  }
-  
-  .cv-item p {
-    font-size: 16px;
-    color: #666;
-    margin: 5px 0;
-  }
-  
-  .cv-skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .cv-skill {
-    background: #007bff;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-size: 14px;
-  }
-  
-  .cv-footer {
-    text-align: center;
-    margin-top: 30px;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .pdf-viewer-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  background-color: #f4f4f4; /* Light background */
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
 }
 
-iframe {
-    width: 60%;
-    height: 500px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    border: none;
+.pdf-viewer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full height */
+  width: 100%;
+  overflow: hidden;
+}
+
+.pdf-iframe {
+  width: 50vw; /* 80% of the viewport width */
+  height: 90vh; /* 90% of the viewport height */
+  border: none;
+  background-color: white; /* Ensures no black background */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+/* Force the iframe content to scale properly */
+.pdf-iframe {
+  transform: scale(1.1); /* Adjust zoom level */
+  transform-origin: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pdf-iframe {
+    width: 95vw;
+    height: 85vh;
+    transform: scale(1);
+  }
 }

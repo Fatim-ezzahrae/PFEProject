@@ -3,7 +3,9 @@ const express = require('express');
 const {
     createjobOffer,
     getjobOffers, 
-    getUserJobOffers
+    getUserJobOffers,
+    updatejobOffer, 
+    deletejobOffer
 } = require('../controllers/jobOfferControllers');
 
 //create router
@@ -17,5 +19,11 @@ router.get('/:id', getUserJobOffers);
 
 //create job offer
 router.post('/', createjobOffer);
+
+// update job offer
+router.put('/:id', updatejobOffer);
+
+// delete job offer
+router.delete('/:id', deletejobOffer);
 
 module.exports = router;

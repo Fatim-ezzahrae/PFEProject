@@ -4,7 +4,8 @@ const multer = require('multer');
 const {
     uploadTemplate,
     getTemplates,
-    getTemplate
+    getTemplate,
+    getTemplateImage
 } = require('../controllers/templateControllers');
 
 const requireAuth = require('../middleware/requireAuth') // require auth on route below it
@@ -20,7 +21,7 @@ const upload = multer({ storage: storage });
 router.get('/', getTemplates);
 
 // get single template
-router.get('/:id', getTemplate);
+router.get('/:id', getTemplateImage);
 
 // require auth for all workout routes
 //router.use(requireAuth)

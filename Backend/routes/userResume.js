@@ -1,11 +1,11 @@
 const express = require('express');
 
 const { 
-    generatePDF 
+    generatePreviewPDF 
 } = require('../controllers/userResumeControllers');
 
 const router = express.Router();
 
-router.get("/generate-resume/:templateId/:userId", generatePDF);
+router.get("/generate-resume/:templateId/:userId", generatePreviewPDF);
 
 module.exports = router;

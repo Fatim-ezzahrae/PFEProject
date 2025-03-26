@@ -1,8 +1,7 @@
 import React from "react";
-import axios from 'axios';
+import "../../styles/templates.css";
 
 function Templates({ selectedIndex, setSelectedIndex, templates, handlePrev, handleNext, handleUseTemplate }) {
-
   return (
     <>
       <div>
@@ -10,21 +9,36 @@ function Templates({ selectedIndex, setSelectedIndex, templates, handlePrev, han
       </div>
       
       <div className="template-wrapper">
-        <button className="template-button" onClick={handlePrev}><span class="material-symbols-outlined">arrow_back_ios_new</span></button>
-
-        {templates.map((template) => (
-            <div key={template._id} className="template-card">
-                <h3 className="template-title">{template.name}</h3>
-                <button className="select-button" onClick={() => handleUseTemplate(template._id)}>Use this template</button>
-                <img
-                    src={template.pdfUrl}
-                    className="pdf-iframe"
-                    alt={template.name}
-                ></img>
+        <button className="template-button" onClick={handlePrev}>
+          <span className="material-symbols-outlined">arrow_back_ios_new</span>
+        </button>
+                
+        {templates.length > 0 && (
+          <div key={templates[selectedIndex]._id} className="template-card">
+            <h3 className="template-title">{templates[selectedIndex].name}</h3>
+            <button 
+              className="select-button" 
+              onClick={() => handleUseTemplate(templates[selectedIndex]._id)}
+            >
+              Use this template
+            </button>
+            
+            {/* Replace iframe with img tag for displaying template preview */}
+            <div className="template-preview-container">
+              <img
+                src={templates[selectedIndex].imageUrl}
+                alt={templates[selectedIndex].name}
+                className="template-image"
+                onError={(e) => {
+                  e.target.onerror = null; 
+                }}
+              />
             </div>
-        ))}
-
-        <button className="template-button" onClick={handleNext}><span class="material-symbols-outlined">arrow_forward_ios</span></button>
+          </div>
+        )}
+        <button className="template-button" onClick={handleNext}>
+          <span className="material-symbols-outlined">arrow_forward_ios</span>
+        </button>
       </div>
     </>
   );

@@ -12,10 +12,10 @@ const templateSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    pdfFile: { 
-        type: Buffer, 
+    imageFilePath: { 
+        type: String, 
         required: true 
-    } // Store PDF as binary data
+    } // Store image url
 }, { timestamps: true });
 
 

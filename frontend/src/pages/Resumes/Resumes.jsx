@@ -34,11 +34,6 @@ function Resumes() {
   const { user } = useAuthContext();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (generatedResumeURL) {
-      console.log("Updated generatedResumeURL:", generatedResumeURL);
-    }
-  }, [generatedResumeURL]);  // This will run every time generatedResumeURL changes
 
   const handlePrev = () => {
     setSelectedIndex((prevIndex) => (prevIndex === 0 ? templates.length - 1 : prevIndex - 1));
@@ -61,7 +56,7 @@ function Resumes() {
 
   const handleUseTemplate = async (templateId) => {
     
-    const selectedTemplate = templates[selectedIndex]; // Ensure we use the selectedIndex
+    //const selectedTemplate = templates[selectedIndex]; // Ensure we use the selectedIndex
     setSelectedTemplateId(templateId);
         
     // Sending the selected template ID to the backend using Axios
@@ -75,6 +70,9 @@ function Resumes() {
 
       const userId = user._id;
 
+      // Wait until state is updated before proceeding
+      await new Promise(resolve => setTimeout(resolve, 0));
+
       // Step 1: Check if the user has already entered their data
       const checkResponse = await axios.get(`http://localhost:4000/api/info/${userId}`);
 
@@ -82,7 +80,10 @@ function Resumes() {
       
         // User has already entered data → Go directly to resume generation
         const response = await axios.get(`http://localhost:4000/api/resume/generate-resume/${templateId}/${userId}`, {
-          responseType: 'arraybuffer', // Get the PDF as binary data
+          responseType: 'blob', // Important for PDF
+          headers: {
+            'Cache-Control': 'no-cache',
+          }
         });
 
         if (response.status === 200) {
@@ -150,7 +151,7 @@ function Resumes() {
          templateId={selectedTemplateId}
          generatedResumeURL={generatedResumeURL}
          setGeneratedResumeURL={setGeneratedResumeURL}
-          
+         handleUseTemplate={handleUseTemplate}
        />
        
         )}

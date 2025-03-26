@@ -27,6 +27,10 @@ const fillUserInfo = async (req, res) => {
   const { userId, userInfo, employmentHistory, educationHistory, skills, languages, certifications } = req.body;
 
   try {
+
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
       // Validate and prepare all the data first (no saving yet)
       const personalData = await personalModel.preparePersonal(userId, userInfo, skills, languages);
       const certifData = await certifModel.prepareCertifications(userId, certifications);

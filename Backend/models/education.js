@@ -24,22 +24,24 @@ educationSchema.statics.prepareEducation = async function (userId, educationInfo
     }
 
     // Validate and prepare the education array
-    const educationEntries = educationInfo.map(edu => {
+    const educationEntries = educationInfo.map((edu, index) => {
         const { institute, degree, startDateEdu, endDateEdu, city, country } = edu;
 
-        // Validate required fields (You can add more checks here if necessary)
-        if (!institute || !degree || !city || !startDateEdu || !endDateEdu || !country) {
-            throw new Error('Missing required fields in education');
+        const hasAnyField = !!institute || !!degree || !!city || !!startDateEdu || !!endDateEdu || !!country;
+        const hasAllFields = institute && degree && city && startDateEdu && endDateEdu && country;
+
+        if (hasAnyField && !hasAllFields) {
+            throw new Error(`Missing required fields in education entry #${index + 1}`);
         }
 
         // Return the education object
         return {
-            institute,
-            degree,
-            startDateEdu,
-            endDateEdu,
-            city,
-            country
+            institute: institute || null,
+            degree: degree || null,
+            startDateEdu: startDateEdu || null,
+            endDateEdu: endDateEdu || null,
+            city: city || null,
+            country: country || null,
         };
     });
 

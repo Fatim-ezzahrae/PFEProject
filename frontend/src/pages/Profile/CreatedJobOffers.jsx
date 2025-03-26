@@ -10,7 +10,7 @@ const CreatedJobOffers = ({ jobOffers, setJobOffers }) => {
     companyName: "",
     location: "",
     description: "",
-    applicationDeadline: "",
+    applicationDeadline: new Date(),
     contactInfo: "",
   });
 
@@ -27,7 +27,7 @@ const CreatedJobOffers = ({ jobOffers, setJobOffers }) => {
   const handleDelete = async (id, event) => {
     event.stopPropagation();
     try {
-      await axios.delete(`/api/jobOffers/${id}`);
+      await axios.delete(`http://localhost:4000/api/jobs/${id}`);
       setJobOffers((prevOffers) => prevOffers.filter((job) => job._id !== id));
       console.log("Job offer deleted successfully");
     } catch (error) {
@@ -35,7 +35,7 @@ const CreatedJobOffers = ({ jobOffers, setJobOffers }) => {
     }
   };
 
-  const handleUpdate = (id, event) => {
+  const handleUpdate = async (id, event) => {
     event.stopPropagation();
     // Find the job offer to edit and populate the form fields
     const jobToEdit = jobOffers.find((job) => job._id === id);

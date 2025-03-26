@@ -8,71 +8,184 @@ const resumeModel = require('../models/resume');
 const latex = require('node-latex');
 const { Readable } = require('stream');
 
-const generatePDF = async (req, res) => {
+const generatePreviewPDF = async (req, res) => {
     try {
         const { templateId, userId } = req.params;
 
-        //Fetch the LaTeX template
-        const template = await TemplateModel.findById(templateId);
-        if (!template) {
-            return res.status(404).json({ message: "Template not found" });
-        }
+        // Parallel fetching of all required data
+        const [template, personalData, experienceData, educationData, certificationData] = await Promise.all([
+            TemplateModel.findById(templateId),
+            PersonalModel.findOne({ userId }),
+            ExperienceModel.findOne({ userId }),
+            EducationModel.findOne({ userId }),
+            CertificationModel.findOne({ userId })
+        ]);
 
-        // Fetch user personal details
-        const personalData = await PersonalModel.findOne({ userId });
-        if (!personalData) {
-            return res.status(404).json({ message: "Personal information not found" });
-        }
+        // Data validation
+        if (!template) throw new Error("Template not found");
+        if (!personalData) throw new Error("Personal information not found");
+        
+        // Construct preview data (with fallbacks for optional sections)
+        const previewData = {
+            firstName: personalData.firstName,
+            lastName: personalData.lastName,
+            phone: personalData.phone || 'Not specified',
+            email: personalData.email,
+            address: personalData.address || 'Not specified',
+            skills: personalData.skills || [],
+            languages: personalData.languages || [],
+            experience: experienceData?.experience || [],
+            education: educationData?.education || [],
+            certifications: certificationData?.certifications || []
+        };
 
-        // Fetch user's experience details
-        const experienceData = await ExperienceModel.findOne({ userId });
-        if (!experienceData) {
-            return res.status(404).json({ message: "Experience not found" });
-        }
+        // Generate LaTeX content for preview
+        const latexContent = await resumeModel.fillResume(template.latexCode, previewData);
 
-        // Fetch user's education details
-        const educationData = await EducationModel.findOne({ userId });
-        if (!educationData) {
-            return res.status(404).json({ message: "Education not found" });
-        }
+        // Configure LaTeX compiler for preview (fast but less thorough)
+        const pdfStream = latex(latexContent, {
+            passes: 1,  // Faster preview with single pass
+            draft: true, // Faster compilation
+        });
 
-        // Fetch user's certifications
-        const certificationData = await CertificationModel.findOne({ userId });
-        if (!certificationData) {
-            return res.status(404).json({ message: "Certifications not found" });
-        }
-
-        // Replace placeholders in the LaTeX code
-        const latexCode = template.latexCode;
-        const resume = await resumeModel.fillResume(latexCode, {
-            ...personalData.toObject(),
-            ...experienceData.toObject(),
-            ...educationData.toObject(),
-            ...certificationData.toObject()
-        });        
-
-        // Convert LaTeX to a readable stream for PDF generation
-        const input = Readable.from(resume);
-        const pdfStream = latex(input);
-
-        // Set headers to serve as a PDF response
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `inline; filename="preview.pdf"`);
-
-        // Pipe the generated PDF stream to the response
-        pdfStream.pipe(res);
-
-        // Handle any errors during PDF generation
+        // Stream handling with proper error management
+        let errored = false;
+        
         pdfStream.on('error', (err) => {
-            console.error("PDF Generation Error:", err);
-            res.status(500).json({ message: "Error generating PDF preview" });
+            errored = true;
+            console.error('Preview Generation Error:', err);
+            if (!res.headersSent) {
+                res.status(500).json({ 
+                    success: false,
+                    message: 'Preview generation failed',
+                    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+                });
+            }
+        });
+
+        pdfStream.on('end', () => {
+            if (!errored && !res.headersSent) {
+                console.log('Preview generated successfully');
+            }
+        });
+
+        // Set PDF preview headers
+        if (!res.headersSent) {
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'inline; filename="preview.pdf"');
+            pdfStream.pipe(res);
+        }
+
+    } catch (error) {
+        console.error('Preview Controller Error:', error);
+        if (!res.headersSent) {
+            res.status(500).json({ 
+                success: false,
+                message: 'Failed to generate preview',
+                error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            });
+        }
+    }
+};
+
+const saveResume = async (req, res) => {
+    try {
+        const { templateId, userId } = req.body;
+
+        // Validate input
+        if (!templateId || !userId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing templateId or userId'
+            });
+        }
+
+        // Fetch all required data (same as preview but with full quality)
+        const [template, personalData, experienceData, educationData, certificationData] = await Promise.all([
+            TemplateModel.findById(templateId),
+            PersonalModel.findOne({ userId }),
+            ExperienceModel.findOne({ userId }),
+            EducationModel.findOne({ userId }),
+            CertificationModel.findOne({ userId })
+        ]);
+
+        // Validate data exists
+        if (!template) {
+            return res.status(404).json({ 
+                success: false,
+                message: "Template not found" 
+            });
+        }
+        if (!personalData) {
+            return res.status(404).json({ 
+                success: false,
+                message: "Personal information not found" 
+            });
+        }
+
+        // Prepare final data (without placeholder fallbacks)
+        const finalData = {
+            firstName: personalData.firstName,
+            lastName: personalData.lastName,
+            phone: personalData.phone,
+            email: personalData.email,
+            address: personalData.address,
+            skills: personalData.skills || [],
+            languages: personalData.languages || [],
+            experience: experienceData?.experience || [],
+            education: educationData?.education || [],
+            certifications: certificationData?.certifications || []
+        };
+
+        // Generate final LaTeX content
+        const latexContent = await resumeModel.fillResume(template.latexCode, finalData);
+
+        // Generate high-quality PDF (2 passes for proper references)
+        const pdfStream = latex(latexContent, {
+            passes: 2
+        });
+
+        // Collect PDF chunks
+        const chunks = [];
+        pdfStream.on('data', (chunk) => chunks.push(chunk));
+        
+        // Wait for PDF generation to complete
+        await new Promise((resolve, reject) => {
+            pdfStream.on('end', resolve);
+            pdfStream.on('error', reject);
+        });
+
+        // Combine chunks into buffer
+        const pdfBuffer = Buffer.concat(chunks);
+
+        // Create or update resume in database
+        const savedResume = await ResumeModel.create(
+            {
+                userId,
+                templateId,
+                latexCode: latexContent,
+                pdfData: pdfBuffer,
+                lastUpdated: new Date()
+            }
+        );
+
+        // Return success response
+        res.json({
+            success: true,
+            message: 'Resume saved successfully',
+            resumeId: savedResume._id,
+            updatedAt: savedResume.lastUpdated
         });
 
     } catch (error) {
-
-        console.error("Error:", error);
-        res.status(500).json({ message: error.message });
+        console.error('Save Resume Error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to save resume',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
-}
+};
 
-module.exports = { generatePDF };
+
+module.exports = { generatePreviewPDF };

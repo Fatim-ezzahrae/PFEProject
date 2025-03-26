@@ -180,7 +180,10 @@ const Forms = ({
 
         // step 2: generate resume from template and user information
         const response = await axios.get(`http://localhost:4000/api/resume/generate-resume/${selectedTemplateId}/${user._id}`, {
-          responseType: 'arraybuffer', // Get the PDF as binary data
+          responseType: 'blob', // Important for PDF
+          headers: {
+            'Cache-Control': 'no-cache',
+          }
         });
 
         if (response.status === 200) {

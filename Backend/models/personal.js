@@ -7,10 +7,10 @@ const validator = require('validator');
 const personalSchema = new mongoose.Schema({
     
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    firstName: String,
-    lastName: String,
-    email: String,
-    phone: String,
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    email: { type: String, required: true },
+    phone: { type: String, required: true },
     address: { type: String, default: '' },
     skills: { 
       type: [ { 
@@ -33,6 +33,10 @@ const personalSchema = new mongoose.Schema({
 
 personalSchema.statics.preparePersonal = async function (userId, userInfo, skills, languages) {
   
+  if (!userInfo || typeof userInfo !== 'object') {
+    throw new Error('User information is required');
+  }
+
   if (!validator.isEmail(userInfo.email)) {
     throw Error('Email is not valid');
   }
@@ -47,10 +51,30 @@ personalSchema.statics.preparePersonal = async function (userId, userInfo, skill
     throw new Error('Skills should be an array');
   }
 
-  // validate languages
+  const validatedSkills = skills.map((skill, index) => {
+    if (!!skill.category !== !!skill.details) {
+      throw new Error(`Missing required fields in skill entry #${index + 1}`);
+    }
+    return {
+      category: skill.category,
+      details: skill.details,
+    };
+  });
+
+  // Validate languages array
   if (!Array.isArray(languages)) {
     throw new Error('Languages should be an array');
   }
+
+  const validatedLanguages = languages.map((lang, index) => {
+    if (!!lang.language !== !!lang.level) {
+      throw new Error(`Missing required fields in language entry #${index + 1}`);
+    }
+    return {
+      language: lang.language,
+      level: lang.level,
+    };
+  });
 
  // Process the personal info (but don't save yet)
  const personalData = {
@@ -59,9 +83,9 @@ personalSchema.statics.preparePersonal = async function (userId, userInfo, skill
     lastName: userInfo.lastName,
     email: userInfo.email,
     phone: userInfo.phone,
-    address: userInfo.address,
-    skills,
-    languages,
+    address: userInfo.address || '',
+    skills: validatedSkills,
+    languages: validatedLanguages,
   };
   
   // Return the saved document or success message

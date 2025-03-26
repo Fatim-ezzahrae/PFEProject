@@ -12,10 +12,10 @@ const CVPage = ({ userInfo, employmentHistory, languages, educationHistory, gene
   return (
     <div className="pdf-viewer-container">
       {generatedResumeURL && (
-        <iframe
-          src={generatedResumeURL}
-          className="pdf-iframe"
+        <iframe 
+          src={generatedResumeURL} 
           title="Resume Preview"
+           className="pdf-iframe"
         />
       )}
     </div>

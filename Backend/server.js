@@ -4,6 +4,7 @@
 require('dotenv').config();
 
 const express = require('express'); // import the express module
+const path = require('path');
 const bodyParser = require('body-parser');
 
 const templateRoutes = require('./routes/template');
@@ -31,6 +32,16 @@ app.use((req, res, next) => {
   next()
 })
 
+app.get('/uploads/images/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', 'images', req.params.filename);
+  res.sendFile(filePath, {
+    headers: {
+      'Content-Type': 'image/png',
+      'Cache-Control': 'public, max-age=31536000' // Cache for 1 year
+    }
+  });
+});
+
 // Set up a route for handling requests to the resumes API
 app.use('/api/templates', templateRoutes);
 
@@ -48,6 +59,8 @@ app.use('/api/info', userInfoRoutes);
 
 //set up a route for job offer
 app.use('/api/jobs', jobOfferRoutes);
+
+
 
 app.listen(process.env.PORT, () => { // start the server and listen on the specified port
   console.log(`Server started on port`, process.env.PORT); // log a message to the console indicating that the server has started

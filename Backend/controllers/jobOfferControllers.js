@@ -66,4 +66,56 @@ const createjobOffer = async (req, res) => {
 
 }
 
-module.exports = {createjobOffer, getjobOffers, getUserJobOffers};
+// update job offer
+const updatejobOffer = async (req, res) => {
+    const { id } = req.params;
+    const { jobTitle, companyName, location, description, applicationDeadline, contactInfo } = req.body;
+
+    if (!id) {
+        return res.status(400).json({ message: 'Job Offer ID is required' });
+    }
+
+    try {
+        const updatedJobOffer = await jobOfferModel.findByIdAndUpdate(id, {
+            jobTitle,
+            companyName,
+            location,
+            description,
+            applicationDeadline,
+            contactInfo
+        }, { new: true });
+
+        if (!updatedJobOffer) {
+            return res.status(404).json({ message: 'Job Offer not found' });
+        }
+
+        res.status(200).json(updatedJobOffer);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+
+}
+
+// delete job offer
+const deletejobOffer = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ message: 'Job Offer ID is required' });
+    }
+
+    try {
+        const deletedJobOffer = await jobOfferModel.findByIdAndDelete(id);
+
+        if (!deletedJobOffer) {
+            return res.status(404).json({ message: 'Job Offer not found' });
+        }
+
+        res.status(200).json({ message: 'Job Offer deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+module.exports = {createjobOffer, getjobOffers, getUserJobOffers, updatejobOffer, deletejobOffer};
