@@ -3,6 +3,7 @@ import AddButton from "../../component/Addbutton.jsx";
 import JobOfferForm from "./JobOfferForm.jsx"; 
 import "../../styles/Job.css";
 import axios from 'axios';
+import { format } from "date-fns";
 
 function Job() {
   const [showForm, setShowForm] = useState(false);
@@ -56,7 +57,7 @@ function Job() {
                 {expandedJob === job._id && (
                   <p className="job-description"><strong>Job Description:</strong> {job.description}</p>
                 )}
-                <p><strong>Deadline:</strong> {job.applicationDeadline}</p>
+                <p><strong>Deadline:</strong> {format(new Date(job.applicationDeadline), "MMMM dd, yyyy")}</p>
                 <p><span class="material-symbols-outlined">contacts</span><strong>Contact:</strong> {job.contactInfo}</p>
               </div>
               ))

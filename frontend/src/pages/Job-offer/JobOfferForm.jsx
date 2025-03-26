@@ -3,6 +3,7 @@ import ButtonBack from '../../component/ButtonBack';
 import axios from 'axios';
 import { useAuthContext } from "../../hooks/useAuthContext";
 
+
 function JobOfferForm() {
   const { user } = useAuthContext();
   const [step, setStep] = useState(1);

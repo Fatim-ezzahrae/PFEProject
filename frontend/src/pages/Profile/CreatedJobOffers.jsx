@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import UpdateJobOffer from "./UpdateJobOffer";
+import { format } from "date-fns";
 
 const CreatedJobOffers = ({ jobOffers, setJobOffers }) => {
   const [expandedJob, setExpandedJob] = useState(null);
@@ -77,7 +78,8 @@ const CreatedJobOffers = ({ jobOffers, setJobOffers }) => {
                   </p>
                 )}
                 <p>
-                  <strong>Deadline:</strong> {job.applicationDeadline}
+                  <strong>Deadline:</strong>{" "}
+                  {format(new Date(job.applicationDeadline), "MMMM dd, yyyy")}
                 </p>
                 <p>
                   <strong>Contact:</strong> {job.contactInfo}
