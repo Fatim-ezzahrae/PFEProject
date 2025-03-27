@@ -1,22 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const EditProfile = () => {
-  const [userInfo, setUserInfo] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "123-456-7890",
-  });
+  const [userEmail, setUserEmail] = useState("");
 
-  const handleChange = (e) => {
-    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
-  };
 
-  const handleSave = () => {
-    console.log("Saved Data:", userInfo);
-  };
 
   return (
-    <div></div>
+    <div className="bg-gray-100 p-6 rounded-lg shadow-md flex items-center">
+      <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center">
+        <span className="text-gray-500 text-xl">👤</span>
+      </div>
+      <div className="ml-4">
+        <h2 className="text-lg font-bold">{userEmail }</h2>
+        <button className="mt-2 px-4 py-2 bg-blue-100 text-blue-600 rounded-lg text-sm shadow">
+          ✏️ Edit My Profile
+        </button>
+      </div>
+    </div>
   );
 };
 

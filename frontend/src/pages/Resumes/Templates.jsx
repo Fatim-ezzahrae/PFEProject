@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/templates.css";
+import "../../styles/Resumes.css";
 
 function Templates({ selectedIndex, setSelectedIndex, templates, handlePrev, handleNext, handleUseTemplate }) {
   return (
