@@ -3,6 +3,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import axios from 'axios';
 import ButtonBack from '../../component/ButtonBack.jsx';
 import { useAuthContext } from "../../hooks/useAuthContext";
+import formsImage from '../../assets/forms.jpg';
 
 const Forms = ({
   currentStep, setCurrentStep,
@@ -219,6 +220,7 @@ const Forms = ({
 
   return (
     <>
+    
       {/* User Information Form */}
       {!showEmploymentForm && !showEducationForm && !showLanguagesForm && !showCertificationForm && !showSkillForm && ( 
         <>
@@ -534,7 +536,8 @@ const Forms = ({
         <ButtonBack onClick={() => { setShowskillForm(false); setShowCertificationForm(true); }}/>
         </>
         )}
-         </>
+       
+      </>
    );
 }
 

@@ -21,10 +21,6 @@ const Sidebar  = ({ setActivePage }) => {
         <span className="material-symbols-outlined">work</span>
         <span className="label2">Created Job Offers</span>
       </button>
-      <button onClick={() => setActivePage("appliedJobOffers")} className="icon">
-        <span className="material-symbols-outlined">work_history</span>
-        <span className="label2">Applied Job Offers</span>
-      </button>
     </div>
   );
 };

@@ -28,7 +28,7 @@
   font-size: 50px;
   font-weight: 600;
   padding: 10px 20px; 
-  z-index: 1000; 
+  z-index: 999; 
   width: max-content; 
 }
 
@@ -43,6 +43,15 @@
 }
 
 
+.job-offer-profile .field{
+  color: #2e8b57;
+  font-weight: bold;
+  font-size: 20px;
+}
+.job-post-profile .material-symbols-outlined{
+  font-size: 27px;
+  margin-right: 10px;
+}
 
 .job-post-profile {
   display: flex;
@@ -70,7 +79,7 @@
 }
 
 .job-post-profile p {
-  font-size: 16px;
+  font-size:  18px;
   color: var(--text-color);
   margin-bottom: 10px;
 }
@@ -161,4 +170,103 @@
   padding: 10px 20px;
   z-index: 1000;
   width: max-content;
+}
+
+/* Centering the popup */
+.confirmation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4); 
+  backdrop-filter: blur(5px); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5000; 
+}
+
+
+/* Popup container */
+.confirmation-popup {
+  background: white;
+  padding: 30px;
+  font-size: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 2000; /* Ensures it stays above the overlay */
+}
+
+/* Buttons */
+.confirm-btn,
+.cancel-btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-top: 20px;
+  border: none;
+  cursor: pointer;
+  background: none;
+  transition: 0.2s ease-in-out;
+}
+.confirm-btn .material-symbols-outlined,
+.cancel-btn .material-symbols-outlined{
+font-size: 40px;
+}
+
+.confirm-btn .material-symbols-outlined {
+  color: var(--secondary-dark);
+}
+
+.confirm-btn .material-symbols-outlined:hover {
+  transform: scale(1.15);
+}
+
+.cancel-btn .material-symbols-outlined {
+  color: #de2e1b;
+}
+
+.cancel-btn .material-symbols-outlined:hover {
+  transform: scale(1.15);
+}
+
+
+/* Edit profile */
+.profile-header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-name {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.profile-email {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.edit-profile-button {
+  background-color: #4a6fa5;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-profile-button:hover {
+  background-color: #3a5a8a;
 }

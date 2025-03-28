@@ -10,19 +10,23 @@ function Job() {
   const [jobOffers, setJobOffers] = useState([]);
   const [expandedJob, setExpandedJob] = useState(null);
 
-  // Fetch job offers from the backend
-  useEffect(() => {
-    const fetchJobOffers = async () => {
-      try {
-        const response = await axios.get("http://localhost:4000/api/jobs");
-        setJobOffers(response.data);
-      } catch (error) {
-        console.error("Error fetching job offers:", error);
-      }
-    };
+  const fetchJobOffers = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/api/jobs");
+      setJobOffers(response.data);
+    } catch (error) {
+      console.error("Error fetching job offers:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchJobOffers();
   }, []);
+
+  const handleNewJobAdded = () => {
+    fetchJobOffers(); // Refresh the job listings
+    setShowForm(false); // Hide the form
+  };
 
   const handleButtonClick = () => {
     setShowForm(true);  
@@ -32,41 +36,40 @@ function Job() {
     setExpandedJob(expandedJob === id ? null : id);
   };
 
-
   return (
     <div className="job-page">
-      {!showForm && (
+      {!showForm ? (
         <>
           <div className="addbutton">
             <AddButton onClick={handleButtonClick} />
           </div>
 
-          {/* Job Offers List - Hidden when showForm is true */}
           <div className="job-offers-container">
             <h2 className="job-offers-container-h2">Recent Job Offers</h2>
             {jobOffers.length === 0 ? (
-               <p className="no-job-offers">
-               <span className="material-symbols-outlined">info</span> Info - No job offers available.
-             </p>
+              <p className="no-job-offers">
+                <span className="material-symbols-outlined">info</span> Info - No job offers available.
+              </p>
             ) : (
               jobOffers.map((job) => (
                 <div key={job._id} className="job-post" onClick={() => toggleDescription(job._id)}>
-                <h3>{job.jobTitle}</h3>
-                <p><span class="material-symbols-outlined">apartment</span><strong>Company:</strong> {job.companyName}</p>
-                <p><span class="material-symbols-outlined">location_on</span><strong>Location:</strong> {job.location}</p>
-                {expandedJob === job._id && (
-                  <p className="job-description"><strong>Job Description:</strong> {job.description}</p>
-                )}
-                <p><strong>Deadline:</strong> {format(new Date(job.applicationDeadline), "MMMM dd, yyyy")}</p>
-                <p><span class="material-symbols-outlined">contacts</span><strong>Contact:</strong> {job.contactInfo}</p>
-              </div>
+                  <h3>{job.jobTitle}</h3>
+                  <p><span className="material-symbols-outlined">apartment</span><strong className="field">Company:</strong> {job.companyName}</p>
+                  <p><span className="material-symbols-outlined">location_on</span><strong className="field">Location:</strong> {job.location}</p>
+                  {expandedJob === job._id && (
+                    <p className="job-description"><span class="material-symbols-outlined"> info </span><strong className="field">Job Description:</strong> {job.description}</p>
+                  )}
+                  <p><span class="material-symbols-outlined">calendar_month</span><strong className="field">Deadline:</strong> {format(new Date(job.applicationDeadline), "MMMM dd, yyyy")}</p>
+                  <p><span className="material-symbols-outlined">contacts</span><strong className="field">Contact:</strong> {job.contactInfo}</p>
+                </div>
               ))
             )}
           </div>
         </>
+      ) : (
+        <div className="job-offer-form">
+        <JobOfferForm onJobAdded={handleNewJobAdded} /></div>
       )}
-
-      {showForm && <JobOfferForm setShowForm={setShowForm} />}
     </div>
   );
 }

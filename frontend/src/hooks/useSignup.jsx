@@ -1,47 +1,43 @@
-import { useState } from 'react'
-import { useAuthContext } from './useAuthContext'
-
-import { useNavigate } from 'react-router-dom';  // Import useNavigate from react-router-dom
+import { useState } from 'react';
+import { useAuthContext } from './useAuthContext';
 import axios from 'axios';
 
 export const useSignup = () => {
-    const [errorSignup, setError] = useState(null)
-    const [isLoadingSignup, setIsLoading] = useState(null)
-    const { dispatch } = useAuthContext()
-    const navigate = useNavigate();
+    const [errorSignup, setError] = useState(null);
+    const [isLoadingSignup, setIsLoading] = useState(null);
+    const { dispatch } = useAuthContext();
 
     const signup = async (email, password) => {
-        setIsLoading(true)
-        setError(null)
+        setIsLoading(true);
+        setError(null);
 
-        const response = await axios.post('http://localhost:4000/api/user/signup', {  // Send POST request to backend
-            email,
-            password
-        });
+        try {
+            const response = await axios.post('http://localhost:4000/api/user/signup', {
+                email,
+                password
+            });
 
-        if (response.status === 201) {
-            console.log('User signed up successfully:', response.data);
-            // Save token to localStorage
+            // Save user to localStorage
             localStorage.setItem('user', JSON.stringify({
-                _id: response.data._id,  // ✅ Now this exists
+                _id: response.data._id,
                 email: response.data.email,
                 token: response.data.token
-              }));
-            
-            navigate('/');  // Redirect to dashboard after successful login or sign-up
-      
-            // update the auth context
-            dispatch({type: 'LOGIN', payload: response.data})
-      
-            // update loading state
-            setIsLoading(false)
-        } else {
-            setIsLoading(false)
-            console.error('Error during sign-up:', errorSignup.response.data);
-            // Handle error 
-            setError(errorSignup.response.data.message);
-        }
+            }));
 
-    }
-    return { signup, errorSignup, isLoadingSignup }
-}
+            // Update auth context
+            dispatch({ type: 'LOGIN', payload: response.data });
+
+            setIsLoading(false);
+            return response.data; // Return user data on success
+
+        } catch (error) {
+            setIsLoading(false);
+            const errorMessage = error.response?.data?.message || 'Signup failed. Please try again.';
+            setError(errorMessage);
+            console.error('Signup error:', error);
+            return null; // Return null on failure
+        }
+    };
+
+    return { signup, errorSignup, isLoadingSignup };
+};

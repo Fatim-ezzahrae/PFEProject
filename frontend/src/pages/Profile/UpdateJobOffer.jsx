@@ -1,113 +1,158 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../styles/job.css";
 
-const UpdateJobOffer = ({ jobOfferId, setJobOffers, updatedJob, setUpdatedJob, closeForm }) => {
-  const [loading, setLoading] = React.useState(true);
+const UpdateJobOffer = ({ 
+  jobOfferId, 
+  setJobOffers, 
+  updatedJob, 
+  setUpdatedJob, 
+  closeForm,
+  fetchJobOffers,
+  onUpdateSuccess
+}) => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch the job offer details when the form is opened
   useEffect(() => {
+    const fetchJobDetails = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:4000/api/jobs/${jobOfferId}`);
+        setUpdatedJob(response.data);
+        setError(null);
+      } catch (error) {
+        console.error("Error fetching job details:", error);
+        setError("Failed to load job details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (jobOfferId) {
-      setLoading(true); // Start loading when fetching data
-      axios
-        .get(`/api/jobs/${jobOfferId}`)
-        .then((response) => {
-          setUpdatedJob(response.data); // Populate the form with existing data
-          setLoading(false); // Stop loading after data is set
-        })
-        .catch((error) => {
-          console.error("Error fetching job offer details:", error);
-          setLoading(false); // Stop loading even if there's an error
-        });
+      fetchJobDetails();
     }
   }, [jobOfferId, setUpdatedJob]);
 
-  const handleFormSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
 
     try {
-      const response = await axios.put(`http://localhost:4000/api/jobs/${jobOfferId}`, updatedJob);
-      setJobOffers((prevOffers) =>
-        prevOffers.map((job) =>
-          job._id === jobOfferId ? { ...job, ...response.data } : job
-        )
-      );
-      closeForm(); // Close the form after submission
+      await axios.put(`http://localhost:4000/api/jobs/${jobOfferId}`, updatedJob);
+      // Option 1: Optimistic update
+      setJobOffers(prev => prev.map(job => 
+        job._id === jobOfferId ? { ...job, ...updatedJob } : job
+      ));
+      // Option 2: Refresh from server
+      await fetchJobOffers();
+      onUpdateSuccess();
     } catch (error) {
-      console.error("Error updating job offer:", error);
+      console.error("Error updating job:", error);
+      setError("Failed to update job offer");
+      await fetchJobOffers();
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleChange = (e) => {
-    setUpdatedJob({ ...updatedJob, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setUpdatedJob(prev => ({ ...prev, [name]: value }));
   };
 
-  // Conditionally render loading state or the form
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading-message">Loading job details...</div>;
   }
 
   return (
     <div className="update-job-offer-form">
       <h3>Update Job Offer</h3>
-      <form onSubmit={handleFormSubmit}>
-        <label>Job Title</label>
-        <input
-          type="text"
-          name="jobTitle"
-          value={updatedJob.jobTitle}
-          onChange={handleChange}
-          required
-        />
+      {error && <div className="error-message">{error}</div>}
+      
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Job Title</label>
+          <input
+            type="text"
+            name="jobTitle"
+            value={updatedJob.jobTitle || ''}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
+        </div>
 
-        <label>Company Name</label>
-        <input
-          type="text"
-          name="companyName"
-          value={updatedJob.companyName}
-          onChange={handleChange}
-          required
-        />
+        <div className="form-group">
+          <label>Company Name</label>
+          <input
+            type="text"
+            name="companyName"
+            value={updatedJob.companyName || ''}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
+        </div>
 
-        <label>Location</label>
-        <input
-          type="text"
-          name="location"
-          value={updatedJob.location}
-          onChange={handleChange}
-          required
-        />
+        <div className="form-group">
+          <label>Location</label>
+          <input
+            type="text"
+            name="location"
+            value={updatedJob.location || ''}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
+        </div>
 
-        <label>Description</label>
-        <textarea
-          name="description"
-          value={updatedJob.description}
-          onChange={handleChange}
-          required
-        />
+        <div className="form-group">
+          <label>Description</label>
+          <textarea
+            name="description"
+            value={updatedJob.description || ''}
+            onChange={handleChange}
+            required
+            disabled={loading}
+            rows={5}
+          />
+        </div>
 
-        <label>Application Deadline</label>
-        <input
-          type="date"
-          name="applicationDeadline"
-          value={updatedJob.applicationDeadline}
-          onChange={handleChange}
-          required
-        />
+        <div className="form-group">
+          <label>Application Deadline</label>
+          <input
+            type="date"
+            name="applicationDeadline"
+            value={updatedJob.applicationDeadline ? 
+              new Date(updatedJob.applicationDeadline).toISOString().split('T')[0] : ''}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
+        </div>
 
-        <label>Contact Information</label>
-        <input
-          type="text"
-          name="contactInfo"
-          value={updatedJob.contactInfo}
-          onChange={handleChange}
-          required
-        />
+        <div className="form-group">
+          <label>Contact Information</label>
+          <input
+            type="text"
+            name="contactInfo"
+            value={updatedJob.contactInfo || ''}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
+        </div>
 
-        <button type="submit">Update Job Offer</button>
-        <button type="button" onClick={closeForm}>
-          Cancel
-        </button>
+        <div className="form-actions">
+          <button type="submit" disabled={loading}>
+            {loading ? 'Updating...' : 'Update Job Offer'}
+          </button>
+          <button type="button" onClick={closeForm} disabled={loading}>
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

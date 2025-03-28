@@ -14,18 +14,20 @@ const Profile = () => {
   const [error, setError] = useState(null);
   const { user } = useAuthContext();
 
-  useEffect(() => {
-    const fetchJobOffers = async () => {
-      if (user) {
-        try {
-          const response = await axios.get(`http://localhost:4000/api/jobs/${user._id}`);	
-          setJobOffers(response.data);
-        } catch (error) {
-          console.error("Error fetching job offers:", error);
-        }
+  const fetchJobOffers = async () => {
+    if (user) {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/jobs/${user._id}`);	
+        setJobOffers(response.data);
+        setError(null);
+      } catch (error) {
+        console.error("Error fetching job offers:", error);
+        setError("Failed to load job offers");
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     fetchJobOffers();
   }, [user]);
 
@@ -33,17 +35,20 @@ const Profile = () => {
     <div className="profile-container">
       <Sidebar setActivePage={setActivePage} />
       <div className="content">
-      {activePage === "profile" && (
+        {activePage === "profile" && (
           <div>
             <h2>Welcome to Your Profile</h2>
-            {/* Add any profile-related content here */}
           </div>
         )}
         {activePage === "editProfile" && <EditProfile />}
         {activePage === "resumesList" && <ResumesList />}
-        {activePage === "createdJobOffers" && <CreatedJobOffers 
-          jobOffers={jobOffers}
-        />}
+        {activePage === "createdJobOffers" && (
+          <CreatedJobOffers 
+            jobOffers={jobOffers}
+            setJobOffers={setJobOffers}
+            fetchJobOffers={fetchJobOffers}
+          />
+        )}
         {activePage === "appliedJobOffers" && <AppliedJobOffers />}
       </div>
     </div>
@@ -51,4 +56,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
