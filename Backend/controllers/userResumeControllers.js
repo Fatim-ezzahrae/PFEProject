@@ -5,8 +5,11 @@ const EducationModel = require('../models/education');
 const CertificationModel = require('../models/certifications');
 const resumeModel = require('../models/resume');
 
+const path = require('path');
+const fs = require('fs');
+const { promisify } = require('util');
+const writeFile = promisify(fs.writeFile);
 const latex = require('node-latex');
-const { Readable } = require('stream');
 
 const generatePreviewPDF = async (req, res) => {
     try {
@@ -42,6 +45,7 @@ const generatePreviewPDF = async (req, res) => {
         // Generate LaTeX content for preview
         const latexContent = await resumeModel.fillResume(template.latexCode, previewData);
 
+        console.log(latexContent)
         // Configure LaTeX compiler for preview (fast but less thorough)
         const pdfStream = latex(latexContent, {
             passes: 1,  // Faster preview with single pass
@@ -100,6 +104,7 @@ const saveResume = async (req, res) => {
             });
         }
 
+        // 1. Fetch all required data
         // Fetch all required data (same as preview but with full quality)
         const [template, personalData, experienceData, educationData, certificationData] = await Promise.all([
             TemplateModel.findById(templateId),
@@ -123,6 +128,7 @@ const saveResume = async (req, res) => {
             });
         }
 
+        // 2. Generate LaTeX content
         // Prepare final data (without placeholder fallbacks)
         const finalData = {
             firstName: personalData.firstName,
@@ -140,32 +146,43 @@ const saveResume = async (req, res) => {
         // Generate final LaTeX content
         const latexContent = await resumeModel.fillResume(template.latexCode, finalData);
 
-        // Generate high-quality PDF (2 passes for proper references)
+
+        // 3. Generate PDF (with error handling)
+        let pdfBuffer;
+        try {
         const pdfStream = latex(latexContent, {
             passes: 2
         });
 
-        // Collect PDF chunks
         const chunks = [];
         pdfStream.on('data', (chunk) => chunks.push(chunk));
-        
-        // Wait for PDF generation to complete
+
         await new Promise((resolve, reject) => {
             pdfStream.on('end', resolve);
             pdfStream.on('error', reject);
         });
 
-        // Combine chunks into buffer
-        const pdfBuffer = Buffer.concat(chunks);
+        pdfBuffer = Buffer.concat(chunks);
+
+        } catch (latexError) {
+        console.error('LaTeX Compilation Failed:', latexError);
+        throw new Error('PDF generation failed');
+        }
 
         // Create or update resume in database
-        const savedResume = await ResumeModel.create(
+        const savedResume = await resumeModel.findOneAndUpdate(
+            { userId, templateId},
             {
                 userId,
                 templateId,
                 latexCode: latexContent,
                 pdfData: pdfBuffer,
-                lastUpdated: new Date()
+                $inc: { pdfVersion: 1 }
+            },
+            { 
+                upsert: true, 
+                new: true,
+                setDefaultsOnInsert: true 
             }
         );
 
@@ -187,5 +204,66 @@ const saveResume = async (req, res) => {
     }
 };
 
+const exportResume = async (req, res) => {
+    try {
+        const { resumeId, format } = req.params;
+        const { download } = req.query;
+    
+        // 1. Fetch resume from database
+        const resume = await resumeModel.findById(resumeId);
+        if (!resume) {
+          return res.status(404).json({ message: 'Resume not found, please save your resume first' });
+        }
+    
+        // 2. Handle different export formats
+        switch (format) {
+          case 'pdf':
+            return handlePDFExport(resume, res, download === 'true');
+          case 'latex':
+            return handleLaTeXExport(resume, res, download === 'true');
+          default:
+            return res.status(400).json({ message: 'Invalid export format' });
+        }
+      } catch (error) {
+        console.error('Export error:', error);
+        res.status(500).json({ 
+          message: 'Export failed',
+          error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+      }
+};
 
-module.exports = { generatePreviewPDF };
+// PDF Export Handler
+const handlePDFExport = async (resume, res, shouldDownload) => {
+
+    // Option 1: Use pre-generated PDF if available
+    if (resume.pdfData) {
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Length': resume.pdfData.length,
+        'Content-Disposition': shouldDownload 
+          ? `attachment; filename="${'My_resume'}.pdf"`
+          : 'inline'
+      });
+      return res.send(resume.pdfData);
+    }
+
+};
+
+// LaTeX Export Handler
+const handleLaTeXExport = (resume, res, shouldDownload) => {
+    const filename = `${'My_resume'}.tex`;
+    const latexContent = resume.latexCode;
+  
+    res.set({
+      'Content-Type': 'text/x-tex',
+      'Content-Disposition': shouldDownload
+        ? `attachment; filename="${filename}"`
+        : 'inline',
+      'Content-Length': Buffer.byteLength(latexContent)
+    });
+  
+    res.send(latexContent);
+  };
+
+module.exports = { generatePreviewPDF, saveResume, exportResume };

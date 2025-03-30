@@ -4,24 +4,29 @@ const userModel = require('../models/user');
 // require token
 const jwt = require('jsonwebtoken');
 
-const createToken = (_id) => {
-    return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '3d' });
+const createToken = (_id, role) => {
+    return jwt.sign({ _id, role }, process.env.SECRET, { expiresIn: '3d' });
 }
 
 const signupUser = async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, role = 'user'} = req.body; // Add role to destructuring (will use default if not provided)
     try{
-        const user = await userModel.signup(email, password);
+        
+        const user = await userModel.signup(email, password, role); 
 
-        const token = createToken(user._id);
+        const token = createToken(user._id, user.role);
 
         res.status(201).json({
             _id: user._id,
             email: user.email,
+            role: user.role, // Now includes the role from the database
             token: token
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        // Better error status codes
+        const status = error.message.includes('already in use') ? 409 : 
+                      error.message.includes('valid') ? 400 : 500;
+        res.status(status).json({ message: error.message });
     }
 }
 
@@ -31,16 +36,19 @@ const loginUser = async (req, res) => {
     try {
         const user = await userModel.login(email, password);
 
-        const token = createToken(user._id);
+        const token = createToken(user._id, user.role);
 
-        res.status(201).json({
+        res.status(200).json({
             _id: user._id,
             email: user.email,
+            role: user.role,
             token: token
         });
          
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        // Specific status codes for auth errors
+        const status = error.message.includes('Incorrect') ? 401 : 500;
+        res.status(status).json({ message: error.message });
     }
 }
 

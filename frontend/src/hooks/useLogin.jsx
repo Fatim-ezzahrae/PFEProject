@@ -21,6 +21,7 @@ export const useLogin = () => {
             localStorage.setItem('user', JSON.stringify({
                 _id: response.data._id,
                 email: response.data.email,
+                role: response.data.role,
                 token: response.data.token
             }));
 
@@ -33,9 +34,12 @@ export const useLogin = () => {
         } catch (error) {
             setIsLoading(false);
             const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.';
+
             setError(errorMessage);
             console.error('Login error:', error);
-            return null; // Return null on failure
+            
+            // Add this line to propagate the error to your component
+            throw new Error(errorMessage); // This will trigger your component's catch block
         }
     };
 

@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Signup.css';  
+import '../styles/toastNotif.css';  
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useSignup } from "../hooks/useSignup";
 import { useLogin } from "../hooks/useLogin";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -17,7 +20,7 @@ const Signup = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPasswordSignUp, setShowPasswordSignUp] = useState(false);
   const [showPasswordSignIn, setShowPasswordSignIn] = useState(false);
-
+  
   const handlePostAuthRedirect = () => {
     if (location.state?.fromTemplate) {
       navigate("/resumes", { 
@@ -37,21 +40,11 @@ const Signup = () => {
     try {
       const userData = await signup(email, password);
       if (userData) {
-        console.log('Signup successful, redirecting...');
-        if (location.state?.fromTemplate) {
-          navigate("/resumes", { 
-            state: { 
-              fromTemplate: true,
-              templateId: location.state.templateId 
-            },
-            replace: true
-          });
-        } else {
-          navigate("/", { replace: true });
-        }
+        toast.success('Signup successful!');
+        handlePostAuthRedirect();
       }
     } catch (error) {
-      console.error('Signup failed:', error);
+      toast.error(error.message || 'Signup failed');
     }
   };
   
@@ -60,22 +53,14 @@ const Signup = () => {
     try {
       const userData = await login(email, password);
       if (userData) {
-        if (location.state?.fromTemplate) {
-          navigate("/resumes", { 
-            state: { 
-              fromTemplate: true,
-              templateId: location.state.templateId 
-            },
-            replace: true
-          });
-        } else {
-          navigate("/", { replace: true });
-        }
+        toast.success('Login successful!');
+        handlePostAuthRedirect();
       }
     } catch (error) {
-      console.error('Login failed:', error);
+      toast.error(error.message || 'Login failed');
     }
   };
+
   const handleSignUpClick = () => {
     setIsSignUp(true);  
   };
@@ -86,7 +71,19 @@ const Signup = () => {
 
   return (
     <>
+      <ToastContainer 
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className={`Sign-container ${isSignUp ? 'right-panel-active' : ''}`}>
+      
         {/* Sign Up Form */}
         <div className="form-container sign-up-container">
           <form className='Sign-up1' onSubmit={handleSignUpSubmit}>
@@ -123,14 +120,14 @@ const Signup = () => {
                 type="button" 
                 className="toggle-password" 
                 onClick={() => setShowPasswordSignUp(!showPasswordSignUp)}
+                aria-label={showPasswordSignUp ? "Hide password" : "Show password"}
               >
                 <FontAwesomeIcon icon={showPasswordSignUp ? faEye : faEyeSlash} />
               </button>
             </div>
             <button className='Sign-up' type="submit" disabled={isLoadingSignup}>
-              Sign Up
+              {isLoadingSignup ? 'Creating Account...' : 'Sign Up'}
             </button>
-            {errorSignup && <p className='error-message'>{errorSignup}</p>}
           </form>
         </div>
         
@@ -168,6 +165,7 @@ const Signup = () => {
                 type="button" 
                 className="toggle-password" 
                 onClick={() => setShowPasswordSignIn(!showPasswordSignIn)}
+                aria-label={showPasswordSignIn ? "Hide password" : "Show password"}
               >
                 <FontAwesomeIcon icon={showPasswordSignIn ? faEye : faEyeSlash} />
               </button>
@@ -175,9 +173,8 @@ const Signup = () => {
 
             <a className='Sign-up5' href="#">Forgot your password?</a>
             <button className='Sign-up' type="submit" disabled={isLoadingLogin}>
-              Sign In
+              {isLoadingLogin ? 'Signing In...' : 'Sign In'}
             </button>
-            {errorLogin && <p className='error-message'>{errorLogin}</p>}
           </form>
         </div>
         

@@ -1,0 +1,99 @@
+/* Modern Toast Notifications - Rectangular with subtle rounding */
+.Toastify__toast {
+    border-radius: 8px !important; /* Subtle rounding instead of pill shape */
+    padding: 14px 16px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+    background: white !important;
+    color: #333 !important;
+    min-height: auto !important;
+    border-left: 5px solid !important;
+    border-left-color: currentColor !important;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 12px !important;
+    width: 350px !important; /* Fixed width for consistency */
+  }
+  
+  /* Icon positioning */
+  .Toastify__toast-body {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .Toastify__toast-body::before {
+    display: inline-block;
+    background: transparent !important;
+    width: auto !important;
+    height: auto !important;
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    margin-right: 12px;
+    font-size: 1.2em;
+    content: "";
+  }
+  
+  /* Colored left border */
+  .Toastify__toast--success {
+    color: #4caf50 !important;
+  }
+  
+  .Toastify__toast--error {
+    color: #f44336 !important;
+  }
+  
+  .Toastify__toast--info {
+    color: #2196f3 !important;
+  }
+  
+  .Toastify__toast--warning {
+    color: #ff9800 !important;
+  }
+  
+  /* Progress bar customization */
+  .Toastify__progress-bar {
+    height: 3px !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-radius: 0 0 8px 0 !important;
+  }
+  
+  /* Close button */
+  .Toastify__close-button {
+    color: #666 !important;
+    opacity: 0.6 !important;
+    align-self: flex-start !important;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+  
+  /* Hover effects */
+  .Toastify__toast:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  /* Animation */
+  .Toastify__slide-enter {
+    animation: toastSlideIn 0.3s ease-out;
+  }
+  
+  @keyframes toastSlideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Message text styling */
+  .Toastify__toast-body > div {
+    font-size: 14px;
+    line-height: 1.4;
+    padding-right: 20px; /* Space for close button */
+  }

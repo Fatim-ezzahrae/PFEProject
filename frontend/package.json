@@ -19,11 +19,13 @@
     "katex": "^0.16.21",
     "latex": "^0.0.1",
     "latex.js": "^0.12.6",
+    "pdf-lib": "^1.17.1",
     "react": "^19.0.0",
     "react-datepicker": "^8.1.0",
     "react-dom": "^19.0.0",
     "react-pdf": "^9.2.1",
-    "react-router-dom": "^7.2.0"
+    "react-router-dom": "^7.2.0",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

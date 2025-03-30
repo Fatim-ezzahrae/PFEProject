@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
     },  // Hashed password
     role: {
         type: String,
+        enum: ['user', 'admin'],
         default: "user"
     }    // "user" or "admin"
 
@@ -28,7 +29,7 @@ const userSchema = new mongoose.Schema({
 );
 
 // static method to create a new user
-userSchema.statics.signup = async function (email, password) {
+userSchema.statics.signup = async function (email, password, role) {
 
     // Validate email and password
     if (!email || !password) {
@@ -54,7 +55,7 @@ userSchema.statics.signup = async function (email, password) {
     const hash = await bcrypt.hash(password, salt);
 
     // Create a new user with the hashed password
-    const user = await this.create({email, password: hash});
+    const user = await this.create({email, password: hash, role});
 
     return user;
 }
@@ -78,6 +79,12 @@ userSchema.statics.login =  async function (email, password) {
 
     if (!match) {
         throw Error('Incorrect password');
+    }
+
+    // Ensure the user has a role (backward compatibility)
+    if (!user.role) {
+        user.role = 'user';  // Default role if missing
+        await user.save();   // Update the document
     }
 
     return user;

@@ -4,11 +4,40 @@ const mongoose = require('mongoose');
 //create resume schema
 const resumeSchema = new mongoose.Schema({
 
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },   // Reference to User
-    latexCode: String
-    
-} , { timestamps: true }
-);
+    userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true
+    },
+    templateId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Template',
+    required: true
+    },
+    latexCode: {
+    type: String,
+    required: true
+    },
+    pdfData: {
+    type: Buffer,
+    validate: {
+        validator: (v) => v.length <= 5 * 1024 * 1024, // 5MB max
+        message: 'PDF exceeds size limit'
+    }
+    },
+    pdfVersion: {
+    type: Number,
+    default: 1
+    }    
+}, { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+// Index for faster queries
+resumeSchema.index({ userId: 1, updatedAt: -1 });
 
 resumeSchema.statics.fillResume = async function (latexCode, userData) {
     // Check if latexCode is valid
@@ -69,12 +98,14 @@ resumeSchema.statics.fillResume = async function (latexCode, userData) {
     };
 
     const formatCertif = (certifsArray) => {
+        if (!certifsArray || certifsArray.length === 0) return '% No certifs'; // Skip if empty
         return certifsArray.map(certif => 
             `\\cvitem{${escapeLatex(certif.title || '')}}{${escapeLatex(certif.description || '')}}`
         ).join('\n');
     };
 
     const formatLanguages = (languagesArray) => {
+        if (!languagesArray || languagesArray.length === 0) return '% No languages'; // Omit if no languages
         return languagesArray.map(language => 
             `\\cvitem{${escapeLatex(language.language || '')}}{${escapeLatex(language.level || '')}}`
         ).join('\n');
@@ -119,3 +150,4 @@ resumeSchema.statics.fillResume = async function (latexCode, userData) {
 }
 //export resume model
 module.exports = mongoose.model('Resume', resumeSchema);
+

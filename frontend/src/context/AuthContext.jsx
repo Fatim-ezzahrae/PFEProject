@@ -1,5 +1,4 @@
 import { createContext, useReducer, useEffect } from 'react'
-import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext()
 
@@ -18,7 +17,6 @@ export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, { 
     user: null
   })
-  const navigate = useNavigate();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));

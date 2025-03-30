@@ -98,39 +98,45 @@ function Resumes() {
 
   const handleUseTemplate = async (templateId) => {
     console.log("Use template clicked:", templateId);
-    setSelectedTemplateId(templateId);
-        
+    console.log("Selected Template ID:", selectedTemplateId);
+
+    // 1. Immediately update selected ID
+    setSelectedTemplateId(templateId); 
+
+    // 2. Handle auth/data checks
     if (!user) {
-      console.log("User not authenticated, redirecting to sign-up");
-      navigate("/sign-up", { 
-        state: { 
-          fromTemplate: true,
-          templateId: templateId 
-        },
-        replace: true
-      });
+      navigate("/sign-up", { state: { fromTemplate: true, templateId } });
       return;
     }
 
+    // 3. Check data and generate resume
     try {
       const userId = user._id;
+
+      // Wait until state is updated before proceeding
+      await new Promise(resolve => setTimeout(resolve, 0));
+      
       const checkResponse = await axios.get(`http://localhost:4000/api/info/${userId}`);
       console.log("User info check:", checkResponse.data);
 
-      if (checkResponse.data.hasData) {
-        const response = await axios.get(
-          `http://localhost:4000/api/resume/generate-resume/${templateId}/${userId}`,
-          { responseType: 'blob' }
-        );
+      if (checkResponse.data.hasData) {      
+        // User has already entered data → Go directly to resume generation
+        const response = await axios.get(`http://localhost:4000/api/resume/generate-resume/${selectedTemplateId}/${userId}`, {
+          responseType: 'blob', // Important for PDF
+          headers: {
+            'Cache-Control': 'no-cache',
+          }
+        });
 
         if (response.status === 200) {
           const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-          const fileUrl = URL.createObjectURL(pdfBlob);
-          setGeneratedResumeURL(fileUrl);
+          const fileUrl = URL.createObjectURL(pdfBlob); // Create a URL for the Blob
+          setGeneratedResumeURL(fileUrl); // Set the Blob URL to be used in the PDF viewer
           setCurrentStep(3);
           console.log("Resume generated successfully");
         }
       } else {
+        // User has not entered data yet
         setCurrentStep(2);
         console.log("No user data found, redirecting to forms");
       }
@@ -149,6 +155,7 @@ function Resumes() {
           <Templates 
             selectedIndex={selectedIndex}
             setSelectedIndex={setSelectedIndex}
+            setSelectedTemplateId={setSelectedTemplateId}
             templates={templates}
             handlePrev={handlePrev} 
             handleNext={handleNext} 
@@ -157,45 +164,41 @@ function Resumes() {
         )}
 
         {currentStep === 2 && (
-          <Forms 
-            userInfo={userInfo} 
-            setUserInfo={setUserInfo}
-            employmentHistory={employmentHistory} 
-            setEmploymentHistory={setEmploymentHistory} 
-            languages={languages} 
-            setLanguages={setLanguages} 
-            educationHistory={educationHistory}
-            setEducationHistory={setEducationHistory}
-            certifications={certifications}
-            setCertifications={setCertifications} 
-            skills={skills}
-            setSkills={setSkills}
-            showEmploymentForm={showEmploymentForm}
-            setShowEmploymentForm={setShowEmploymentForm}
-            showLanguagesForm={showLanguagesForm}
-            setShowLanguagesForm={setShowLanguagesForm}
-            showEducationForm={showEducationForm}
-            setShowEducationForm={setShowEducationForm}
-            showCertificationForm={showCertificationForm}
-            setShowCertificationForm={setShowCertificationForm}
-            showSkillForm={showSkillForm}
-            setShowskillForm={setShowskillForm}
-            setCurrentStep={setCurrentStep} 
-            templateId={selectedTemplateId}
-            generatedResumeURL={generatedResumeURL}
-            setGeneratedResumeURL={setGeneratedResumeURL}
-            handleUseTemplate={handleUseTemplate}
-          />
+         <Forms 
+         userInfo={userInfo} 
+         setUserInfo={setUserInfo}
+         employmentHistory={employmentHistory} 
+         setEmploymentHistory={setEmploymentHistory} 
+         languages={languages} 
+         setLanguages={setLanguages} 
+         educationHistory={educationHistory}
+         setEducationHistory={setEducationHistory}
+         certifications={certifications}
+         setCertifications={setCertifications} 
+         skills={skills}
+         setSkills={setSkills}
+         showEmploymentForm={showEmploymentForm}
+         setShowEmploymentForm={setShowEmploymentForm}
+         showLanguagesForm={showLanguagesForm}
+         setShowLanguagesForm={setShowLanguagesForm}
+         showEducationForm={showEducationForm}
+         setShowEducationForm={setShowEducationForm}
+         showCertificationForm={showCertificationForm}
+         setShowCertificationForm={setShowCertificationForm}
+         showSkillForm={showSkillForm}
+         setShowskillForm={setShowskillForm}
+         setCurrentStep={setCurrentStep} 
+         selectedTemplateId={selectedTemplateId}
+         generatedResumeURL={generatedResumeURL}
+         setGeneratedResumeURL={setGeneratedResumeURL}
+         handleUseTemplate={handleUseTemplate}
+       />
         )}
         
         {currentStep === 3 && (
           <CVPage 
-            userInfo={userInfo} 
-            employmentHistory={employmentHistory} 
-            languages={languages} 
-            educationHistory={educationHistory}
             generatedResumeURL={generatedResumeURL}
-            setGeneratedResumeURL={setGeneratedResumeURL}
+            selectedTemplateId={selectedTemplateId}
           />
         )}
       </div>

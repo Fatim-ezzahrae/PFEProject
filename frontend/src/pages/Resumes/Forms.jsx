@@ -178,7 +178,7 @@ const Forms = ({
   
       if (response.data.success) {
         setErrorMessage(""); // Clear any previous errors
-
+        console.log("Selected Template ID:", selectedTemplateId);
         // step 2: generate resume from template and user information
         const response = await axios.get(`http://localhost:4000/api/resume/generate-resume/${selectedTemplateId}/${user._id}`, {
           responseType: 'blob', // Important for PDF
@@ -496,7 +496,7 @@ const Forms = ({
                 <input type="text" name="title" placeholder="Ex: AWS Certified Solutions Architect"value={certification.title} onChange={(e) => handleCertificationChange(index, e)} required />
               </label>
               <label className="label-form-Language">Description:
-                <input name="description" placeholder='Enter a brief description' value={certification.description} onChange={(e) => handleCertificationChange(index, e)} required />
+                <input name="description" placeholder='2022' value={certification.description} onChange={(e) => handleCertificationChange(index, e)} required />
               </label>
             </div>
             </div>
