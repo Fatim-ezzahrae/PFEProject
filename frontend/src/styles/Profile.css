@@ -232,3 +232,227 @@ font-size: 40px;
 }
 
 
+/* Update Job Offer Form Styles */
+.update-job-offer-form {
+  width: 1000px;  
+  padding: 20px;
+  margin-top: 75px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.update-job-offer-form h3 {
+  color: var(--secondary-dark);
+  font-size: 30px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #000000;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background-color: #f8fafc;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--secondary-dark);
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: none;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: flex-end;
+}
+
+.form-actions button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.form-actions button[type="submit"] {
+  background-color: var(--primary-dark);
+  color: white;
+  border: none;
+}
+
+.form-actions button[type="submit"]:hover {
+  background-color: var(--secondary-light);
+}
+
+.form-actions button[type="submit"]:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.form-actions button[type="button"] {
+  background-color: #ffffff;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+}
+
+.form-actions button[type="button"]:hover {
+  background-color: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.form-actions button[type="button"]:disabled {
+  color: #a0aec0;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  :root {
+    --border-radius: 8px;
+  }
+
+  .job-page-profile {
+    padding: 20px 10px;
+  }
+
+  .job-offers-profile-h2,
+  .profile-container h2 {
+    position: static;
+    transform: none;
+    font-size: 28px;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .job-offer-profile {
+    grid-template-columns: 1fr;
+    width: 95%;
+    margin: 20px auto 0;
+    padding: 10px;
+    gap: 15px;
+  }
+
+  .job-post-profile {
+    padding: 15px;
+  }
+
+  .job-title-profile {
+    font-size: 20px;
+  }
+
+  .job-post-profile p {
+    font-size: 16px;
+  }
+
+  .job-actions {
+    margin-left: 0;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .job-actions button {
+    padding: 6px 10px;
+  }
+
+  .job-actions .material-symbols-outlined {
+    font-size: 22px;
+  }
+
+  /* Update Job Form */
+  .update-job-offer-form {
+    width: 95%;
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .update-job-offer-form h3 {
+    font-size: 24px;
+  }
+
+  .form-group label {
+    font-size: 15px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-actions button {
+    width: 100%;
+    padding: 0.8rem;
+  }
+
+  /* Confirmation Popup */
+  .confirmation-popup {
+    width: 90%;
+    padding: 20px;
+    font-size: 18px;
+  }
+
+  .confirm-btn .material-symbols-outlined,
+  .cancel-btn .material-symbols-outlined {
+    font-size: 30px;
+  }
+}
+
+/* Extra Small Screens */
+@media (max-width: 480px) {
+  .job-offers-profile-h2,
+  .profile-container h2 {
+    font-size: 24px;
+  }
+
+  .job-title-profile {
+    font-size: 18px;
+  }
+
+  .job-post-profile p {
+    font-size: 15px;
+  }
+
+  .job-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .update-job-offer-form h3 {
+    font-size: 20px;
+  }
+}

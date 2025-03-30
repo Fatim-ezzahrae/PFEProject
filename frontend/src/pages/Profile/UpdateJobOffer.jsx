@@ -62,18 +62,13 @@ const UpdateJobOffer = ({
     setUpdatedJob(prev => ({ ...prev, [name]: value }));
   };
 
-  if (loading) {
-    return <div className="loading-message">Loading job details...</div>;
-  }
 
   return (
     <div className="update-job-offer-form">
-      <h3>Update Job Offer</h3>
-      {error && <div className="error-message">{error}</div>}
-      
+      <h3>Update Job Offer</h3>      
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Job Title</label>
+          <label>Job Title:</label>
           <input
             type="text"
             name="jobTitle"
@@ -85,7 +80,7 @@ const UpdateJobOffer = ({
         </div>
 
         <div className="form-group">
-          <label>Company Name</label>
+          <label>Company Name:</label>
           <input
             type="text"
             name="companyName"
@@ -97,7 +92,7 @@ const UpdateJobOffer = ({
         </div>
 
         <div className="form-group">
-          <label>Location</label>
+          <label>Location:</label>
           <input
             type="text"
             name="location"
@@ -109,7 +104,7 @@ const UpdateJobOffer = ({
         </div>
 
         <div className="form-group">
-          <label>Description</label>
+          <label>Description:</label>
           <textarea
             name="description"
             value={updatedJob.description || ''}
@@ -121,7 +116,7 @@ const UpdateJobOffer = ({
         </div>
 
         <div className="form-group">
-          <label>Application Deadline</label>
+          <label>Application Deadline:</label>
           <input
             type="date"
             name="applicationDeadline"
@@ -134,7 +129,7 @@ const UpdateJobOffer = ({
         </div>
 
         <div className="form-group">
-          <label>Contact Information</label>
+          <label>Contact Information:</label>
           <input
             type="text"
             name="contactInfo"

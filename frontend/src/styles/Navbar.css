@@ -143,7 +143,7 @@
   
   @media screen and (max-width: 1000px) {
     .navbar {
-      z-index: 99;
+      z-index: 30000;
     }
   
     .nav-menu {
@@ -223,7 +223,7 @@
       border: 1px solid white;
       border-radius: 40px;
       font-size: 1.5rem;
-      margin-left: 260px;
+      margin-left: 120px;
       outline: none;
       cursor: pointer;
       }
@@ -238,22 +238,41 @@
       background-color: transparent;
       text-align: center;
       align-items: center;
-      color: #000000;
+      color: #ffffff;
       width: auto;
       text-decoration: none;
       padding: 15px 50px;
       border: 1px solid white;
       border-radius: 40px;
       font-size: 1.5rem;
-      margin-left: 320px;
+      margin-left:190px;
       outline: none;
       cursor: pointer;
       }
-   
+      
       .nav-button1:hover {
       transition: all 0.3s ease-out;
       background: #fff;
       color: #242424;
       transition: 250ms;
+    }
+    .prof-butt {
+      display: flex;
+      align-items: center;
+      gap: 8px; /* Space between icon and text */
+      padding: 20px;
+      margin-right: -70px;
+      color: rgb(0, 0, 0);
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+    
+    .prof-butt:hover {
+     color: #ffffff; /* Darker blue on hover */
+     transform: scale(1.05);
+    }
+    
+    .prof-butt .material-symbols-outlined {
+      font-size: 47px; /* Adjust icon size */
     }
  }
