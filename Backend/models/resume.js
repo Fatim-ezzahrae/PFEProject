@@ -29,6 +29,9 @@ const resumeSchema = new mongoose.Schema({
     pdfVersion: {
     type: Number,
     default: 1
+    },
+    imageUrl: {
+    type: String
     }    
 }, { 
     timestamps: true,
@@ -98,7 +101,7 @@ resumeSchema.statics.fillResume = async function (latexCode, userData) {
     };
 
     const formatCertif = (certifsArray) => {
-        if (!certifsArray || certifsArray.length === 0) return '% No certifs'; // Skip if empty
+        if (!certifsArray || certifsArray.length === 0) return '%'; // Skip if empty
         return certifsArray.map(certif => 
             `\\cvitem{${escapeLatex(certif.title || '')}}{${escapeLatex(certif.description || '')}}`
         ).join('\n');

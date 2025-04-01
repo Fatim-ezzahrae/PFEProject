@@ -3,6 +3,9 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import axios from "axios";
 import "../../styles/EditProfile.css";
 import DeleteButton from "../../component/DeleteButt"
+import '../../styles/toastNotif.css';  
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditProfile = () => {
   const { user } = useAuthContext();
@@ -135,55 +138,117 @@ const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const fetchProfileData = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`http://localhost:4000/api/user/${user._id}`, {
+      const response = await axios.get(`http://localhost:4000/api/info/retreive/${user._id}`, {
         headers: { Authorization: `Bearer ${user.token}` }
       });
 
+      if (!response.data) {
+        throw new Error('No data received from server');
+      }
+
       const profileData = response.data;
+
+      // Validate required data structure
+    if (!profileData.personal || !Array.isArray(profileData.certifications) || 
+        !Array.isArray(profileData.education) || !Array.isArray(profileData.experience)) {
+      throw new Error('Invalid data structure received from server');
+    }
+      const personal = profileData.personal;
+      const certif = profileData.certifications;
+      const edu = profileData.education;
+      const exp = profileData.experience;
 
       setUserData({ email: profileData.email });
       
       setUserInfo({
-        firstName: profileData.firstName || "",
-        lastName: profileData.lastName || "",
-        email: profileData.email || "",
-        phone: profileData.phone || "",
-        address: profileData.address || ""
+        firstName: personal.firstName || "",
+        lastName: personal.lastName || "",
+        email: personal.email || "",
+        phone: personal.phone || "",
+        address: personal.address || ""
       });
 
-      setEmploymentHistory(
-        profileData.employmentHistory?.length > 0 
-          ? profileData.employmentHistory 
-          : [{ company: "", jobTitle: "", startDateEmp: "", endDateEmp: "", city: "", description: [""] }]
-      );
+      // Set employment history with validation
+      try {
+        setEmploymentHistory(
+          exp.length > 0 && exp[0]?.experience?.length > 0
+            ? exp[0].experience 
+            : [{ company: "", jobTitle: "", startDateEmp: "", endDateEmp: "", city: "", description: [""] }]
+        );
+      } catch (e) {
+        console.error("Error setting employment history:", e);
+        toast.error("Failed to load employment history");
+        setEmploymentHistory([{ company: "", jobTitle: "", startDateEmp: "", endDateEmp: "", city: "", description: [""] }]);
+      }
 
-      setEducationHistory(
-        profileData.educationHistory?.length > 0 
-          ? profileData.educationHistory 
-          : [{ institute: "", degree: "", startDateEdu: "", endDateEdu: "", city: "", country: "" }]
-      );
+      // Set education history with validation
+      try {
+        setEducationHistory(
+          edu.length > 0 && edu[0]?.education?.length > 0
+            ? edu[0].education 
+            : [{ institute: "", degree: "", startDateEdu: "", endDateEdu: "", city: "", country: "" }]
+        );
+      } catch (e) {
+        console.error("Error setting education history:", e);
+        toast.error("Failed to load education history");
+        setEducationHistory([{ institute: "", degree: "", startDateEdu: "", endDateEdu: "", city: "", country: "" }]);
+      }
 
-      setLanguages(
-        profileData.languages?.length > 0 
-          ? profileData.languages 
-          : [{ language: "", level: "", customLevel: "" }]
-      );
+      // Set languages with validation
+      try {
+        setLanguages(
+          personal.languages?.length > 0
+            ? personal.languages
+            : [{ language: "", level: "", customLevel: "" }]
+        );
+      } catch (e) {
+        console.error("Error setting languages:", e);
+        toast.error("Failed to load languages");
+        setLanguages([{ language: "", level: "", customLevel: "" }]);
+      }
 
-      setCertifications(
-        profileData.certifications?.length > 0 
-          ? profileData.certifications 
-          : [{ title: "", description: "" }]
-      );
+      // Set certifications with validation
+      try {
+        setCertifications(
+          certif.length > 0 && certif[0]?.certifications?.length > 0
+            ? certif[0].certifications
+            : [{ title: "", description: "" }]
+        );
+      } catch (e) {
+        console.error("Error setting certifications:", e);
+        toast.error("Failed to load certifications");
+        setCertifications([{ title: "", description: "" }]);
+      }
 
-      setSkills(
-        profileData.skills?.length > 0 
-          ? profileData.skills 
-          : [{ category: "", details: "" }]
-      );
+      // Set skills with validation
+      try {
+        setSkills(
+          personal.skills?.length > 0
+            ? personal.skills
+            : [{ category: "", details: "" }]
+        );
+      } catch (e) {
+        console.error("Error setting skills:", e);
+        toast.error("Failed to load skills");
+        setSkills([{ category: "", details: "" }]);
+      }
+
+      toast.success("Profile data loaded successfully");
 
     } catch (error) {
       console.error("Error fetching profile data:", error);
-      setErrorMessage("Failed to load profile data. Please try again.");
+    
+      let errorMessage = "Failed to load profile data. Please try again.";
+      if (error.response) {
+        // Server responded with error status
+        errorMessage = error.response.data.message || errorMessage;
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = "No response from server. Please check your connection.";
+      }
+      
+      toast.error(errorMessage);
+      setErrorMessage(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -330,8 +395,9 @@ const [deleteConfirmation, setDeleteConfirmation] = useState(false);
     
     try {
       const response = await axios.put(
-        "http://localhost:4000/api/user/profile",
+        `http://localhost:4000/api/info`,
         {
+          userId: user._id,
           userInfo,
           employmentHistory,
           educationHistory,
@@ -363,6 +429,7 @@ const [deleteConfirmation, setDeleteConfirmation] = useState(false);
 
   return (
     <div className="Edit-profile-page">
+      <ToastContainer position="top-right" autoClose={5000} />
       {!showForm && !showAccountSettings &&  (
         <div className="Edit-profile-container">
           <div className="Edit-profile-header">
@@ -654,7 +721,7 @@ const [deleteConfirmation, setDeleteConfirmation] = useState(false);
                     <select
                       name="country"
                       className="Edit-form-select"
-                      value={education.country}
+                      value={education.country || ''}
                       onChange={(e) => handleEducationChange(index, e)}
                       required
                     >

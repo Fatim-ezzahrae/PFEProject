@@ -37,22 +37,82 @@ const fillUserInfo = async (req, res) => {
       const experienceData = await experienceModel.prepareExperience(userId, employmentHistory);
       const educationData = await educationModel.prepareEducation(userId, educationHistory);
 
-      // If all data is valid and processed, save everything at once
-      const personalDoc = await personalModel.savePersonal(personalData);
-      const certifDoc = await certifModel.saveCertifications(certifData);
-      const experiencesDoc = await experienceModel.saveExperience(experienceData);
-      const educationsDoc = await educationModel.saveEducation(educationData);
+       // Save or update using upsert
+    const [personalDoc, certifDoc, experiencesDoc, educationsDoc] = await Promise.all([
+      personalModel.findOneAndUpdate(
+        { userId },
+        personalData,
+        { upsert: true, new: true }
+      ),
+      certifModel.findOneAndUpdate(
+        { userId },
+        certifData,
+        { upsert: true, new: true }
+      ),
+      experienceModel.findOneAndUpdate(
+        { userId },
+        experienceData,
+        { upsert: true, new: true }
+      ),
+      educationModel.findOneAndUpdate(
+        { userId },
+        educationData,
+        { upsert: true, new: true }
+      )
+    ]);
 
       // Respond with success and the saved data
-      res.status(201).json({ success: true, personalDoc, certifDoc, experiencesDoc, educationsDoc });
+      res.status(200).json({ 
+        success: true, 
+        personalDoc, 
+        certifDoc, 
+        experiencesDoc, 
+        educationsDoc 
+      });
 
   } catch (error) {
-      // Handle any errors during validation or saving
-      console.error("Backend error:", error);
-      res.status(500).json({ message: error.message || "An error occurred" });
+    console.error("Error saving/updating user info:", error);
+    res.status(500).json({ 
+      message: error.message || "An error occurred" 
+    });
+  }
+};
+
+// get user info
+const getUserInfo = async (req, res) => {
+  try {
+      const userId = req.params.userId;
+      
+      if (!userId) {
+          return res.status(400).json({ error: "User ID is required" });
+      }
+
+      // Fetch all data in parallel for better performance
+      const [personalData, certifications, education, experience] = await Promise.all([
+          personalModel.findOne({ userId }),
+          certifModel.find({ userId }),
+          educationModel.find({ userId }),
+          experienceModel.find({ userId })
+      ]);
+
+      if (!personalData) {
+          return res.status(404).json({ error: "User not found" });
+      }
+
+      // Construct the response object
+      const userInfo = {
+          personal: personalData,
+          certifications,
+          education,
+          experience
+      };
+
+      res.status(200).json(userInfo);
+  } catch (error) {
+      console.error("Error fetching user information:", error);
+      res.status(500).json({ error: "Server error while fetching user information" });
   }
 };
 
 
-
-module.exports = {hasFilledInfo, fillUserInfo}
+module.exports = {hasFilledInfo, fillUserInfo, getUserInfo}
