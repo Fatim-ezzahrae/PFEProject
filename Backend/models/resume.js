@@ -150,4 +150,3 @@ resumeSchema.statics.fillResume = async function (latexCode, userData) {
 }
 //export resume model
 module.exports = mongoose.model('Resume', resumeSchema);
-

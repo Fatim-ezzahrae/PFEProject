@@ -117,7 +117,7 @@
   padding: 20px;
   border: 2px solid var(--primary-dark);
   border-radius: var(--border-radius);
-  font-size: 22px;
+  font-size: 18px;
   resize: none;
   height: 200px;
   background: white;
@@ -158,19 +158,23 @@
     margin: 60px auto 0; 
     padding: 20px;
     padding-top: 80px;
+    word-wrap: break-word;
+    height: min-content;
   }
   
 
   .job-offers-container-h2 {
     position: fixed; 
-    top: 102px; 
+    top: -10px; 
     left: 50%; 
     transform: translateX(-50%);
     color: var(--secondary-dark);
     font-family: "Iansui", cursive;
     font-size: 50px;
     font-weight: 600;
-    padding: 10px 900px; 
+    padding-right:  900px; 
+    padding-left: 900px;
+    padding-top: 120px;
     z-index: 1000; 
     width: max-content; 
     background-color: #ffffff;
@@ -325,7 +329,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9000;
 }
 
 .popup-content {

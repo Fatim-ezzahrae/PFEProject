@@ -36,6 +36,7 @@ function Resumes() {
     console.log("User auth status:", user ? "Logged in" : "Not logged in");
   }, [location.state, user]);
 
+  
   // Handle redirect after authentication
   useEffect(() => {
     const handleAuthRedirect = async () => {

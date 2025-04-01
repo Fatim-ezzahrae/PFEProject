@@ -20,21 +20,24 @@
 
 .job-offers-profile-h2 {
   position: fixed; 
-  top: 100px; 
-  left: 50%; 
-  transform: translateX(-50%); 
-  color: var(--secondary-dark);
-  font-family: "Iansui", cursive;
-  font-size: 50px;
-  font-weight: 600;
-  padding: 10px 20px; 
-  z-index: 999; 
-  width: max-content; 
+    top: -10px; 
+    left: 50%; 
+    transform: translateX(-50%);
+    color: var(--secondary-dark);
+    font-family: "Iansui", cursive;
+    font-size: 50px;
+    font-weight: 600;
+    padding-right:  900px; 
+    padding-left: 900px;
+    padding-top: 120px;
+    z-index: 1000; 
+    width: max-content; 
+    background-color: #ffffff;
 }
 
 .job-offer-profile {
    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); 
+   grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); 
     gap: 20px;
     padding: 20px;
     width: 80%;
@@ -59,10 +62,11 @@
   background-color: var(--primary-light);
   border: 1px solid #ddd;
   border-radius: var(--border-radius);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   padding: 20px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   width: 100%; 
+  height: 100%;
 }
 
 .job-post-profile:hover {
@@ -184,7 +188,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 5000; 
+  z-index: 50000; 
 }
 
 

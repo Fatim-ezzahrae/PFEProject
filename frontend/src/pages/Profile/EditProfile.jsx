@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import axios from "axios";
 import "../../styles/EditProfile.css";
+import DeleteButton from "../../component/DeleteButt"
 
 const EditProfile = () => {
   const { user } = useAuthContext();
@@ -820,7 +821,7 @@ const [deleteConfirmation, setDeleteConfirmation] = useState(false);
           </div>
 
                    {/* Form Buttons */}
-                   <div className="Edit-form-buttons">
+             <div className="Edit-form-buttons">
             <button
               type="button"
               className="Edit-submit-btn"
@@ -924,12 +925,9 @@ const [deleteConfirmation, setDeleteConfirmation] = useState(false);
                 </button>
               </div>
             ) : (
-              <button 
-                className="Delete-account-btn"
-                onClick={() => setDeleteConfirmation(true)}
-              >
-                Delete Account
-              </button>
+             
+                <DeleteButton onClick={() => setDeleteConfirmation(true)} />
+              
             )}
           </div>
         </div>

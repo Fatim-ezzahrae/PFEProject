@@ -82,7 +82,7 @@ const CreatedJobOffers = ({ jobOffers, setJobOffers, fetchJobOffers }) => {
         />
       ) : (
         <div className="job-offer-profile">
-          <h2 className="job-offers-profile-h2">Created Job Offers</h2>
+          <h3 className="job-offers-profile-h2">Created Job Offers</h3>
           {jobOffers.length > 0 ? (
             jobOffers.map((job) => (
               <div key={job._id} className="job-post-profile" onClick={() => toggleDescription(job._id)}>

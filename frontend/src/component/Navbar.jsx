@@ -52,6 +52,18 @@ function Navbar() {
             </span> Job offers
            </Link>
           </li>
+          
+          {/* Dashboard link - only shown to admins */}
+          {user && user.role === 'admin' && (
+            <li className='nav-item'>
+              <Link to='/dashboard' className='nav-links' onClick={closeMobileMenu}>
+                <span class="material-symbols-outlined">
+                  dashboard
+                </span> Dashboard
+              </Link>
+            </li>
+          )}
+          
           {!user && (
             <li className='nav-item'>
               <Link to='/sign-up' className='nav-button' onClick={closeMobileMenu}>

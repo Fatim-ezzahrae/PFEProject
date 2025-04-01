@@ -78,7 +78,7 @@ function JobOfferForm({ onJobAdded }) {
             <>
               <div className='descp-wrapper'>
                 <label className="label-Job">Description:
-                  <textarea name="description" placeholder="Describe the job in detail, including requirements, responsibilities, salary, and any additional information..." value={formData.description} onChange={handleChange} required />
+                  <textarea name="description" placeholder="We are looking for a skilled Software Engineer to develop high-quality applications.                                                                          Must be proficient in JavaScript and React. " value={formData.description} onChange={handleChange} required />
                 </label>
               </div>
               <button className="nextJob" type="button" onClick={nextStep}>Next</button>
