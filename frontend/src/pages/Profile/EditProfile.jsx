@@ -23,8 +23,21 @@ const EditProfile = () => {
   const handleAccountSettingsSubmit = async (e) => {
     e.preventDefault();
     try {
+
+      // Client-side validation
+      if (!accountSettings.currentPassword) {
+          throw new Error("Current password is required");
+      }
+
+      if (accountSettings.newPassword && accountSettings.newPassword.length < 6) {
+          throw new Error("New password must be at least 6 characters");
+      }
+
+      if (accountSettings.newPassword !== accountSettings.confirmPassword) {
+          throw new Error("New passwords don't match");
+      }
       const response = await axios.put(
-        "http://localhost:4000/api/user/account",
+        `http://localhost:4000/api/user/${user._id}`,
         {
           email: accountSettings.email,
           currentPassword: accountSettings.currentPassword,
@@ -32,13 +45,60 @@ const EditProfile = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${user.token}`
-          }
+            Authorization: `Bearer ${user.token}`,
+            'Content-Type': 'application/json'
+          },
+          timeout: 10000
         }
       );
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Update failed");
+      }
+
+      setSuccessMessage(response.data.message || "Account updated successfully");
+
+      // Clear form after success
+      setTimeout(() => {
+        setAccountSettings({
+            email: "",
+            currentPassword: "",
+            newPassword: "",
+            confirmPassword: ""
+        });
+        setSuccessMessage("");
+      }, 3000);
+
+
+
       // Handle success
     } catch (error) {
       // Handle error
+      let errorMessage = "Failed to update account";
+        
+        if (error.response) {
+            // Server responded with error
+            errorMessage = error.response.data?.message || 
+                         `Server error: ${error.response.status}`;
+            
+            // Handle token expiration
+            if (error.response.status === 401) {
+                // Optionally logout user
+                localStorage.removeItem("user");
+                window.location.reload();
+            }
+        } else if (error.request) {
+            // No response received
+            errorMessage = "No response from server. Check your connection.";
+        } else {
+            // Request setup error
+            errorMessage = error.message;
+        }
+
+        setErrorMessage(errorMessage);
+        
+        // Auto-dismiss error
+        setTimeout(() => setErrorMessage(""), 5000);
     }
   };
 
@@ -48,20 +108,58 @@ const [accountSettings, setAccountSettings] = useState({
   newPassword: "",
   confirmPassword: ""
 });
+
+useEffect(() => {
+  // Reset all form states when user changes
+  setAccountSettings({
+    email: user?.email || "",  // Only pre-populate email
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+
+}, [user]); // Trigger when user changes
 const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   
-  const handleDeleteAccount = async () => {
-    try {
-      await axios.delete(`http://localhost:4000/api/user/${user._id}`, {
+const handleDeleteAccount = async () => {
+  try {
+
+    const response = await axios.delete(
+      `http://localhost:4000/api/user/${user._id}`,
+      {
         headers: {
-          Authorization: `Bearer ${user.token}`
+          Authorization: `Bearer ${user.token}`,
+          'Content-Type': 'application/json'
         }
+      }
+    );
+
+    if (response.data.success) {
+      // Success toast
+      toast.success("Account deleted successfully!", {
+        position: "top-right",
+        autoClose: 3000,
       });
-      // Handle account deletion success (e.g., logout user)
-    } catch (error) {
-      // Handle error
+      
+      // Logout and redirect after a delay
+      setTimeout(() => {
+        localStorage.removeItem('user');
+        window.location.href = '/';
+      }, 1300); // Wait for toast to show
     }
-  };
+  } catch (error) {
+    console.error("Account deletion failed:", error);
+
+    // Error toast
+    toast.error(
+      error.response?.data?.message || "Failed to delete account", 
+      {
+        position: "top-right",
+        autoClose: 5000,
+      }
+    );
+  }
+};
 
   // Form states
   const [userInfo, setUserInfo] = useState({
@@ -139,26 +237,31 @@ const [deleteConfirmation, setDeleteConfirmation] = useState(false);
     setIsLoading(true);
     try {
       const response = await axios.get(`http://localhost:4000/api/info/retreive/${user._id}`, {
-        headers: { Authorization: `Bearer ${user.token}` }
+        headers: { 
+          Authorization: `Bearer ${user.token}`,
+          validateStatus: (status) => status < 500 // Don't throw for 404
+        }
       });
 
-      if (!response.data) {
-        throw new Error('No data received from server');
+      // Handle empty response or new user case
+      if (!response.data || response.status === 404) {
+        return initializeEmptyProfile(); // Silent handling for new users
       }
 
+      // Use response data if available, otherwise use empty template
       const profileData = response.data;
 
-      // Validate required data structure
-    if (!profileData.personal || !Array.isArray(profileData.certifications) || 
-        !Array.isArray(profileData.education) || !Array.isArray(profileData.experience)) {
-      throw new Error('Invalid data structure received from server');
-    }
+      setUserData({ email: user.email }); // Always use auth context email
+
+      // Validate structure (will pass for emptyProfile)
+      if (!profileData.personal || !Array.isArray(profileData.certifications) || 
+          !Array.isArray(profileData.education) || !Array.isArray(profileData.experience)) {
+        throw new Error('Invalid data structure received');
+      }
       const personal = profileData.personal;
       const certif = profileData.certifications;
       const edu = profileData.education;
       const exp = profileData.experience;
-
-      setUserData({ email: profileData.email });
       
       setUserInfo({
         firstName: personal.firstName || "",
@@ -177,7 +280,7 @@ const [deleteConfirmation, setDeleteConfirmation] = useState(false);
         );
       } catch (e) {
         console.error("Error setting employment history:", e);
-        toast.error("Failed to load employment history");
+        //toast.error("Failed to load employment history");
         setEmploymentHistory([{ company: "", jobTitle: "", startDateEmp: "", endDateEmp: "", city: "", description: [""] }]);
       }
 
@@ -233,26 +336,40 @@ const [deleteConfirmation, setDeleteConfirmation] = useState(false);
         setSkills([{ category: "", details: "" }]);
       }
 
-      toast.success("Profile data loaded successfully");
-
     } catch (error) {
       console.error("Error fetching profile data:", error);
     
       let errorMessage = "Failed to load profile data. Please try again.";
-      if (error.response) {
-        // Server responded with error status
+
+      if (error.response?.status !== 404) { // Don't show toast for new users
         errorMessage = error.response.data.message || errorMessage;
       } else if (error.request) {
         // Request was made but no response received
         errorMessage = "No response from server. Please check your connection.";
       }
-      
-      toast.error(errorMessage);
+      initializeEmptyProfile(); // Fallback to empty form
       setErrorMessage(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Helper function for empty profile initialization
+const initializeEmptyProfile = () => {
+  // Initialize empty form for new users
+  setUserInfo({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: ""
+  });
+  setEmploymentHistory([{ company: "", jobTitle: "", startDateEmp: "", endDateEmp: "", city: "", description: [""] }]);
+  setEducationHistory([{ institute: "", degree: "", startDateEdu: "", endDateEdu: "", city: "", country: "" }]);
+  setLanguages([{ language: "", level: "", customLevel: "" }]);
+  setCertifications([{ title: "", description: "" }]);
+  setSkills([{ category: "", details: "" }]);
+}
 
   // Handler functions
   const handleInputChange = (e) => {
@@ -394,7 +511,7 @@ const [deleteConfirmation, setDeleteConfirmation] = useState(false);
     setSuccessMessage("");
     
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `http://localhost:4000/api/info`,
         {
           userId: user._id,
@@ -407,21 +524,52 @@ const [deleteConfirmation, setDeleteConfirmation] = useState(false);
         },
         {
           headers: {
-            Authorization: `Bearer ${user.token}`
-          }
+            Authorization: `Bearer ${user.token}`,
+            'Content-Type': 'application/json'
+          },
+          timeout: 10000 // 10-second timeout
         }
       );
 
-      if (response.data.success) {
-        setSuccessMessage("Profile updated successfully!");
-        setTimeout(() => {
-          setShowForm(false);
-          setSuccessMessage("");
-        }, 2000);
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Update failed without error message");
       }
+  
+      // Success toast
+      toast.success(response.data.message || "Profile updated successfully!", {
+        position: "top-right",
+        autoClose: 2000,
+        onClose: () => setShowForm(false) // Close form after toast disappears
+      });
+
     } catch (error) {
-      console.error("Error updating profile:", error);
-      setErrorMessage(error.response?.data?.message || "Failed to update profile. Please try again.");
+      let errorMsg = "Failed to update profile. Please try again.";
+    
+      if (error.response) {
+        // Server responded with error status
+        errorMsg = error.response.data?.message || 
+                  `Server error: ${error.response.status}`;
+        
+        // Special handling for auth errors
+        if (error.response.status === 401) {
+          errorMsg = "Session expired. Please log in again.";
+          localStorage.removeItem("user");
+        }
+      } else if (error.request) {
+        errorMsg = "No response from server. Check your connection.";
+      }
+
+      console.error("Profile update error:", {
+        error: error.message,
+        stack: error.stack,
+        response: error.response?.data
+      });
+
+      // Error toast
+      toast.error(errorMsg, {
+        position: "top-right",
+        autoClose: 5000
+      });
     }
   };
 

@@ -91,5 +91,66 @@ userSchema.statics.login =  async function (email, password) {
 
 }
 
+userSchema.statics.updateUser = async function (userId, email, currentPassword, newPassword) {
+    // Validate incoming data
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new Error('Invalid user ID');
+    }
+
+    const user = await this.findById(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    // Verify current password if changing sensitive data
+    if (email || newPassword) {
+        if (!currentPassword) {
+            throw new Error('Current password is required for changes');
+        }
+        
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            throw new Error('Current password is incorrect');
+        }
+    }
+
+    // Update fields
+    const updates = {};
+    if (email && email !== user.email) {
+        if (!validator.isEmail(email)) {
+            throw new Error('Email is not valid');
+        }
+
+        const emailExists = await this.findOne({ email });
+        if (emailExists) {
+            throw new Error('Email already in use');
+        }
+        updates.email = email;
+    }
+
+    if (newPassword) {
+        if (!validator.isStrongPassword(newPassword, { 
+            minLength: 8, 
+            minLowercase: 1, 
+            minUppercase: 1, 
+            minNumbers: 1, 
+            minSymbols: 1 
+        })) {
+            throw new Error('Password must be at least 8 characters with uppercase, lowercase, number and symbol');
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        updates.password = await bcrypt.hash(newPassword, salt);
+        updates.passwordChangedAt = Date.now();
+    }
+
+    // Apply updates
+    return await this.findByIdAndUpdate(
+        userId,
+        updates,
+        { new: true, runValidators: true }
+    );
+}
+
 //export user model
 module.exports = mongoose.model('User', userSchema);
