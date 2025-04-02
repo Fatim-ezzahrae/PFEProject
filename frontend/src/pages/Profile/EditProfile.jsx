@@ -56,49 +56,69 @@ const EditProfile = () => {
         throw new Error(response.data.message || "Update failed");
       }
 
-      setSuccessMessage(response.data.message || "Account updated successfully");
+      // Success handling
+      const successMessage = response.data.message || "Account updated successfully";
+      toast.success(successMessage, {
+        position: "top-right",
+        autoClose: 3000,
+        onClose: () => {
+          // Redirect after toast closes
+          if (response.data.token) {
+            // If token was refreshed (e.g., email changed)
+            localStorage.setItem('user', JSON.stringify({
+              ...user,
+              email: accountSettings.email,
+              token: response.data.token
+            }));
+          }
+          window.location.href = '/profile'; // Redirect to profile page
+        }
+      });
 
-      // Clear form after success
-      setTimeout(() => {
-        setAccountSettings({
-            email: "",
-            currentPassword: "",
-            newPassword: "",
-            confirmPassword: ""
-        });
-        setSuccessMessage("");
-      }, 3000);
-
+      // Clear sensitive fields (keep email if it was updated)
+      setAccountSettings(prev => ({
+        email: prev.email, // Keep updated email
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+      }));
 
 
       // Handle success
     } catch (error) {
-      // Handle error
       let errorMessage = "Failed to update account";
+      
+      if (error.response) {
+        // Server errors
+        errorMessage = error.response.data?.message || 
+                     `Server error: ${error.response.status}`;
         
-        if (error.response) {
-            // Server responded with error
-            errorMessage = error.response.data?.message || 
-                         `Server error: ${error.response.status}`;
-            
-            // Handle token expiration
-            if (error.response.status === 401) {
-                // Optionally logout user
-                localStorage.removeItem("user");
-                window.location.reload();
-            }
-        } else if (error.request) {
-            // No response received
-            errorMessage = "No response from server. Check your connection.";
-        } else {
-            // Request setup error
-            errorMessage = error.message;
+        // Special handling for auth errors
+        if (error.response.status === 401) {
+          errorMessage = "Session expired. Please log in again.";
+          localStorage.removeItem("user");
+          setTimeout(() => window.location.href = '/login', 1500);
         }
-
-        setErrorMessage(errorMessage);
-        
-        // Auto-dismiss error
-        setTimeout(() => setErrorMessage(""), 5000);
+      } else if (error.request) {
+        // Network errors
+        errorMessage = "No response from server. Check your connection.";
+      } else {
+        // Validation/other errors
+        errorMessage = error.message;
+      }
+  
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 5000
+      });
+  
+      // Clear sensitive fields on error
+      setAccountSettings(prev => ({
+        ...prev,
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+      }));
     }
   };
 
@@ -538,7 +558,7 @@ const initializeEmptyProfile = () => {
       // Success toast
       toast.success(response.data.message || "Profile updated successfully!", {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 1000,
         onClose: () => setShowForm(false) // Close form after toast disappears
       });
 

@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { FaRegTrashAlt, FaRegEdit, FaCheck, FaTimes } from "react-icons/fa";
+import { FiInfo } from "react-icons/fi";
+import { HiOutlineOfficeBuilding, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineMail } from "react-icons/hi";
 import UpdateJobOffer from "./UpdateJobOffer";
 import { format } from "date-fns";
 
@@ -87,40 +90,61 @@ const CreatedJobOffers = ({ jobOffers, setJobOffers, fetchJobOffers }) => {
             jobOffers.map((job) => (
               <div key={job._id} className="job-post-profile" onClick={() => toggleDescription(job._id)}>
                 <h3 className="job-title-profile">{job.jobTitle}</h3>
-                <p>
-                  <span className="material-symbols-outlined">apartment</span>
+                <div className="job-details-row">
+                  <HiOutlineOfficeBuilding className="inline-icon" />
                   <strong className="field">Company:</strong> {job.companyName}
-                </p>
-                <p>
-                  <span className="material-symbols-outlined">location_on</span>
+                </div>
+                <div className="job-details-row">
+                  <HiOutlineLocationMarker className="inline-icon" />
                   <strong className="field">Location:</strong> {job.location}
-                </p>
+                </div>
                 {expandedJob === job._id && (
-                  <p className="job-description">
-                    <span class="material-symbols-outlined"> info </span><strong className="field">Job Description:</strong> {job.description}
-                  </p>
+                  <div className="job-description-container">
+                    <div className="description-header">
+                      <FiInfo className="inline-icon" />
+                      <strong className="field">Job Description:</strong>
+                    </div>
+                    <div className="description-content">
+                      {job.description}
+                    </div>
+                </div>
                 )}
-                <p>
-                <span class="material-symbols-outlined">calendar_month</span><strong className="field">Deadline:</strong>{" "}
+                <div className="job-details-row">
+                  <HiOutlineCalendar className="inline-icon" />
+                  <strong className="field">Deadline:</strong>{" "}
                   {format(new Date(job.applicationDeadline), "MMMM dd, yyyy")}
-                </p>
-                <p>
-                <span className="material-symbols-outlined">contacts</span><strong className="field">Contact:</strong> {job.contactInfo}
-                </p>
+                </div>
+                <div className="job-details-row">
+                  <HiOutlineMail className="inline-icon" />
+                  <strong className="field">Contact:</strong> {job.contactInfo}
+                </div>
 
                 <div className="job-actions">
-                  <button className="delete-jobOffer" onClick={(event) => confirmDelete(job._id, event)}>
-                    <span className="material-symbols-outlined">delete</span>
+                  {/* Enhanced Delete Button */}
+                  <button 
+                    className="action-btn delete-btn"
+                    onClick={(event) => confirmDelete(job._id, event)}
+                    aria-label="Delete job offer"
+                  >
+                    <FaRegTrashAlt className="action-icon" />
+                    <span className="tooltip">Delete</span>
                   </button>
-                  <button className="update-jobOffer" onClick={(event) => handleUpdate(job._id, event)}>
-                    <span className="material-symbols-outlined">edit</span>
+
+                  {/* Enhanced Update Button */}
+                  <button 
+                    className="action-btn edit-btn"
+                    onClick={(event) => handleUpdate(job._id, event)}
+                    aria-label="Edit job offer"
+                  >
+                    <FaRegEdit className="action-icon" />
+                    <span className="tooltip">Edit</span>
                   </button>
                 </div>
               </div>
             ))
           ) : (
             <p className="no-job-offers">
-              <span className="material-symbols-outlined">info</span> Info - You haven't created any job offers yet.
+              <FiInfo className="icon" /> Info - You haven't created any job offers yet.
             </p>
           )}
         </div>
@@ -130,10 +154,10 @@ const CreatedJobOffers = ({ jobOffers, setJobOffers, fetchJobOffers }) => {
           <div className="confirmation-popup">
             <p>Are you sure you want to delete this job offer?</p>      
             <button className="confirm-btn" onClick={handleDelete}>
-              <span className="material-symbols-outlined">check_box</span>
+              <FaCheck className="confirm-icon" />
             </button>
             <button className="cancel-btn" onClick={() => setShowConfirm(false)}>
-              <span className="material-symbols-outlined">cancel</span>
+              <FaTimes className="cancel-icon" />
             </button>
           </div>
         </div>

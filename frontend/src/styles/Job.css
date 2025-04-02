@@ -362,3 +362,162 @@
   font-weight: bold;
   color: #2E7D32; /* Darker green */
 } 
+
+/* Icon Base Styles */
+.icon {
+  margin-right: 8px;
+  vertical-align: middle;
+  color: #555;
+  font-size: 1.2rem;
+}
+
+/* Action Buttons Container */
+.job-actions {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  justify-content: flex-end;
+}
+
+/* Base Action Button Styles */
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.action-icon {
+  font-size: 1.4rem;
+  transition: all 0.3s ease;
+}
+
+/* Delete Button Specific */
+.delete-btn .action-icon {
+  color: #ff6b6b;
+}
+
+.delete-btn:hover .action-icon {
+  color: #ff4444;
+  transform: scale(1.15);
+}
+
+/* Edit Button Specific */
+.edit-btn .action-icon {
+  color: #4dabf7;
+}
+
+.edit-btn:hover .action-icon {
+  color: #228be6;
+  transform: scale(1.15);
+}
+
+/* Tooltips */
+.tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: sans-serif;
+  pointer-events: none;
+}
+
+.action-btn:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  top: -35px;
+}
+
+/* Confirmation Popup Styles */
+.confirm-btn, .cancel-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.confirm-icon {
+  color: #40c057;
+  font-size: 1.3rem;
+}
+
+.cancel-icon {
+  color: #fa5252;
+  font-size: 1.3rem;
+}
+
+.confirm-btn:hover .confirm-icon {
+  transform: scale(1.2);
+  color: #2f9e44;
+}
+
+.cancel-btn:hover .cancel-icon {
+  transform: scale(1.2);
+  color: #e03131;
+}
+
+/* Job Details Row */
+.job-details-row {
+  display: flex;
+  align-items: center;
+  margin: 0.4rem 0;  /* Slightly increased margin */
+  line-height: 1.5;  /* More breathing room */
+}
+
+.inline-icon {
+  font-size: 1.5rem;  /* Increased from 0.9rem */
+  margin-right: 8px;  /* Slightly more spacing */
+  color: #555;
+  min-width: 20px;    /* Increased minimum width */
+  vertical-align: middle;
+}
+
+.field {
+  margin-right: 6px;  /* Slightly more spacing */
+  font-weight: 600;   /* Make labels slightly bolder */
+}
+
+/* Job Description Container */
+.job-description-container {
+  margin: 0.5rem 0 0.5rem 24px;
+  padding-left: 24px; /* Space for icon alignment */
+  position: relative;
+}
+
+.description-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.description-content {
+  white-space: pre-wrap; /* Preserves line breaks */
+  line-height: 1.5;
+  text-align: justify;
+  padding-left: 20px; /* Indent description text */
+  border-left: 2px solid #eee; /* Optional subtle visual separator */
+}
+
+/* Adjust icon positioning */
+.job-description-container .inline-icon {
+  position: absolute;
+  left: 0;
+  top: 3px; /* Aligns with first line */
+  font-size: 1.1rem;
+}
