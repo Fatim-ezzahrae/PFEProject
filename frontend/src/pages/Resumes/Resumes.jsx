@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import "../../styles/Resumes.css";
 import ProgressSteps from "../../component/ProgressSteps";
@@ -27,7 +27,6 @@ function Resumes() {
   const [skills, setSkills] = useState([{ category: "", details: "" }]);
   const [templates, setTemplates] = useState([]);
   const { user } = useAuthContext();
-  const navigate = useNavigate();
   const location = useLocation();
 
   // Debugging logs
@@ -97,70 +96,16 @@ function Resumes() {
     setSelectedIndex((prevIndex) => (prevIndex === templates.length - 1 ? 0 : prevIndex + 1));
   };
 
-  const handleUseTemplate = async (templateId) => {
-    console.log("Use template clicked:", templateId);
-    console.log("Selected Template ID:", selectedTemplateId);
-
-    // 1. Immediately update selected ID
-    setSelectedTemplateId(templateId); 
-
-    // 2. Handle auth/data checks
-    if (!user) {
-      navigate("/sign-up", { state: { fromTemplate: true, templateId } });
-      return;
-    }
-
-    // 3. Check data and generate resume
-    try {
-      const userId = user._id;
-
-      // Wait until state is updated before proceeding
-      await new Promise(resolve => setTimeout(resolve, 0));
-      
-      const checkResponse = await axios.get(`http://localhost:4000/api/info/${userId}`);
-      console.log("User info check:", checkResponse.data);
-
-      if (checkResponse.data.hasData) {      
-        // User has already entered data → Go directly to resume generation
-        const response = await axios.get(`http://localhost:4000/api/resume/generate-resume/${selectedTemplateId}/${userId}`, {
-          responseType: 'blob', // Important for PDF
-          headers: {
-            'Cache-Control': 'no-cache',
-          }
-        });
-
-        if (response.status === 200) {
-          const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-          const fileUrl = URL.createObjectURL(pdfBlob); // Create a URL for the Blob
-          setGeneratedResumeURL(fileUrl); // Set the Blob URL to be used in the PDF viewer
-          setCurrentStep(3);
-          console.log("Resume generated successfully");
-        }
-      } else {
-        // User has not entered data yet
-        setCurrentStep(2);
-        console.log("No user data found, redirecting to forms");
-      }
-    } catch (error) {
-      console.error("Error during template selection:", error);
-      // Fallback to forms step if there's an error
-      setCurrentStep(2);
-    }
-  };
-
   return (
     <>
       <ProgressSteps currentStep={currentStep} />
       <div className="resume-container">
         {currentStep === 1 && (
           <Templates 
-            selectedIndex={selectedIndex}
-            setSelectedIndex={setSelectedIndex}
-            setSelectedTemplateId={setSelectedTemplateId}
             templates={templates}
-            handlePrev={handlePrev} 
-            handleNext={handleNext} 
-            handleUseTemplate={handleUseTemplate}
+            setCurrentStep={setCurrentStep}
+            setGeneratedResumeURL={setGeneratedResumeURL}
+            setSelectedTemplateId={setSelectedTemplateId}
           />
         )}
 

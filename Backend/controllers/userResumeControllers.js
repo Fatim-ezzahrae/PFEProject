@@ -8,7 +8,7 @@ const resumeModel = require('../models/resume');
 const path = require('path');
 const fs = require('fs');
 const tmp = require('tmp');
-const pdf = require('pdf-poppler');
+const poppler = require('pdf-poppler');
 const NodeCache = require('node-cache');
 const pLimit = require('p-limit');
 const { promisify } = require('util');
@@ -103,6 +103,7 @@ const generatePreviewPDF = async (req, res) => {
 };
 
 const saveResume = async (req, res) => {
+    let tempPdf;
     try {
         const { templateId, userId } = req.body;
 
@@ -153,33 +154,34 @@ const saveResume = async (req, res) => {
             certifications: certificationData?.certifications || []
         };
 
-        // Generate final LaTeX content
-        const latexContent = await resumeModel.fillResume(template.latexCode, finalData);
+        // Generate final LaTeX content wirh timeout
+        const latexContent = await Promise.race([
+            resumeModel.fillResume(template.latexCode, finalData),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('LaTeX generation timeout')), 10000))
+        ]);
 
 
         // 3. Generate PDF (with error handling)
         let pdfBuffer;
         try {
-        const pdfStream = latex(latexContent, {
-            passes: 1
-        });
-
-        const chunks = [];
-        pdfStream.on('data', (chunk) => chunks.push(chunk));
-
-        await new Promise((resolve, reject) => {
-            pdfStream.on('end', resolve);
-            pdfStream.on('error', reject);
-        });
-
-        pdfBuffer = Buffer.concat(chunks);
+            pdfBuffer = await Promise.race([
+                new Promise((resolve, reject) => {
+                    const pdfStream = latex(latexContent, { passes: 1 });
+                    const chunks = [];
+                    
+                    pdfStream.on('data', chunk => chunks.push(chunk));
+                    pdfStream.on('end', () => resolve(Buffer.concat(chunks)));
+                    pdfStream.on('error', reject);
+                }),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('PDF generation timeout')), 15000))
+            ]);
 
         } catch (latexError) {
-        console.error('LaTeX Compilation Failed:', latexError);
-        throw new Error('PDF generation failed');
+            console.error('LaTeX Compilation Failed:', latexError);
+            throw new Error('PDF generation failed: ' + latexError.message);
         }
 
-        // Create or update resume in database
+        // 4. Create/update resume in database
         const savedResume = await resumeModel.findOneAndUpdate(
             { userId, templateId},
             {
@@ -196,59 +198,91 @@ const saveResume = async (req, res) => {
             }
         );
 
-        // Generate and store the resume image
-        const tempPdf = tmp.fileSync({ postfix: '.pdf' });
+        // 5. Generate and store resume image
+        tempPdf = tmp.fileSync({ postfix: '.pdf' });
         fs.writeFileSync(tempPdf.name, pdfBuffer);
 
-        const imageFilename = `resume_${savedResume._id}.png`;
         const uploadDir = path.join(__dirname, '..', 'uploads', 'resume_images');
         fs.mkdirSync(uploadDir, { recursive: true }); // Ensure directory exists
 
-        try {
-            await pdf.convert(tempPdf.name, {
+        // Generate unique image filename with version
+        const imageFilename = `resume_${savedResume._id}_v${savedResume.pdfVersion}.png`;
+        const finalImagePath = path.join(uploadDir, imageFilename);
+
+        // Delete previous images for this resume
+        const previousImages = fs.readdirSync(uploadDir).filter(file => 
+            file.startsWith(`resume_${savedResume._id}_v`)
+        );
+        previousImages.forEach(file => fs.unlinkSync(path.join(uploadDir, file)));
+
+        // Convert PDF to image
+        const tempImagePath = path.join(uploadDir, `${imageFilename.replace('.png', '')}-1.png`);
+
+       // Convert using pdf-poppler
+       await poppler.convert(tempPdf.name, {
             format: 'png',
             out_dir: uploadDir,
             out_prefix: imageFilename.replace('.png', ''),
             page: 1
-            });
+        });
 
-            // Rename the output file (remove '-1' suffix)
-            const tempImagePath = path.join(uploadDir, `${imageFilename.replace('.png', '')}-1.png`);
-            const finalImagePath = path.join(uploadDir, imageFilename);
-            fs.renameSync(tempImagePath, finalImagePath);
+        // Verify and rename the image
+        if (!fs.existsSync(tempImagePath)) {
+            throw new Error('Temporary image file not created');
+        }
 
-            // Store relative path in database
-            const imageUrlPath = path.join('uploads', 'resume_images', imageFilename).replace(/\\/g, '/');
+        fs.renameSync(tempImagePath, finalImagePath);
+        const imageUrlPath = path.join('uploads', 'resume_images', imageFilename).replace(/\\/g, '/');
 
-            // Update the resume with image URL
-            const updatedResume = await resumeModel.findByIdAndUpdate(
+        // Update the resume with image URL
+        // Update the resume with image URL with verification
+        console.log('Attempting to update with imageUrl:', imageUrlPath);
+        const updatedResume = await resumeModel.findByIdAndUpdate(
             savedResume._id,
             { imageUrl: imageUrlPath },
             { new: true }
-            ); 
+        ).lean();
 
-        } catch (error) {
-            console.error('Image conversion failed:', err);   
-            
-            // Return success response
-            res.json({
-                success: true,
-                message: 'Resume saved successfully',
-                resumeId: savedResume._id,
-                updatedAt: savedResume.lastUpdated
-            });
-        } finally {
-            // Always clean up temp files
-            fs.unlinkSync(tempPdf.name);
+        console.log('Updated resume document:', updatedResume);
+        if (!updatedResume.imageUrl) {
+            console.error('imageUrl was not saved in database!');
         }
+
+        return res.json({
+            success: true,
+            message: 'Resume saved successfully',
+            resumeId: savedResume._id,
+            updatedAt: savedResume.updatedAt,
+            imageUrl: imageUrlPath,
+            pdfVersion: savedResume.pdfVersion
+        });        
 
     } catch (error) {
         console.error('Save Resume Error:', error);
-        res.status(500).json({
+        if (error.message.includes('image conversion') || error.message.includes('Temporary image')) {
+            return res.json({
+                success: true,
+                message: 'Resume saved (image conversion failed)',
+                resumeId: savedResume._id,
+                updatedAt: savedResume.updatedAt,
+                pdfVersion: savedResume.pdfVersion
+            });
+        }
+        return res.status(500).json({
             success: false,
             message: 'Failed to save resume',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
+    } finally {
+        // Clean up temp files
+        if (tempPdf?.name && fs.existsSync(tempPdf.name)) {
+            try {
+                fs.unlinkSync(tempPdf.name);
+                tempPdf.removeCallback();
+            } catch (cleanupError) {
+                console.error('Temp file cleanup failed:', cleanupError);
+            }
+        }
     }
 };
 
@@ -314,73 +348,101 @@ const handleLaTeXExport = (resume, res, shouldDownload) => {
     res.send(latexContent);
   };
 
-// get user's resumes
-/*async function getUserResumes(req, res) {
+// Get all resumes for a user
+const getUserResumes = async (req, res) => {
     try {
-      const { userId } = req.params;
+        const { userId } = req.params;
+
+        // 1. Find all resumes for this user
+        const resumes = await resumeModel.find({ userId })
+        .select('_id templateId updatedAt pdfVersion imageUrl')
+        .populate('templateId', 'name'); // Get template name if needed
+
+        if (!resumes.length) {
+        return res.status(404).json({ 
+            success: false,
+            message: 'No resumes found for this user' 
+        });
+        }
+
+        // 2. Format response with full image URLs
+        const response = resumes.map(resume => ({
+        resumeId: resume._id,
+        templateId: resume.templateId._id,
+        templateName: resume.templateId?.name || 'Untitled',
+        lastUpdated: resume.updatedAt,
+        createdAt: resume.createdAt,
+        version: resume.pdfVersion,
+        imageUrl: resume.imageUrl 
+            ? `${req.protocol}://${req.get('host')}/${resume.imageUrl.replace(/\\/g, '/')}`
+            : null,
+        downloadUrl: `${req.protocol}://${req.get('host')}/api/resumes/${resume._id}/pdf`
+        }));
+
+        res.status(200).json({
+        success: true,
+        count: resumes.length,
+        resumes: response
+        });
+
+    } catch (error) {
+        console.error("Error fetching user resumes:", error);
+        res.status(500).json({ 
+        success: false,
+        message: 'Failed to fetch user resumes',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
+const getResumeImage = async (req, res) => {
+    try {
+      const { userId, resumeId } = req.params;
   
-      // 1️⃣ Check cache
-      const cachedResumes = cache.get(`user-resumes-${userId}`);
-      if (cachedResumes) return res.json(cachedResumes);
+      // 1. Verify resume belongs to user
+      const resume = await resumeModel.findOne({ 
+        _id: resumeId, 
+        userId 
+      });
   
-      // 2️⃣ Fetch resumes from DB
-      const resumes = await resumeModel.find({ userId }).lean();
-      if (!resumes.length) {
-        return res.status(404).json({ message: "No resumes found" });
+      if (!resume) {
+        return res.status(404).json({ 
+          success: false,
+          message: 'Resume not found or access denied' 
+        });
       }
   
-      // 3️⃣ Process PDFs with concurrency limit
-      const resumesWithImages = await Promise.all(
-        resumes.map(resume => 
-          limit(() => convertResumeToImage(resume))
-        )
-      );
+      // 2. Check if image exists
+      if (!resume.imageUrl) {
+        return res.status(404).json({ 
+          success: false,
+          message: 'Resume image not available' 
+        });
+      }
   
-      // 4️⃣ Cache results
-      cache.set(`user-resumes-${userId}`, resumesWithImages);
+      const imagePath = path.join(__dirname, '..', resume.imageUrl);
   
-      // 5️⃣ Send response
-      res.json(resumesWithImages);
+      if (!fs.existsSync(imagePath)) {
+        return res.status(404).json({ 
+          success: false,
+          message: 'Image file not found on server' 
+        });
+      }
+  
+      // 3. Serve the image
+      res.setHeader('Content-Type', 'image/png');
+      res.setHeader('Content-Disposition', `inline; filename=resume_${resumeId}_v${resume.pdfVersion}.png`);
+      res.sendFile(imagePath);
   
     } catch (error) {
-      console.error("Error fetching resumes:", error);
-      res.status(500).json({ message: "Failed to generate previews" });
+      console.error("Error serving resume image:", error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Failed to serve resume image',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
     }
-}
-  
-// Helper: Convert PDF to image + return temp URL
-async function convertResumeToImage(resume) {
+};
 
-    // Unique temp paths (avoid race conditions)
-    const tempPdf = tmp.fileSync({ postfix: `.${Date.now()}.pdf` });
-    fs.writeFileSync(tempPdf.name, resume.pdfData);
 
-    const tempDir = tmp.dirSync().name;
-    const imagePrefix = `resume_${resume._id}_${Date.now()}`;
-
-    // Convert PDF → PNG
-    await pdf.convert(tempPdf.name, {
-        format: 'png',
-        out_dir: tempDir,
-        out_prefix: imagePrefix,
-        page: 1,
-    });
-
-    // Read PNG and cache it
-    const imagePath = `${path.join(tempDir, imagePrefix)}-1.png`;
-    const imageBuffer = fs.readFileSync(imagePath);
-    tempImageCache.set(resume._id.toString(), imageBuffer); // Store for temp URLs
-
-    // Cleanup
-    fs.unlinkSync(tempPdf.name);
-    fs.unlinkSync(imagePath);
-
-    return {
-        _id: resume._id,
-        name: `Resume ${resume.pdfVersion}`,
-        imageUrl: `/temp-resume-image/${resume._id}`, // Temp URL (not base64)
-        createdAt: resume.createdAt,
-    };
-}*/
-
-module.exports = { generatePreviewPDF, saveResume, exportResume };
+module.exports = { generatePreviewPDF, saveResume, exportResume, getUserResumes, getResumeImage };

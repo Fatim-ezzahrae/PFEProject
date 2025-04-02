@@ -5,33 +5,33 @@ const mongoose = require('mongoose');
 const resumeSchema = new mongoose.Schema({
 
     userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-    index: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        index: true
     },
     templateId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Template',
-    required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Template',
+        required: true
     },
     latexCode: {
-    type: String,
-    required: true
+        type: String,
+        required: true
     },
     pdfData: {
-    type: Buffer,
-    validate: {
-        validator: (v) => v.length <= 5 * 1024 * 1024, // 5MB max
-        message: 'PDF exceeds size limit'
-    }
+        type: Buffer,
+        validate: {
+            validator: (v) => v.length <= 5 * 1024 * 1024, // 5MB max
+            message: 'PDF exceeds size limit'
+        }
     },
     pdfVersion: {
-    type: Number,
-    default: 1
+        type: Number,
+        default: 1
     },
     imageUrl: {
-    type: String
+        type: String
     }    
 }, { 
     timestamps: true,
@@ -103,7 +103,7 @@ resumeSchema.statics.fillResume = async function (latexCode, userData) {
     const formatCertif = (certifsArray) => {
         if (!certifsArray || certifsArray.length === 0) return '%'; // Skip if empty
         return certifsArray.map(certif => 
-            `\\cvitem{${escapeLatex(certif.title || '')}}{${escapeLatex(certif.description || '')}}`
+            `\\cvitem{${escapeLatex(certif.description || '')}}{${escapeLatex(certif.title || '')}}`
         ).join('\n');
     };
 

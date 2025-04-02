@@ -41,6 +41,15 @@ app.get('/uploads/images/:filename', (req, res) => {
     }
   });
 });
+app.get('/uploads/resume_images/:filename', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', 'resume_images', req.params.filename);
+  res.sendFile(filePath, {
+    headers: {
+      'Content-Type': 'image/png',
+      'Cache-Control': 'public, max-age=31536000' // Cache for 1 year
+    }
+  });
+});
 
 // Set up a route for handling requests to the resumes API
 app.use('/api/templates', templateRoutes);

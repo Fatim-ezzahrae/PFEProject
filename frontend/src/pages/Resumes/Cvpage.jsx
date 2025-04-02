@@ -37,7 +37,7 @@ const CVPage = ({ generatedResumeURL, selectedTemplateId }) => {
             Authorization: `Bearer ${user.token}`,
             'Content-Type': 'application/json'
           },
-          timeout: 10000 // 10 second timeout
+          timeout: 20000 // 10 second timeout
         }
       );
   
