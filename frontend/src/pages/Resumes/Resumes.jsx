@@ -137,7 +137,6 @@ function Resumes() {
          selectedTemplateId={selectedTemplateId}
          generatedResumeURL={generatedResumeURL}
          setGeneratedResumeURL={setGeneratedResumeURL}
-         handleUseTemplate={handleUseTemplate}
        />
         )}
         

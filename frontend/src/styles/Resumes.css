@@ -95,7 +95,7 @@
 .title {
   text-align: center;
   margin-bottom: 30px;
-  color: #333;
+  color: var(--secondary-dark);
 }
 
 .templates-grid {

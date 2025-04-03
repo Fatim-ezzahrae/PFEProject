@@ -32,7 +32,12 @@ const ResumesList = () => {
   }, [user]);
 
   if (loading) {
-    return <div className="loading-spinner">Loading...</div>;
+    return (
+      <div className="loading-spinner">
+        <div className="spinner"></div>
+        <p>Loading your resumes...</p>
+      </div>
+    );
   }
 
   if (error) {
@@ -50,7 +55,7 @@ const ResumesList = () => {
     );
   }
 
-  return (
+  return (   
     <div className="resumes-container">
       <div className="resumes-header">
         <h2>Your Resumes</h2>
