@@ -1,4 +1,8 @@
 const templateModel = require('../models/template');
+const User = require('../models/user');
+const Template = require('../models/template');
+const Resume = require('../models/resume');
+
 
 const createTemplate = async (req, res) => {
     try {
@@ -10,5 +14,24 @@ const createTemplate = async (req, res) => {
     }
 };
 
+const getStats = async (req, res) => {
+    try {
+        // Count documents in parallel for better performance
+        const [usersCount, templatesCount, resumesCount] = await Promise.all([
+          User.countDocuments(),
+          Template.countDocuments(),
+          Resume.countDocuments()
+        ]);
+    
+        res.json({
+          users: usersCount,
+          templates: templatesCount,
+          resumes: resumesCount
+        });
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        res.status(500).json({ message: 'Error fetching dashboard statistics' });
+      }
+}
 //export controllers
-module.exports = { createTemplate };
+module.exports = { createTemplate, getStats };
