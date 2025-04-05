@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import "react-datepicker/dist/react-datepicker.css";
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../../styles/toastNotif.css';  
 import ButtonBack from '../../component/ButtonBack.jsx';
 import { useAuthContext } from "../../hooks/useAuthContext";
 import formsImage from '../../assets/forms.jpg';
@@ -23,6 +26,7 @@ const Forms = ({
   const [years, setYears] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [countries, setCountries] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Populate the years from the current year down to 1900
@@ -33,6 +37,30 @@ const Forms = ({
     }
     setYears(yearOptions);
   }, []);
+
+  // Toast configuration
+  const toastConfig = {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    className: 'toast-notification'
+  };
+
+  const showErrorToast = (message) => {
+    toast.error(message, toastConfig);
+  };
+
+  const showSuccessToast = (message) => {
+    toast.success(message, toastConfig);
+  };
+
+  const showWarningToast = (message) => {
+    toast.warning(message, toastConfig);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -153,8 +181,272 @@ const Forms = ({
     updatedEmploymentHistory[empIndex].description[descIndex] = e.target.value;
     setEmploymentHistory(updatedEmploymentHistory);
   };
+
+  const validateForms = () => {
+    // Validate user info (required)
+    if (!userInfo.firstName || !userInfo.lastName || !userInfo.email || !userInfo.phone || !userInfo.address) {
+      showErrorToast('Please fill in all required personal information fields');
+      return false;
+    }
+
+    // Validate employment history (required)
+    for (const emp of employmentHistory) {
+      if (!emp.company || !emp.jobTitle || !emp.startDateEmp || !emp.endDateEmp || !emp.city) {
+        showErrorToast('Please fill in all required fields in employment history');
+        return false;
+      }
+      if (emp.description.some(desc => !desc.trim())) {
+        showErrorToast('Please fill in all description fields in employment history');
+        return false;
+      }
+    }
+
+    // Validate education history (required)
+    for (const edu of educationHistory) {
+      if (!edu.institute || !edu.degree || !edu.startDateEdu || !edu.endDateEdu || !edu.city || !edu.country) {
+        showErrorToast('Please fill in all required fields in education history');
+        return false;
+      }
+    }
+
+    // Validate languages (optional but must be complete if started)
+    for (const lang of languages) {
+      if ((lang.language && !lang.level) || (!lang.language && lang.level)) {
+        showErrorToast('Please complete both language and level fields for all entered languages');
+        return false;
+      }
+      if (lang.level === "Other" && !lang.customLevel) {
+        showErrorToast('Please specify your custom language level');
+        return false;
+      }
+    }
+
+    // Validate certifications (optional but must be complete if started)
+    for (const cert of certifications) {
+      if ((cert.title && !cert.description) || (!cert.title && cert.description)) {
+        showErrorToast('Please complete both title and description fields for all entered certifications');
+        return false;
+      }
+    }
+
+    // Validate skills (required)
+    for (const skill of skills) {
+      if (!skill.category || !skill.details) {
+        showErrorToast('Please fill in all required fields in skills');
+        return false;
+      }
+    }
+
+    // Show warning if no languages entered (but don't block submission)
+    if (languages.length === 0) {
+      showWarningToast('No languages added - this section will be empty in your resume');
+    }
+
+    // Show warning if no certifications entered (but don't block submission)
+    if (certifications.length === 0) {
+      showWarningToast('No certifications added - this section will be empty in your resume');
+    }
+
+    return true;
+  };
+
+  const validateCurrentForm = () => {
+    if (!showEmploymentForm && !showEducationForm && !showLanguagesForm && 
+        !showCertificationForm && !showSkillForm) {
+      // Validate user info - checks each field individually
+      if (!userInfo.firstName) {
+        showErrorToast('Please enter your first name');
+        return false;
+      }
+      if (!userInfo.lastName) {
+        showErrorToast('Please enter your last name');
+        return false;
+      }
+      if (!userInfo.email) {
+        showErrorToast('Please enter your email');
+        return false;
+      }
+      if (!userInfo.phone) {
+        showErrorToast('Please enter your phone number');
+        return false;
+      }
+      if (!userInfo.address) {
+        showErrorToast('Please enter your address');
+        return false;
+      }
+    }
+    else if (showEmploymentForm) {
+      // Validate each employment history entry completely
+      for (const [index, emp] of employmentHistory.entries()) {
+        if (!emp.company) {
+          showErrorToast(`Please enter company name for employment #${index + 1}`);
+          return false;
+        }
+        if (!emp.jobTitle) {
+          showErrorToast(`Please enter job title for employment #${index + 1}`);
+          return false;
+        }
+        if (!emp.startDateEmp) {
+          showErrorToast(`Please select start date for employment #${index + 1}`);
+          return false;
+        }
+        if (!emp.endDateEmp) {
+          showErrorToast(`Please select end date for employment #${index + 1}`);
+          return false;
+        }
+        if (!emp.city) {
+          showErrorToast(`Please enter city for employment #${index + 1}`);
+          return false;
+        }
+        if (emp.description.some(desc => !desc.trim())) {
+          showErrorToast(`Please fill all description fields for employment #${index + 1}`);
+          return false;
+        }
+      }
+    }
+    else if (showEducationForm) {
+      // Validate each education entry completely
+      for (const [index, edu] of educationHistory.entries()) {
+        if (!edu.institute) {
+          showErrorToast(`Please enter institute name for education #${index + 1}`);
+          return false;
+        }
+        if (!edu.degree) {
+          showErrorToast(`Please enter degree for education #${index + 1}`);
+          return false;
+        }
+        if (!edu.startDateEdu) {
+          showErrorToast(`Please select start date for education #${index + 1}`);
+          return false;
+        }
+        if (!edu.endDateEdu) {
+          showErrorToast(`Please select end date for education #${index + 1}`);
+          return false;
+        }
+        if (!edu.city) {
+          showErrorToast(`Please enter city for education #${index + 1}`);
+          return false;
+        }
+        if (!edu.country) {
+          showErrorToast(`Please select country for education #${index + 1}`);
+          return false;
+        }
+      }
+    }
+    else if (showLanguagesForm) {
+      // Validate each language entry (only if partially filled)
+      for (const [index, lang] of languages.entries()) {
+        if ((lang.language && !lang.level) || (!lang.language && lang.level)) {
+          showErrorToast(`Please complete both language and level fields for language #${index + 1}`);
+          return false;
+        }
+        if (lang.level === "Other" && !lang.customLevel) {
+          showErrorToast(`Please specify level for ${lang.language}`);
+          return false;
+        }
+      }
+    }
+    else if (showCertificationForm) {
+      // Validate each certification entry (only if partially filled)
+      for (const [index, cert] of certifications.entries()) {
+        if ((cert.title && !cert.description) || (!cert.title && cert.description)) {
+          showErrorToast(`Please complete both title and description fields for certification #${index + 1}`);
+          return false;
+        }
+      }
+    }
+    else if (showSkillForm) {
+      // Validate each skill entry completely
+      for (const [index, skill] of skills.entries()) {
+        if (!skill.category) {
+          showErrorToast(`Please enter category for skill #${index + 1}`);
+          return false;
+        }
+        if (!skill.details) {
+          showErrorToast(`Please enter details for skill #${index + 1}`);
+          return false;
+        }
+      }
+    }
+    return true;
+  };
   
   const handleSubmit = async () => {
+    if (isSubmitting) return;
+    
+    if (!validateForms()) {
+
+      // Determine which form has errors and navigate to it
+      // if user info form has errors
+      if (!userInfo.firstName || !userInfo.lastName || !userInfo.email || 
+        !userInfo.phone || !userInfo.address) {
+        setShowEmploymentForm(false);
+        setShowEducationForm(false);
+        setShowLanguagesForm(false);
+        setShowCertificationForm(false);
+        setShowskillForm(false);
+        return;
+      }
+
+      // if employment history form has errors
+      if (employmentHistory.some(emp => !emp.company || !emp.jobTitle || !emp.startDateEmp || 
+        !emp.endDateEmp || !emp.city)) {
+        setShowEmploymentForm(true);
+        setShowEducationForm(false);
+        setShowLanguagesForm(false);
+        setShowCertificationForm(false);
+        setShowskillForm(false);
+        return;
+      }
+
+      // if education history form has errors
+      if (educationHistory.some(edu => !edu.institute || !edu.degree || !edu.startDateEdu || 
+        !edu.endDateEdu || !edu.city || !edu.country)) {
+        setShowEmploymentForm(false);
+        setShowEducationForm(true);
+        setShowLanguagesForm(false);
+        setShowCertificationForm(false);
+        setShowskillForm(false);
+        return;
+      }
+
+      // if languages form has errors
+      if (languages.some(lang => (lang.language && !lang.level) || (!lang.language && lang.level))) {
+        setShowEmploymentForm(false);
+        setShowEducationForm(false);
+        setShowLanguagesForm(true);
+        setShowCertificationForm(false);
+        setShowskillForm(false);
+        return;
+      }
+
+      // if certifications form has errors
+      if (certifications.some(cert => (cert.title && !cert.description) || (!cert.title && cert.description))) {
+        setShowEmploymentForm(false);
+        setShowEducationForm(false);
+        setShowLanguagesForm(false);
+        setShowCertificationForm(true);
+        setShowskillForm(false);
+        return;
+      }
+
+      // if skills form has errors
+      if (skills.some(skill => !skill.category || !skill.details)) {
+        setShowEmploymentForm(false);
+        setShowEducationForm(false);
+        setShowLanguagesForm(false);
+        setShowCertificationForm(false);
+        setShowskillForm(true);
+        return;
+      }
+
+
+      return;
+    }
+
+    setIsSubmitting(true);
+    showWarningToast('Generating your resume... Please wait.');
+
     try {
       console.log({
         userId: user._id,
@@ -166,7 +458,7 @@ const Forms = ({
         certifications
       }); 
       // step 1: send informations to backend
-      const response = await axios.post("http://localhost:4000/api/info", {
+      const infoResponse = await axios.post("http://localhost:4000/api/info", {
         userId: user._id,
         userInfo,
         employmentHistory,
@@ -175,44 +467,51 @@ const Forms = ({
         languages,
         certifications
       });
-  
-      if (response.data.success) {
-        setErrorMessage(""); // Clear any previous errors
-        console.log("Selected Template ID:", selectedTemplateId);
-        // step 2: generate resume from template and user information
-        const response = await axios.get(`http://localhost:4000/api/resume/generate-resume/${selectedTemplateId}/${user._id}`, {
-          responseType: 'blob', // Important for PDF
-          headers: {
-            'Cache-Control': 'no-cache',
-          }
-        });
 
-        if (response.status === 200) {
-          // Create a Blob from the binary data
-          const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-          const fileUrl = URL.createObjectURL(pdfBlob); // Create a URL for the Blob
-          setGeneratedResumeURL(fileUrl); // Set the Blob URL to be used in the PDF viewer
-          setCurrentStep(3);
-          console.log("Resume generated successfully:", response.data);
-        } else {
-          console.error("Error generating resume:", response.data);
-        }
-        
-      } else {
-        setErrorMessage(response.data.error || "An unknown error occurred.");
+      if (!infoResponse.data.success) {
+        throw new Error(infoResponse.data.error || "Failed to save information");
       }
+
+      showSuccessToast('Your information has been saved successfully!');
+
+      console.log("Selected Template ID:", selectedTemplateId);
+
+      // step 2: generate resume from template and user information
+      const response = await axios.get(`http://localhost:4000/api/resume/generate-resume/${selectedTemplateId}/${user._id}`, {
+        responseType: 'blob', // Important for PDF
+        headers: {
+          'Cache-Control': 'no-cache',
+        }
+      });
+
+      if (response.status === 200) {
+        // Create a Blob from the binary data
+        const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+        const fileUrl = URL.createObjectURL(pdfBlob); // Create a URL for the Blob
+        setGeneratedResumeURL(fileUrl); // Set the Blob URL to be used in the PDF viewer
+        setCurrentStep(3);
+        console.log("Resume generated successfully:", response.data);
+        showSuccessToast('Resume generated successfully!');
+      } else {
+        console.error("Error generating resume:", response.data);
+        throw new Error("Failed to generate resume");
+      }
+
     } catch (error) {
       console.error("Error submitting CV:", error);
+
+      let errorMessage = "An error occurred while processing your request";
       if (error.response) {
-        setErrorMessage(error.response.data.error || "Server error occurred.");
-        console.error("Full Error Response:", error.response.data);
+        // Server responded with a status code outside 2xx
+        errorMessage = error.response.data.error || error.response.data.message || errorMessage;
       } else if (error.request) {
-        setErrorMessage("No response from server. Please try again later.");
-        console.error("No response received:", error.request);
-      } else {
-        setErrorMessage("Request failed: " + error.message);
-        console.error("Request Error:", error.message);
+        // Request was made but no response received
+        errorMessage = "Network error - please check your connection and try again";
       }
+
+      showErrorToast(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
 
 
@@ -220,6 +519,18 @@ const Forms = ({
 
   return (
     <>
+
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     
       {/* User Information Form */}
       {!showEmploymentForm && !showEducationForm && !showLanguagesForm && !showCertificationForm && !showSkillForm && ( 
@@ -237,7 +548,11 @@ const Forms = ({
             </form>
             
         </div>
-         <button className="next" type="submit" onClick={() => setShowEmploymentForm(true)}>Next</button>
+         <button className="next" type="submit" onClick={() => {
+          if (validateCurrentForm()) {
+            setShowEmploymentForm(true)
+          }
+         }}>Next</button>
          </>
       )}
 
@@ -313,7 +628,11 @@ const Forms = ({
       ))}          
     </div>
     <button  className="add-button" type="button" onClick={addEmployment}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add one more employment</button>
-    <button className="next" type="button" onClick={() => setShowEducationForm(true)}>Next</button>
+    <button className="next" type="button" onClick={() => {
+      if (validateCurrentForm()) {
+        setShowEducationForm(true)
+      }
+      }}>Next</button>
     <ButtonBack onClick={() => { setShowEmploymentForm(false); }} />
              
       </>
@@ -395,7 +714,11 @@ const Forms = ({
            ))}
            </div> 
          <button className="add-button" type="button" onClick={addEducation}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add one more education</button>
-         <button className="next" type="button" onClick={() => setShowLanguagesForm(true)}>Next</button>
+         <button className="next" type="button" onClick={() => {
+          if (validateCurrentForm()) {
+            setShowLanguagesForm(true)
+          }
+          }}>Next</button>
          <ButtonBack onClick={() => { setShowEducationForm(false); setShowEmploymentForm(true); }}/>
         </>
       )}
@@ -479,7 +802,11 @@ const Forms = ({
         </div>
         Add one more language
       </button>
-      <button className="next" type="button" onClick={() => setShowCertificationForm(true)}>Next</button>
+      <button className="next" type="button" onClick={() => {
+        if (validateCurrentForm()) {
+          setShowCertificationForm(true)
+        }
+        }}>Next</button>
       <ButtonBack onClick={() => { setShowLanguagesForm(false); setShowEducationForm(true); }}/> 
        </>
       )}
@@ -496,7 +823,7 @@ const Forms = ({
                 <input type="text" name="title" placeholder="Ex: AWS Certified Solutions Architect"value={certification.title} onChange={(e) => handleCertificationChange(index, e)} required />
               </label>
               <label className="label-form-Language">Description:
-                <input name="description" placeholder='2022' value={certification.description} onChange={(e) => handleCertificationChange(index, e)} required />
+                <input name="description" placeholder='Ex: 2022' value={certification.description} onChange={(e) => handleCertificationChange(index, e)} required />
               </label>
             </div>
             </div>
@@ -504,7 +831,11 @@ const Forms = ({
          
           </div>
           <button className="add-button" type="button" onClick={addCertification}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add a certification</button>
-          <button className="next" type="button" onClick={() => setShowskillForm(true)}>Next</button>
+          <button className="next" type="button" onClick={() => {
+            if (validateCurrentForm()) {
+              setShowskillForm(true)
+            }
+            }}>Next</button>
           <ButtonBack onClick={() => { setShowCertificationForm(false); setShowLanguagesForm(true); }}/>
         </>
         )}
@@ -532,7 +863,13 @@ const Forms = ({
         </div>
         <button  className="add-button" type="button" onClick={addskill}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add one more skill</button>
         {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
-        <button className="next" type="button" onClick={handleSubmit}>Submit</button>
+        <button className="next" type="button" onClick={() => {
+          if (validateCurrentForm()) {
+            handleSubmit();
+          }          
+        }} disabled={isSubmitting}>
+          {isSubmitting ? 'Processing...' : 'Submit'}
+        </button>
         <ButtonBack onClick={() => { setShowskillForm(false); setShowCertificationForm(true); }}/>
         </>
         )}

@@ -358,13 +358,6 @@ const getUserResumes = async (req, res) => {
         .select('_id templateId updatedAt pdfVersion imageUrl')
         .populate('templateId', 'name'); // Get template name if needed
 
-        if (!resumes.length) {
-        return res.status(404).json({ 
-            success: false,
-            message: 'No resumes found for this user' 
-        });
-        }
-
         // 2. Format response with full image URLs
         const response = resumes.map(resume => ({
         resumeId: resume._id,

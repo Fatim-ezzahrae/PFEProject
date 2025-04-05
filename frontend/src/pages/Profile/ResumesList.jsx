@@ -20,7 +20,7 @@ const ResumesList = () => {
         setResumes(response.data.resumes);
       } catch (error) {
         console.error('Error fetching resumes:', error);
-        setError('Failed to load resumes');
+        setError(response.data.message);
       } finally {
         setLoading(false);
       }
