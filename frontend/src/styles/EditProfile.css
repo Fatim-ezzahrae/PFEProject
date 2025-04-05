@@ -72,6 +72,7 @@
 
 .Edit-profile-header {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--space-lg);
@@ -82,7 +83,7 @@
 .Edit-profile-actions {
     display: flex;
     gap: 12px;
-    margin-top: 16px;
+    margin-top: 50px;
   } 
 /* Keep all your existing button styles */
 .Edit-edit-btn {
@@ -107,11 +108,20 @@
 }
 
 .Edit-profile-name {
-    color: var(--text-color);
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: var(--space-xs);
+  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Perfect spacing between icon and text */
+}
+
+  .profile-icon {
+    font-size: 50px;
+    color: #68B0AB; /* Using your teal color */
   }
+
 .Edit-add-item-btn {
     align-items: center;
     background-color: var(--primary-dark);

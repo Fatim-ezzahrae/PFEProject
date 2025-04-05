@@ -105,15 +105,15 @@
   font-size: 19px;
   color: var(--secondary-dark);
   background-color: #e9ffdb;
-  padding: 20px;
+  padding: 10px;
   border-radius: 20px;
   border: 1px solid #ddd;
   gap: 8px;
   margin-top: 20px;
 }
 
-.no-job-offers .material-symbols-outlined {
-  font-size: 24px;
+.no-job-offers .icon{
+  font-size: 22px;
   color: var(--secondary-dark);
 }
 

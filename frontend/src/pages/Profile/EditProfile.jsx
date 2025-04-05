@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
 const EditProfile = () => {
   const { user } = useAuthContext();
@@ -615,6 +616,10 @@ const initializeEmptyProfile = () => {
         <div className="Edit-profile-container">
           <div className="Edit-profile-header">
           <div className="Edit-profile-name">
+            <FontAwesomeIcon 
+            icon={faUserCircle} 
+            className="profile-icon"
+          />
             {userInfo.firstName} {userInfo.lastName}
           </div>
           <div className="Edit-profile-actions">

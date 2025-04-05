@@ -48,10 +48,11 @@ const ResumesList = () => {
     return (
       <div className="no-resumes">
         <h3>You haven't created any resumes yet</h3>
-        <Link to="/create-resume" className="create-btn">
+        <Link to="/Resumes" className="create-btn">
           Create Your First Resume
         </Link>
       </div>
+
     );
   }
 
@@ -59,7 +60,7 @@ const ResumesList = () => {
     <div className="resumes-container">
       <div className="resumes-header">
         <h2>Your Resumes</h2>
-        <Link to="/create-resume" className="create-btn">
+        <Link to="/Resume" className="create-btn">
           + New Resume
         </Link>
       </div>
