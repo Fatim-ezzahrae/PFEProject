@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import "../../styles/ResumesList.css"; // We'll create this CSS file
+import "../../styles/ResumesList.css"; 
 
 const ResumesList = () => {
   const { user } = useAuthContext();
@@ -43,7 +43,7 @@ const ResumesList = () => {
   if (error) {
     return <div className="error-message">{error}</div>;
   }
-
+  
   if (resumes.length === 0) {
     return (
       <div className="no-resumes">

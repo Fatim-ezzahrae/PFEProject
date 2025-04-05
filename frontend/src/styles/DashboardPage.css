@@ -8,7 +8,10 @@
   
   .dashboard-container h1 {
     color: #2c3e50;
-    margin-bottom: 30px;
+    margin-bottom: 50px;
+    margin-left: 750px;
+    font-size: 40px;
+
   }
   
   .stats-container {
@@ -26,7 +29,7 @@
     padding: 20px;
     width: 200px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease;
   }
   
@@ -61,6 +64,7 @@
   .dashboard-button-container {
     position: fixed;
     bottom: 30px;
+    top: 400px;
     right: 30px;
   }
   

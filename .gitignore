@@ -1,1 +1,9 @@
 .env
+.aux
+.log
+.pdf
+.synctex.gz
+.toc
+.lof
+.out
+Backend/uploads/
