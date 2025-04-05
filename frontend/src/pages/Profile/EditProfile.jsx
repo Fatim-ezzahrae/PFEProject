@@ -6,6 +6,8 @@ import DeleteButton from "../../component/DeleteButt"
 import '../../styles/toastNotif.css';  
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const EditProfile = () => {
   const { user } = useAuthContext();
@@ -15,6 +17,17 @@ const EditProfile = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [showAccountSettings, setShowAccountSettings] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [showPasswords, setShowPasswords] = useState({
+    current: false,
+    new: false,
+    confirm: false
+  });
+  const togglePasswordVisibility = (field) => {
+    setShowPasswords(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
   const handleAccountSettingsChange = (e) => {
     const { name, value } = e.target;
     setAccountSettings(prev => ({ ...prev, [name]: value }));
@@ -1094,38 +1107,58 @@ const initializeEmptyProfile = () => {
             
             <div className="Account-settings-field">
               <label>Current Password:</label>
-              <input
-                type="password"
-                name="currentPassword"
-                value={accountSettings.currentPassword}
-                onChange={handleAccountSettingsChange}
-                placeholder="Current password"
-                required
-              />
+              <div className="password-input-wrapper">
+                <input
+                  type={showPasswords.current ? "text" : "password"}
+                  name="currentPassword"
+                  value={accountSettings.currentPassword}
+                  onChange={handleAccountSettingsChange}
+                  placeholder="Current password"
+                  required
+                />
+                <FontAwesomeIcon 
+                  icon={showPasswords.current ? faEye : faEyeSlash} 
+                  onClick={() => togglePasswordVisibility('current')}
+                  className="password-toggle-icon"
+                />
+              </div>
             </div>
-            
+
             <div className="Account-settings-field">
               <label>New Password:</label>
-              <input
-                type="password"
-                name="newPassword"
-                value={accountSettings.newPassword}
-                onChange={handleAccountSettingsChange}
-                placeholder="New password"
-              />
+              <div className="password-input-wrapper">
+                <input
+                  type={showPasswords.new ? "text" : "password"}
+                  name="newPassword"
+                  value={accountSettings.newPassword}
+                  onChange={handleAccountSettingsChange}
+                  placeholder="New password"
+                />
+                <FontAwesomeIcon 
+                  icon={showPasswords.new ? faEye :  faEyeSlash} 
+                  onClick={() => togglePasswordVisibility('new')}
+                  className="password-toggle-icon"
+                />
+              </div>
             </div>
-            
+
             <div className="Account-settings-field">
               <label>Confirm Password:</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={accountSettings.confirmPassword}
-                onChange={handleAccountSettingsChange}
-                placeholder="Confirm new password"
-              />
+              <div className="password-input-wrapper">
+                <input
+                  type={showPasswords.confirm ? "text" : "password"}
+                  name="confirmPassword"
+                  value={accountSettings.confirmPassword}
+                  onChange={handleAccountSettingsChange}
+                  placeholder="Confirm new password"
+                />
+                <FontAwesomeIcon 
+                  icon={showPasswords.confirm ?faEye  :faEyeSlash } 
+                  onClick={() => togglePasswordVisibility('confirm')}
+                  className="password-toggle-icon"
+                />
+              </div>
             </div>
-            
             <div className="Account-settings-buttons">
               <button type="submit" className="Account-settings-save">
                 Save Changes

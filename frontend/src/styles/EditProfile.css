@@ -532,6 +532,29 @@
     background-color: #d5d5d5;
   }
   
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-input-wrapper input {
+    padding-right: 30px; /* Space for icon */
+    width: 100%;
+  }
+  
+  .password-toggle-icon {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #000000;
+    transition: color 0.2s;
+    font-size: 20px;
+  }
+  
+  .password-toggle-icon:hover {
+    color: #333;
+  }
 
 /* ====== Responsive Design ====== */
 @media (max-width: 768px) {
