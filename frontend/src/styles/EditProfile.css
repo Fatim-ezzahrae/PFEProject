@@ -566,6 +566,90 @@
     color: #333;
   }
 
+  /* Description item container */
+.Edit-desc-item-container {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+/* Remove button styling */
+.Edit-remove-desc-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #ff4444;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+}
+
+.Edit-remove-desc-btn:hover {
+  background-color: #f8f9fa;
+}
+
+.Edit-remove-desc-btn .material-symbols-outlined {
+  font-size: 24px;
+}
+
+/* Adjust input padding to prevent text overlap */
+.Edit-description-input {
+  padding-right: 35px !important;
+}
+
+/* Add button styling */
+.Edit-add-desc-btn {
+  background: none;
+  border: none;
+  color: #4A7C59;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.Edit-add-desc-btn .material-symbols-outlined {
+  font-size: 34px;
+}
+
+.Edit-add-desc-btn:hover {
+  color: #3a5c47;
+}
+
+/* Remove Button Styling */
+.edit-minus-button {
+  padding: 1px 2px;
+   background: transparent;
+   border: none;
+   margin-left: 930px;
+   cursor: pointer;
+   transition: all 0.2s ease;
+}
+
+.edit-minus-button:hover{
+  transform: scale(1.05);
+}
+
+
+.edit-minus-button .material-symbols-outlined {
+  font-size: 25px;
+  font-weight: bold;
+  color: #ff4444;
+  transition: all 0.2s ease;
+}
+
+.edit-minus-button:hover .material-symbols-outlined {
+  color: #cc0000;
+}
+
 /* ====== Responsive Design ====== */
 @media (max-width: 768px) {
     .Edit-profile-container {

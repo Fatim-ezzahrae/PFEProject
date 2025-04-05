@@ -34,6 +34,43 @@ const EditProfile = () => {
     setAccountSettings(prev => ({ ...prev, [name]: value }));
   };
   
+  const handleRemoveDescription = (employmentIndex, descIndex) => {
+    const updatedEmployment = [...employmentHistory];
+    updatedEmployment[employmentIndex].description.splice(descIndex, 1);
+    setEmploymentHistory(updatedEmployment);
+  };
+
+  const removeEducation = (index) => {
+    const updatedEducation = [...educationHistory];
+    updatedEducation.splice(index, 1);
+    setEducationHistory(updatedEducation);
+  };
+
+  const removeLanguage = (index) => {
+    const updatedLanguages = [...languages];
+    updatedLanguages.splice(index, 1);
+    setLanguages(updatedLanguages);
+  };
+
+  const removeEmployment = (index) => {
+    const updatedEmployment = [...employmentHistory];
+    updatedEmployment.splice(index, 1);
+    setEmploymentHistory(updatedEmployment);
+  };
+  // Remove certification
+  const removeCertification = (index) => {
+    const updatedCertifications = [...certifications];
+    updatedCertifications.splice(index, 1);
+    setCertifications(updatedCertifications);
+  };
+
+    // Remove skill
+const removeSkill = (index) => {
+  const updatedSkills = [...skills];
+  updatedSkills.splice(index, 1);
+  setSkills(updatedSkills);
+};
+
   const handleAccountSettingsSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -720,6 +757,16 @@ const initializeEmptyProfile = () => {
             <h3 className="Edit-section-title">Employment History</h3>
             {employmentHistory.map((employment, index) => (
               <div key={index} className="Edit-form-card">
+                {index > 0 && (
+            <button 
+              type="button" 
+              className="edit-minus-button"
+              onClick={() => removeEmployment(index)}
+              aria-label="Remove employment"
+            >
+              <span className="material-symbols-outlined">remove</span>
+            </button>
+          )}
                 <div className="Edit-form-row">
                   <label className="Edit-form-label">
                     Company:
@@ -793,25 +840,34 @@ const initializeEmptyProfile = () => {
                 </div>
                 
                 <label className="Edit-form-label">Description:</label>
-                {employment.description.map((desc, descIndex) => (
-                  <input
-                    key={descIndex}
-                    type="text"
-                    className="Edit-form-input Edit-description-input"
-                    value={desc}
-                    onChange={(e) => handleDescriptionChange(index, descIndex, e)}
-                    required
-                  />
-                ))}
-                
+          {employment.description.map((desc, descIndex) => (
+            <div key={descIndex} className="Edit-desc-item-container">
+              <input
+                type="text"
+                className="Edit-form-input Edit-description-input"
+                value={desc}
+                onChange={(e) => handleDescriptionChange(index, descIndex, e)}
+                required
+              />
+              {descIndex > 0 && ( // Only show remove button for additional items
                 <button
                   type="button"
-                  className="Edit-add-desc-btn"
-                  onClick={() => handleAddDescription(index)}
+                  className="Edit-remove-desc-btn"
+                  onClick={() => handleRemoveDescription(index, descIndex)}
+                  aria-label="Remove description"
                 >
-                  <span className="material-symbols-outlined">add_circle</span>
-                  Add Description
+                  <span className="material-symbols-outlined">remove</span>
                 </button>
+              )}
+            </div>
+          ))}
+          <button
+            type="button"
+            className="Edit-add-desc-btn"
+            onClick={() => handleAddDescription(index)}
+          >
+            <span className="material-symbols-outlined">add_circle</span>
+          </button>
               </div>
             ))}
             
@@ -829,6 +885,16 @@ const initializeEmptyProfile = () => {
             <h3 className="Edit-section-title">Education</h3>
             {educationHistory.map((education, index) => (
               <div key={index} className="Edit-form-card">
+                    {index > 0 && (
+            <button 
+              type="button" 
+              className="edit-minus-button"
+              onClick={() => removeEducation(index)}
+              aria-label="Remove employment"
+            >
+              <span className="material-symbols-outlined">remove</span>
+            </button>
+          )}
                 <div className="Edit-form-row">
                   <label className="Edit-form-label">
                     Institute:
@@ -937,6 +1003,16 @@ const initializeEmptyProfile = () => {
             <h3 className="Edit-section-title">Languages</h3>
             {languages.map((language, index) => (
               <div key={index} className="Edit-form-card">
+                 {index > 0 && (
+            <button 
+              type="button" 
+              className="edit-minus-button"
+              onClick={() => removeLanguage(index)}
+              aria-label="Remove employment"
+            >
+              <span className="material-symbols-outlined">remove</span>
+            </button>
+          )}
                 <div className="Edit-form-row">
                   <label className="Edit-form-label">
                     Language:
@@ -996,6 +1072,16 @@ const initializeEmptyProfile = () => {
             <h3 className="Edit-section-title">Certifications</h3>
             {certifications.map((certification, index) => (
               <div key={index} className="Edit-form-card">
+                {index > 0 && (
+            <button 
+              type="button" 
+              className="edit-minus-button"
+              onClick={() => removeCertification(index)}
+              aria-label="Remove employment"
+            >
+              <span className="material-symbols-outlined">remove</span>
+            </button>
+          )}
                 <div className="Edit-form-row">
                   <label className="Edit-form-label">
                     Title:
@@ -1037,6 +1123,16 @@ const initializeEmptyProfile = () => {
             <h3 className="Edit-section-title">Skills</h3>
             {skills.map((skill, index) => (
               <div key={index} className="Edit-form-card">
+                {index > 0 && (
+            <button 
+              type="button" 
+              className="edit-minus-button"
+              onClick={() => removeSkill(index)}
+              aria-label="Remove employment"
+            >
+              <span className="material-symbols-outlined">remove</span>
+            </button>
+          )}
                 <div className="Edit-form-row">
                   <label className="Edit-form-label">
                     Category:

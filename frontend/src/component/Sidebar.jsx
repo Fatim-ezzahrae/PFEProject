@@ -1,14 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import "../styles/Sidebar.css"; 
 
-const Sidebar  = ({ setActivePage }) => {
+const Sidebar = ({ setActivePage }) => {
   return (
     <div className="sidebar">
-        <button onClick={() => setActivePage("profile")} className="icon">
-        <span className="material-symbols-outlined">grid_view</span> 
-        <span className="label3">Dashboard</span>
-      </button>
       <button onClick={() => setActivePage("editProfile")} className="icon">
         <span className="material-symbols-outlined">person</span> 
         <span className="label">Profile</span>

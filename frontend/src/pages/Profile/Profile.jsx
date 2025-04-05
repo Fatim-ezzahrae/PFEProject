@@ -3,13 +3,12 @@ import axios from "axios";
 import EditProfile from "./EditProfile";
 import ResumesList from "./ResumesList";
 import CreatedJobOffers from "./CreatedJobOffers";
-import AppliedJobOffers from "./AppliedJobOffers";
 import "../../styles/Profile.css";
 import Sidebar from "../../component/Sidebar";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
 const Profile = () => {
-  const [activePage, setActivePage] = useState("profile");
+  const [activePage, setActivePage] = useState("editProfile"); 
   const [jobOffers, setJobOffers] = useState([]);
   const [error, setError] = useState(null);
   const { user } = useAuthContext();
@@ -32,14 +31,13 @@ const Profile = () => {
   }, [user]);
 
   return (
-    <div className="profile-container">
+      <>
       <Sidebar setActivePage={setActivePage} />
+
+      <div className="profile-container">
+      
       <div className="content">
-        {activePage === "profile" && (
-          <div>
-            <h2>Welcome to Your Profile</h2>
-          </div>
-        )}
+        {/* Removed the dashboard view completely */}
         {activePage === "editProfile" && <EditProfile />}
         {activePage === "resumesList" && <ResumesList />}
         {activePage === "createdJobOffers" && (
@@ -49,9 +47,9 @@ const Profile = () => {
             fetchJobOffers={fetchJobOffers}
           />
         )}
-        {activePage === "appliedJobOffers" && <AppliedJobOffers />}
       </div>
     </div>
+    </>
   );
 };
 

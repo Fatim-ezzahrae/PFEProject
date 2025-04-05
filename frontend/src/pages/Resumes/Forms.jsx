@@ -4,9 +4,10 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../../styles/toastNotif.css';  
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMinus } from '@fortawesome/free-solid-svg-icons';
 import ButtonBack from '../../component/ButtonBack.jsx';
 import { useAuthContext } from "../../hooks/useAuthContext";
-import formsImage from '../../assets/forms.jpg';
 
 const Forms = ({
   currentStep, setCurrentStep,
@@ -134,6 +135,12 @@ const Forms = ({
     ]);
   };
 
+  const removeEmployment = (index) => {
+    const updatedEmployment = [...employmentHistory];
+    updatedEmployment.splice(index, 1);
+    setEmploymentHistory(updatedEmployment);
+  };
+
   const addEducation = () => {
     setEducationHistory([
       ...educationHistory,
@@ -148,17 +155,43 @@ const Forms = ({
     ]);
   };
 
+  
+const removeEducation = (index) => {
+  const updatedEducation = [...educationHistory];
+  updatedEducation.splice(index, 1);
+  setEducationHistory(updatedEducation);
+};
+
   const addLanguage = () => {
     setLanguages([...languages, { language: "", level: "" }]); 
+  };
+
+  const removeLanguage = (index) => {
+    const updatedLanguages = [...languages];
+    updatedLanguages.splice(index, 1);
+    setLanguages(updatedLanguages);
   };
 
   const addCertification = () => {
     setCertifications([...certifications, { title: "", description: "" }]);
   };
 
+  // Remove certification
+const removeCertification = (index) => {
+  const updatedCertifications = [...certifications];
+  updatedCertifications.splice(index, 1);
+  setCertifications(updatedCertifications);
+};
   const addskill = () => {
     setSkills([...skills, { category: "", details: "" }]);
   };
+
+  // Remove skill
+const removeSkill = (index) => {
+  const updatedSkills = [...skills];
+  updatedSkills.splice(index, 1);
+  setSkills(updatedSkills);
+};
 
 
   const handleAddDescription = (index) => {
@@ -180,6 +213,11 @@ const Forms = ({
     const updatedEmploymentHistory = [...employmentHistory];
     updatedEmploymentHistory[empIndex].description[descIndex] = e.target.value;
     setEmploymentHistory(updatedEmploymentHistory);
+  };
+  const handleRemoveDescription = (employmentIndex, descIndex) => {
+    const updatedEmployment = [...employmentHistory];
+    updatedEmployment[employmentIndex].description.splice(descIndex, 1);
+    setEmploymentHistory(updatedEmployment);
   };
 
   const validateForms = () => {
@@ -556,13 +594,23 @@ const Forms = ({
          </>
       )}
 
-     {/* Employment Form */}
-     {showEmploymentForm && !showEducationForm && !showLanguagesForm && !showCertificationForm && !showSkillForm && (
-    <>
+{/* Employment Form */}
+{showEmploymentForm && !showEducationForm && !showLanguagesForm && !showCertificationForm && !showSkillForm && (
+  <>
     <div className="employment-wrapper">
       <h2>Employment History</h2>
       {employmentHistory.map((employment, index) => (
         <div key={index} className="form-box">
+           {index > 0 && (
+            <button 
+              type="button" 
+              className="form-minus-button"
+              onClick={() => removeEmployment(index)}
+              aria-label="Remove employment"
+            >
+              <span className="material-symbols-outlined">remove</span>
+            </button>
+          )}
           <div className="row">
             <label className="label-form">Company:
               <input type="text" name="company" placeholder="Enter your company name..." value={employment.company} onChange={(e) => handleEmploymentChange(index, e)} required />
@@ -572,8 +620,8 @@ const Forms = ({
             </label>
           </div>
           <div className="row">
-             {/* Start Year Dropdown */}
-             <label className="label-form">Start Year:
+            {/* Start Year Dropdown */}
+            <label className="label-form">Start Year:
               <select 
                 className="date-picker-wrapper" 
                 name="startDateEmp" 
@@ -607,119 +655,165 @@ const Forms = ({
               <input type="text" name="city" placeholder="Enter your City..." value={employment.city} onChange={(e) => handleEmploymentChange(index, e)} required />
             </label>
           </div>
-                {/* Description*/}
-                <label className="label-form">Description:</label>
-                {(employment.description.length === 0 ? [""] : employment.description).map((desc, descIndex) => (
-                 
-                    <input type="text"
-                    className='descp'
-                      name="description"
-                      placeholder="Ex: Provided customer support and resolved technical issues"
-                      value={desc}
-                      onChange={(e) => handleDescriptionChange(index, descIndex, e)}
-                      required
-                    />
-                
-                ))}
-
-
-    <button className="descButt" type="button" onClick={() => handleAddDescription(index)}><span class="material-symbols-outlined">add_circle</span></button>
+          
+          {/* Description Section */}
+            <label className="label-form">Description:</label>
+      <div className="description-container">
+        {(employment.description.length === 0 ? [""] : employment.description).map((desc, descIndex) => (
+          <div key={descIndex} className="description-item-wrapper">
+            <div className="description-input-container">
+              <input 
+                type="text"
+                className='descp'
+                name="description"
+                placeholder="Ex: Provided customer support and resolved technical issues"
+                value={desc}
+                onChange={(e) => handleDescriptionChange(index, descIndex, e)}
+                required
+              />
+              {descIndex > 0 && (
+                <button 
+                  type="button" 
+                  className="minus-button"
+                  onClick={() => handleRemoveDescription(index, descIndex)}
+                  aria-label="Remove description"
+                >
+                  <FontAwesomeIcon icon={faMinus} />
+                </button>
+              )}
+              </div>
+                    </div>
+                  ))}
+          </div>
+          
+          <button className="descButt" type="button" onClick={() => handleAddDescription(index)}>
+            <span className="material-symbols-outlined">add_circle</span> 
+          </button>
+          
+       
         </div>
       ))}          
     </div>
-    <button  className="add-button" type="button" onClick={addEmployment}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add one more employment</button>
-    <button className="next" type="button" onClick={() => {
-      if (validateCurrentForm()) {
-        setShowEducationForm(true)
-      }
-      }}>Next</button>
-    <ButtonBack onClick={() => { setShowEmploymentForm(false); }} />
-             
-      </>
-      )}
-
-
-    {/* Education from */}
-    {showEducationForm && !showLanguagesForm && !showCertificationForm && !showSkillForm && (
-      <>
-
-    <div className="education-wrapper">
-    <h2>Education History</h2>
-    {educationHistory.map((education, index) => (
-      <div key={index} className="form-box">
-        <div className="row">
-          <label className="label-form">Institute:
-            <input type="text" name="institute" placeholder="Enter your Institute name..." value={education.institute} onChange={(e) => handleEducationChange(index, e)} required />
-          </label>
-          <label className="label-form">Degree:
-            <input type="text" name="degree" placeholder="Enter your Degree..." value={education.degree} onChange={(e) => handleEducationChange(index, e)} required />
-          </label>
+    
+    <div className="buttons-wrapper">
+      <button className="add-button" type="button" onClick={addEmployment}>
+        <div className="plus">
+          <span className="material-symbols-outlined">add</span>
         </div>
-        <div className="row">
-          {/* Start Year Dropdown */}
-          <label className="label-form">Start Year:
-              <select 
-                className="date-picker-wrapper" 
-                name="startDateEdu"
-                value={education.startDateEdu}
-                onChange={(e) => handleEducationChange(index, e)}
-                required
-              >
-                <option value="">Select Start Year</option>
-                {years.map((year) => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select>
-            </label>
+        Add one more employment
+      </button>
+      <button className="next" type="button" onClick={() => {
+        if (validateCurrentForm()) {
+          setShowEducationForm(true)
+        }
+      }}>
+        Next
+      </button>
+      <ButtonBack onClick={() => { setShowEmploymentForm(false); }} />
+    </div>
+  </>
+)}
 
-            {/* End Year Dropdown */}
-            <label className="label-form">End Year:
-              <select  
-                className="date-picker-wrapper"
-                name="endDateEdu"
-                value={education.endDateEdu}
-                onChange={(e) => handleEducationChange(index, e)}
-                required
-              >
-                <option value="">Select End Year</option>
-                <option value="Now">Now</option>
-                {years.map((year) => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select>
-            </label> 
-               </div>                      
-           <div className="row">
-          <label className="label-form ">City:
-            <input type="text" placeholder="Enter your City..." name="city" value={education.city} onChange={(e) => handleEducationChange(index, e)} required />
-          </label>        
-           <label className="label-form">Country:
-                  <select 
-                    name="country"
-                    value={education.country}
-                    onChange={(e) => handleEducationChange(index, e)}
-                    required
-                  >
-                    <option value="">Select Country</option>
-                    {countries.map((country) => (
-                      <option key={country.cca2} value={country.name.common}>
-                        {country.name.common}
-                      </option>
-                    ))}
-                  </select>
-        </label>
-        </div>      
-        
-      </div>
-           ))}
-           </div> 
-         <button className="add-button" type="button" onClick={addEducation}> <div className="plus"> <span class="material-symbols-outlined"> add </span> </div> Add one more education</button>
-         <button className="next" type="button" onClick={() => {
-          if (validateCurrentForm()) {
-            setShowLanguagesForm(true)
-          }
-          }}>Next</button>
-         <ButtonBack onClick={() => { setShowEducationForm(false); setShowEmploymentForm(true); }}/>
+        {/* Education form */}
+      {showEducationForm && !showLanguagesForm && !showCertificationForm && !showSkillForm && (
+        <>
+          <div className="education-wrapper">
+            <h2>Education History</h2>
+            {educationHistory.map((education, index) => (
+              <div key={index} className="form-box">
+                  {index > 0 && (
+            <button 
+              type="button" 
+              className="form-minus-button"
+              onClick={() => removeEducation(index)}
+              aria-label="Remove employment"
+            >
+              <span className="material-symbols-outlined">remove</span>
+            </button>
+          )}
+                <div className="row">
+                  <label className="label-form">Institute:
+                    <input type="text" name="institute" placeholder="Enter your Institute name..." value={education.institute} onChange={(e) => handleEducationChange(index, e)} required />
+                  </label>
+                  <label className="label-form">Degree:
+                    <input type="text" name="degree" placeholder="Enter your Degree..." value={education.degree} onChange={(e) => handleEducationChange(index, e)} required />
+                  </label>
+                </div>
+                <div className="row">
+                  {/* Start Year Dropdown */}
+                  <label className="label-form">Start Year:
+                    <select 
+                      className="date-picker-wrapper" 
+                      name="startDateEdu"
+                      value={education.startDateEdu}
+                      onChange={(e) => handleEducationChange(index, e)}
+                      required
+                    >
+                      <option value="">Select Start Year</option>
+                      {years.map((year) => (
+                        <option key={year} value={year}>{year}</option>
+                      ))}
+                    </select>
+                  </label>
+
+                  {/* End Year Dropdown */}
+                  <label className="label-form">End Year:
+                    <select  
+                      className="date-picker-wrapper"
+                      name="endDateEdu"
+                      value={education.endDateEdu}
+                      onChange={(e) => handleEducationChange(index, e)}
+                      required
+                    >
+                      <option value="">Select End Year</option>
+                      <option value="Now">Now</option>
+                      {years.map((year) => (
+                        <option key={year} value={year}>{year}</option>
+                      ))}
+                    </select>
+                  </label> 
+                </div>                      
+                <div className="row">
+                  <label className="label-form ">City:
+                    <input type="text" placeholder="Enter your City..." name="city" value={education.city} onChange={(e) => handleEducationChange(index, e)} required />
+                  </label>        
+                  <label className="label-form">Country:
+                    <select 
+                      name="country"
+                      value={education.country}
+                      onChange={(e) => handleEducationChange(index, e)}
+                      required
+                    >
+                      <option value="">Select Country</option>
+                      {countries.map((country) => (
+                        <option key={country.cca2} value={country.name.common}>
+                          {country.name.common}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              
+              </div>
+            ))}
+          </div>
+          
+          <div className="buttons-wrapper">
+            <button className="add-button" type="button" onClick={addEducation}>
+              <div className="plus">
+                <span className="material-symbols-outlined">add</span>
+              </div>
+              Add one more education
+            </button>
+            <button className="next" type="button" onClick={() => {
+              if (validateCurrentForm()) {
+                setShowLanguagesForm(true)
+              }
+            }}>
+              Next
+            </button>
+            <ButtonBack onClick={() => { setShowEducationForm(false); setShowEmploymentForm(true); }}/>
+          </div>
         </>
       )}
 
@@ -732,6 +826,16 @@ const Forms = ({
       
       {languages.map((language, index) => (
         <div key={index} className="form-box" >
+           {index > 0 && (
+            <button 
+              type="button" 
+              className="form-minus-button"
+              onClick={() => removeLanguage(index)}
+              aria-label="Remove employment"
+            >
+              <span className="material-symbols-outlined">remove</span>
+            </button>
+          )}
           <div className="row">
           <label className="label-form-Language">Language:
             <input 
@@ -818,6 +922,16 @@ const Forms = ({
           <h2>Certifications</h2>
           {certifications.map((certification, index) => (
             <div key={index} className="form-box" >
+               {index > 0 && (
+            <button 
+              type="button" 
+              className="form-minus-button"
+              onClick={() => removeCertification(index)}
+              aria-label="Remove employment"
+            >
+              <span className="material-symbols-outlined">remove</span>
+            </button>
+          )}
               <div className="row">
               <label className="label-form-Language" >Title:
                 <input type="text" name="title" placeholder="Ex: AWS Certified Solutions Architect"value={certification.title} onChange={(e) => handleCertificationChange(index, e)} required />
@@ -849,6 +963,16 @@ const Forms = ({
 
           {skills.map((skill, index) => (
             <div key={index} className="form-box">
+               {index > 0 && (
+            <button 
+              type="button" 
+              className="form-minus-button"
+              onClick={() => removeSkill(index)}
+              aria-label="Remove employment"
+            >
+              <span className="material-symbols-outlined">remove</span>
+            </button>
+          )}
               <div className="row">
               <label className="label-form-Language">Category:
                 <input type="text" name="category" placeholder="Ex: Programming..." value={skill.category} onChange={(e) => handleskillChange(index, e)} required />

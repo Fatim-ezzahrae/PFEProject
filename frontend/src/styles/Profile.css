@@ -160,21 +160,7 @@
   color: #3c723f;
 }
 
-.profile-container h2 {
-  position: fixed;
-  top: 105px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--secondary-dark);
-  font-family: "Winky Sans", sans-serif;
-  font-optical-sizing: auto; 
-  font-weight: 600; 
-  font-style: normal;
-  font-size: 50px;
-  padding: 10px 20px;
-  z-index: 1000;
-  width: max-content;
-}
+
 
 /* Centering the popup */
 .confirmation-overlay {
