@@ -33,7 +33,11 @@ const CreatedJobOffers = ({ jobOffers, setJobOffers, fetchJobOffers }) => {
   const handleDelete = async () => {
     if (!jobToDelete) return; // Ensure a job is selected before deleting
     try {
-      await axios.delete(`http://localhost:4000/api/jobs/${jobToDelete}`);
+      await axios.delete(`http://localhost:4000/api/jobs/${jobToDelete}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      });
       setJobOffers(prevOffers => prevOffers.filter(job => job._id !== jobToDelete));
       await fetchJobOffers();
       setShowConfirm(false);

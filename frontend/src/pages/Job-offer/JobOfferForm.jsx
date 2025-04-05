@@ -35,6 +35,10 @@ function JobOfferForm({ onJobAdded }) {
       const response = await axios.post('http://localhost:4000/api/jobs', { 
         publisherId: user._id, 
         ...formData 
+      }, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
       });
       console.log('Job Offer Submitted:', response.data);
       setErrorMessage("");

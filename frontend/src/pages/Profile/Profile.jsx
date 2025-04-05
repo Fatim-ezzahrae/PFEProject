@@ -16,7 +16,11 @@ const Profile = () => {
   const fetchJobOffers = async () => {
     if (user) {
       try {
-        const response = await axios.get(`http://localhost:4000/api/jobs/${user._id}`);	
+        const response = await axios.get(`http://localhost:4000/api/jobs/${user._id}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
         setJobOffers(response.data);
         setError(null);
       } catch (error) {

@@ -14,7 +14,11 @@ const ResumesList = () => {
   useEffect(() => {
     const fetchResumes = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/resume/users/${user._id}`);
+        const response = await axios.get(`http://localhost:4000/api/resume/users/${user._id}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
         console.log('API Response:', response); // Add this line
         console.log('Response Data:', response.data); // And this line
         setResumes(response.data.resumes);

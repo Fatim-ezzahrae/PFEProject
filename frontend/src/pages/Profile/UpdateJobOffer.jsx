@@ -18,7 +18,11 @@ const UpdateJobOffer = ({
     const fetchJobDetails = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:4000/api/jobs/${jobOfferId}`);
+        const response = await axios.get(`http://localhost:4000/api/jobs/${jobOfferId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setUpdatedJob(response.data);
         setError(null);
       } catch (error) {
@@ -40,7 +44,11 @@ const UpdateJobOffer = ({
     setError(null);
 
     try {
-      await axios.put(`http://localhost:4000/api/jobs/${jobOfferId}`, updatedJob);
+      await axios.put(`http://localhost:4000/api/jobs/${jobOfferId}`, updatedJob, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       // Option 1: Optimistic update
       setJobOffers(prev => prev.map(job => 
         job._id === jobOfferId ? { ...job, ...updatedJob } : job

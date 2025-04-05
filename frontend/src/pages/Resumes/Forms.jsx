@@ -504,6 +504,10 @@ const removeSkill = (index) => {
         skills,
         languages,
         certifications
+      }, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        }
       });
 
       if (!infoResponse.data.success) {
@@ -518,6 +522,7 @@ const removeSkill = (index) => {
       const response = await axios.get(`http://localhost:4000/api/resume/generate-resume/${selectedTemplateId}/${user._id}`, {
         responseType: 'blob', // Important for PDF
         headers: {
+          Authorization: `Bearer ${user.token}`,
           'Cache-Control': 'no-cache',
         }
       });
