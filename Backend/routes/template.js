@@ -2,7 +2,6 @@ const express = require('express');  //require express
 const multer = require('multer');
 
 const {
-    uploadTemplate,
     getTemplates,
     getTemplate,
     getTemplateImage
@@ -26,8 +25,7 @@ router.get('/:id', getTemplateImage);
 // require auth for all workout routes
 //router.use(requireAuth)
 
-//upload template
-router.post('/upload', upload.single('pdfFile'), uploadTemplate);
+
 
 //export router
 module.exports = router;

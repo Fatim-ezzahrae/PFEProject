@@ -1,5 +1,7 @@
 import Dashboardbut from "../component/Dashbordbutt";
 import { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useAuthContext } from "../hooks/useAuthContext";
 import axios from 'axios';
 import '../styles/DashboardPage.css';
@@ -20,6 +22,23 @@ const Dashboard = () => {
     pdfFile: null
   });
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [formErrors, setFormErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const validateForm = () => {
+    const errors = {};
+    if (!templateForm.title.trim()) errors.title = 'Title is required';
+    if (!templateForm.latexCode.trim()) errors.latexCode = 'LaTeX code is required';
+    if (!templateForm.pdfFile) errors.pdfFile = 'PDF file is required';
+
+    // Show toast for each error
+    Object.values(errors).forEach(error => {
+      toast.error(error);
+    });
+    
+    return Object.keys(errors).length === 0;
+  };
 
   useEffect(() => {
     if (!showOnlyForm) { // Only fetch stats when not showing form
@@ -45,14 +64,22 @@ const Dashboard = () => {
 
   const handleTemplateSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    setUploadProgress(0);
+
+    const toastId = toast.loading('Uploading template...');
+    
     try {
       const formData = new FormData();
-      formData.append('title', templateForm.title);
+      formData.append('name', templateForm.title);
       formData.append('latexCode', templateForm.latexCode);
       formData.append('pdfFile', templateForm.pdfFile);
 
       const response = await axios.post(
-        'http://localhost:4000/api/templates',
+        'http://localhost:4000/api/admin/upload',
         formData,
         {
           headers: {
@@ -60,27 +87,65 @@ const Dashboard = () => {
             'Content-Type': 'multipart/form-data'
           },
           onUploadProgress: (progressEvent) => {
-            const progress = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
+            // More robust progress calculation
+            const progress = progressEvent.total ? 
+              Math.round((progressEvent.loaded * 100) / progressEvent.total) :
+              Math.round((progressEvent.loaded / (progressEvent.loaded + 100000)) * 100);
+            
             setUploadProgress(progress);
+            toast.update(toastId, {
+              render: `Uploading... ${progress}%`,
+              isLoading: true
+            });
           }
         }
       );
 
-      if (response.data.success) {
+      // Ensure we show 100% when complete
+      setUploadProgress(100);
+      toast.update(toastId, {
+        render: `Uploading... 100%`,
+        isLoading: true
+      });
+
+      if (response.data && (response.data.success || response.status === 201)) {
+        toast.update(toastId, {
+          render: 'Template added successfully!',
+          type: 'success',
+          isLoading: false,
+          autoClose: 2000
+        });
+
         setTemplateForm({
           title: '',
           latexCode: '',
           pdfFile: null
         });
-        setShowOnlyForm(false);
+
         setUploadProgress(0);
-        alert('Template added successfully!');
+
+        // Immediately show success and redirect after delay
+        setTimeout(() => {
+          setShowOnlyForm(false);
+        }, 2000);
+      }  else {
+        throw new Error('Upload completed but server response was not successful');
       }
     } catch (error) {
-      console.error("Error submitting template:", error);
-      setError("Failed to add template. Please try again.");
+      console.error("Error submitting template:", error.response?.data || error);
+
+      const errorMessage = error.response?.data?.message || 
+                        error.message || 
+                        "Failed to add template. Please try again.";
+
+      toast.update(toastId, {
+        render: errorMessage,
+        type: 'error',
+        isLoading: false,
+        autoClose: 3000
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -101,70 +166,84 @@ const Dashboard = () => {
 
   const toggleFormView = () => {
     setShowOnlyForm(!showOnlyForm);
-    setError(null); // Clear any previous errors
+    setError(null);
+    setFormErrors({});
+    setSubmitSuccess(false);
   };
 
   if (showOnlyForm) {
     return (
-      <div className="dashboard-container">
-        <div className="template-form-container">
-          <h2>Add New Template</h2>
-          <button 
-            className="back-button"
-            onClick={toggleFormView}
-          >
-            ← Back to Dashboard
-          </button>
-          
-          <form onSubmit={handleTemplateSubmit}>
-            <div className="form-group">
-              <label htmlFor="title">Title:</label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={templateForm.title}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
+      <>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+        <div className="dashboard-container">
+          <div className="template-form-container">
+            <h2>Add New Template</h2>
+            <button 
+              className="back-button"
+              onClick={toggleFormView}
+            >
+              ← Back to Dashboard
+            </button>
             
-            <div className="form-group">
-              <label htmlFor="latexCode">LaTeX Code:</label>
-              <textarea
-                id="latexCode"
-                name="latexCode"
-                value={templateForm.latexCode}
-                onChange={handleInputChange}
-                required
-                rows="6"
-              />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="pdfFile">PDF Template:</label>
-              <input
-                type="file"
-                id="pdfFile"
-                name="pdfFile"
-                accept=".pdf"
-                onChange={handleFileChange}
-                required
-              />
-              {uploadProgress > 0 && (
-                <div className="upload-progress">
-                  <progress value={uploadProgress} max="100" />
-                  <span>{uploadProgress}%</span>
-                </div>
-              )}
-            </div>
-            
-            <div className="form-actions">
-              <button type="submit">Submit Template</button>
-            </div>
-          </form>
+            <form onSubmit={handleTemplateSubmit}>
+              <div className="form-group">
+                <label htmlFor="title">Title:</label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={templateForm.title}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="latexCode">LaTeX Code:</label>
+                <textarea
+                  id="latexCode"
+                  name="latexCode"
+                  value={templateForm.latexCode}
+                  onChange={handleInputChange}
+                  required
+                  rows="6"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="pdfFile">PDF Template:</label>
+                <input
+                  type="file"
+                  id="pdfFile"
+                  name="pdfFile"
+                  accept=".pdf"
+                  onChange={handleFileChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-actions">
+                <button 
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Uploading...' : 'Submit Template'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
