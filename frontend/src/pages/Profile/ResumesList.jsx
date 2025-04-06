@@ -9,6 +9,7 @@ const ResumesList = () => {
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedResume, setSelectedResume] = useState(null);
 
   // Fetch resumes on mount
   useEffect(() => {
@@ -19,12 +20,10 @@ const ResumesList = () => {
             Authorization: `Bearer ${user.token}`,
           },
         });
-        console.log('API Response:', response); // Add this line
-        console.log('Response Data:', response.data); // And this line
         setResumes(response.data.resumes);
       } catch (error) {
         console.error('Error fetching resumes:', error);
-        setError(response.data.message);
+        setError(error.response?.data?.message || "Failed to load resumes");
       } finally {
         setLoading(false);
       }
@@ -34,6 +33,31 @@ const ResumesList = () => {
       fetchResumes();
     }
   }, [user]);
+
+  async function handleDownload(resumeId) {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/resume/download/${resumeId}`,
+        { 
+          responseType: 'blob',
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          }
+        }
+      );
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `resume_${resumeId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download resume');
+    }
+  }
 
   if (loading) {
     return (
@@ -56,7 +80,6 @@ const ResumesList = () => {
           Create Your First Resume
         </Link>
       </div>
-
     );
   }
 
@@ -64,18 +87,23 @@ const ResumesList = () => {
     <div className="resumes-container">
       <div className="resumes-header">
         <h2>Your Resumes</h2>
+        <>
         <Link to="/Resume" className="create-btn">
           + New Resume
-        </Link>
+        </Link></>
       </div>
 
       <div className="resumes-grid">
         {resumes.map((resume) => (
-          <div key={resume._id} className="resume-card">
+          <div 
+            key={resume._id} 
+            className="resume-card"
+            onClick={() => setSelectedResume(resume)}
+          >
             {resume.imageUrl ? (
               <img 
                 src={resume.imageUrl} 
-                alt={`Resume ${resume.pdfVersion}`} 
+                alt={`Resume ${resume._id}`} 
                 className="resume-thumbnail"
               />
             ) : (
@@ -84,54 +112,43 @@ const ResumesList = () => {
               </div>
             )}
             
-            {/* <div className="resume-details">
-              <p>Created: {new Date(resume.createdAt).toLocaleDateString()}</p>
-              <div className="resume-actions">
-                <Link 
-                  to={`/resume/${resume._id}`} 
-                  className="action-btn view-btn"
-                >
-                  View
-                </Link>
-                <Link 
-                  to={`/resume/${resume._id}/edit`} 
-                  className="action-btn edit-btn"
-                >
-                  Edit
-                </Link>
-                <button 
-                  className="action-btn download-btn"
-                  onClick={() => handleDownload(resume._id)}
-                >
-                  Download
-                </button>
-              </div> 
-            </div>*/}
           </div>
         ))}
       </div>
+
+      {/* Modal overlay for expanded view */}
+      <div className={`modal-overlay ${selectedResume ? 'active' : ''}`}>
+        {selectedResume && (
+          <div className="expanded-resume">
+            <button 
+              className="close-modal"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedResume(null);
+              }}
+            >
+              &times;
+            </button>
+            {selectedResume.imageUrl ? (
+              <img 
+                src={selectedResume.imageUrl} 
+                alt={`Resume ${selectedResume._id}`}
+              />
+            ) : (
+              <div className="resume-placeholder">
+                <span>No Preview Available</span>
+              </div>
+            )}
+           
+          </div>
+        )}
+      </div>
+       <>
+        <Link to="/Resume" className="create-btn">
+          + New Resume
+        </Link></>
     </div>
   );
-
-  async function handleDownload(resumeId) {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/api/resume/download/${resumeId}`,
-        { responseType: 'blob' }
-      );
-      
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `resume_${resumeId}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error('Download failed:', error);
-      alert('Failed to download resume');
-    }
-  }
 };
 
 export default ResumesList;

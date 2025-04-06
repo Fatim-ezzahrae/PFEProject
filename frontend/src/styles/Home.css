@@ -1,7 +1,8 @@
 /* Base Styles */
 .home-container {
   background: #f9f7fe;
-  min-height: 100vh;
+  min-height: 120vh; /* Increased from 100vh */
+  padding: 11rem 0; /* Add padding */
   overflow-x: hidden;
   font-family: 'Inter', sans-serif;
 }
@@ -21,19 +22,17 @@
 }
 
 .home-text {
+  margin-top: -100px;
   font-size: 4rem;
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 1.5rem;
-  background: linear-gradient(45deg, #6e45e2, #ff6b6b);
+  background: linear-gradient(45deg, #68B0AB, #4A7C59);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.text-accent {
-  display: inline-block;
-  transform: rotate(-5deg);
-}
+
 
 .hero-subtext {
   font-size: 1.5rem;
@@ -43,19 +42,20 @@
 
 .home-button {
   display: inline-block;
-  background: #6e45e2;
+  background: #68B0AB;
   color: white;
-  padding: 1rem 2rem;
+  padding: 1.3rem 2.1rem;
   border-radius: 50px;
   font-weight: 600;
+  font-size: 20px;
   text-decoration: none;
-  box-shadow: 0 10px 20px rgba(110, 69, 226, 0.3);
+  box-shadow: 0 10px 20px rgba(104, 176, 171, 0.3);
   transition: all 0.3s ease;
 }
 
 .home-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 15px 30px rgba(110, 69, 226, 0.4);
+  box-shadow: 0 15px 30px rgba(104, 176, 171, 0.4);
 }
 
 .pulse {
@@ -70,23 +70,19 @@
 
 .hero-graphic {
   position: absolute;
-  right: 5%;
+  top: 3%;
+  right: -3%;
   width: 50%;
   height: 100%;
 }
 
-.hero-image {
-  position: relative;
-  z-index: 2;
-  max-height: 80vh;
-  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1));
-}
+
 
 .shape-blob {
   position: absolute;
   height: 500px;
   width: 500px;
-  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  background: linear-gradient(135deg, #C8D5B9 0%, #8FC0A9 100%);
   border-radius: 30% 50% 20% 40%;
   opacity: 0.8;
   animation: transform 20s ease-in-out infinite;
@@ -96,7 +92,7 @@
 .shape-blob.two {
   height: 400px;
   width: 400px;
-  background: linear-gradient(135deg, #c3cfe2 0%, #e2f1f8 100%);
+  background: linear-gradient(135deg, #8FC0A9 0%, #C8D5B9 100%);
   animation: transform 25s ease-in-out infinite;
   bottom: 10%;
   right: 10%;
@@ -150,7 +146,7 @@
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255,255,255,0.9);
+  background: #8FC0A9;
   color: #333;
   padding: 0.8rem 1.5rem;
   border-radius: 50px;
@@ -166,10 +162,10 @@
 }
 
 /* Color Variations */
-.card-0 { background: #ffd6e0; }
-.card-1 { background: #c1fba4; }
-.card-2 { background: #7bf1a8; }
-.card-3 { background: #ffaaa7; }
+.card-0 { background: #C8D5B9; }
+.card-1 { background: #8FC0A9; }
+.card-2 { background: #68B0AB; }
+.card-3 { background: #4A7C59; }
 
 /* Jobs Section - Asymmetrical */
 .jobs-section {
@@ -229,7 +225,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #6e45e2;
+  color: #68B0AB;
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
@@ -244,17 +240,17 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: rgba(110, 69, 226, 0.1);
+  background: rgba(104, 176, 171, 0.1);
   top: -30px;
   right: -30px;
   z-index: -1;
 }
 
 /* Job Card Colors */
-.jobs-masonry .card-0 { background: #e0f9ff; }
-.jobs-masonry .card-1 { background: #ffe8f5; }
-.jobs-masonry .card-2 { background: #f0ffe8; }
-.jobs-masonry .card-3 { background: #fff4e0; }
+.jobs-masonry .card-0 { background: #E8F3EA; }
+.jobs-masonry .card-1 { background: #E0EDE5; }
+.jobs-masonry .card-2 { background: #D8E7E0; }
+.jobs-masonry .card-3 { background: #D0E1DB; }
 
 /* Section Titles */
 .section-title {
@@ -270,7 +266,7 @@
 .title-deco {
   display: inline-block;
   margin: 0 1rem;
-  color: #ff6b6b;
+  color: #4A7C59;
   animation: float 3s ease-in-out infinite;
 }
 
@@ -290,7 +286,7 @@
 }
 
 .cta-card {
-  background: linear-gradient(135deg, #6e45e2 0%, #88d3ce 100%);
+  background: linear-gradient(135deg, #68B0AB 0%, #4A7C59 100%);
   color: white;
   padding: 3rem;
   border-radius: 20px;
@@ -298,7 +294,7 @@
   margin: 0 auto;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(110, 69, 226, 0.3);
+  box-shadow: 0 20px 40px rgba(104, 176, 171, 0.3);
 }
 
 .cta-card h3 {
@@ -315,7 +311,7 @@
 .cta-button {
   display: inline-block;
   background: white;
-  color: #6e45e2;
+  color: #68B0AB;
   padding: 1rem 2rem;
   border-radius: 50px;
   text-decoration: none;

@@ -15,6 +15,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "axios": "^1.8.2",
+    "canvas-confetti": "^1.9.3",
     "date-fns": "^4.1.0",
     "katex": "^0.16.21",
     "latex": "^0.0.1",

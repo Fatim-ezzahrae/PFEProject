@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "../styles/Home.css";
 import axios from "axios";
 import { Link } from 'react-router-dom';
-import gifImage from "../assets/Home.gif";
 import { format } from 'date-fns';
 
 function Home() {
@@ -14,7 +13,7 @@ function Home() {
     const fetchJobOffers = async () => {
         try {
             const response = await axios.get("http://localhost:4000/api/jobs");
-            setJobOffers(response.data?.slice(0, 3) || []);
+            setJobOffers(response.data?.slice(0, 5) || []);
         } catch (error) {
             console.error("Error fetching job offers:", error);
             setError("Failed to load job offers");
@@ -47,7 +46,7 @@ function Home() {
           <div className="hero-section">
               <div className="hero-content">
                   <h1 className="home-text">
-                      Kickstart Your Career <span className="text-accent">Today</span>
+                      Kickstart Your Career Today
                   </h1>
                   <p className="hero-subtext">
                       Craft stunning resumes that land interviews
@@ -59,7 +58,7 @@ function Home() {
               <div className='hero-graphic'>
                   <div className="shape-blob"></div>
                   <div className="shape-blob two"></div>
-                  <img src={gifImage} alt="Resume creation" className="hero-image" />
+                 
               </div>
           </div>
 
@@ -113,7 +112,7 @@ function Home() {
                                   <p><span>📍</span> {job.location}</p>
                                   <p><span>⏳</span> {format(new Date(job.applicationDeadline), "MMM do")}</p>
                               </div>
-                              <Link to={`/jobs/${job._id}`} className="job-link">
+                              <Link to='/Job' className="job-link">
                                   Explore <span>→</span>
                               </Link>
                               <div className="job-decoration"></div>

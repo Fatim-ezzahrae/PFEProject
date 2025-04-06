@@ -4,6 +4,8 @@ import JobOfferForm from "./JobOfferForm.jsx";
 import "../../styles/Job.css";
 import axios from 'axios';
 import { format } from "date-fns";
+import { FiInfo } from "react-icons/fi";
+import { HiOutlineOfficeBuilding, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineMail } from "react-icons/hi";
 
 function Job() {
   const [showForm, setShowForm] = useState(false);
@@ -24,8 +26,8 @@ function Job() {
   }, []);
 
   const handleNewJobAdded = () => {
-    fetchJobOffers(); // Refresh the job listings
-    setShowForm(false); // Hide the form
+    fetchJobOffers();
+    setShowForm(false);
   };
 
   const handleButtonClick = () => {
@@ -37,30 +39,51 @@ function Job() {
   };
 
   return (
-    <div className="job-page">
+    <div className="job-page-profile">
       {!showForm ? (
         <>
           <div className="addbutton">
             <AddButton onClick={handleButtonClick} />
           </div>
 
-          <div className="job-offers-container">
-            <h2 className="job-offers-container-h2">Recent Job Offers</h2>
+          <div className="job-offer-profile">
+            <h3 className="job-offers-profile-h2">Recent Job Offers</h3>
             {jobOffers.length === 0 ? (
               <p className="no-job-offers">
-                <span className="material-symbols-outlined">info</span> Info - No job offers available.
+                <FiInfo className="icon" /> Info - No job offers available.
               </p>
             ) : (
               jobOffers.map((job) => (
-                <div key={job._id} className="job-post" onClick={() => toggleDescription(job._id)}>
-                  <h3>{job.jobTitle}</h3>
-                  <p><span className="material-symbols-outlined">apartment</span><strong className="field">Company:</strong> {job.companyName}</p>
-                  <p><span className="material-symbols-outlined">location_on</span><strong className="field">Location:</strong> {job.location}</p>
+                <div key={job._id} className="job-post-profile" onClick={() => toggleDescription(job._id)}>
+                  <h3 className="job-title-profile">{job.jobTitle}</h3>
+                  <div className="job-details-row">
+                    <HiOutlineOfficeBuilding className="inline-icon" />
+                    <strong className="field">Company:</strong> {job.companyName}
+                  </div>
+                  <div className="job-details-row">
+                    <HiOutlineLocationMarker className="inline-icon" />
+                    <strong className="field">Location:</strong> {job.location}
+                  </div>
                   {expandedJob === job._id && (
-                    <p className="job-description"><span class="material-symbols-outlined"> info </span><strong className="field">Job Description:</strong> {job.description}</p>
+                    <div className="job-description-container">
+                      <div className="description-header">
+                        <FiInfo className="inline-icon" />
+                        <strong className="field">Job Description:</strong>
+                      </div>
+                      <div className="description-content">
+                        {job.description}
+                      </div>
+                    </div>
                   )}
-                  <p><span class="material-symbols-outlined">calendar_month</span><strong className="field">Deadline:</strong> {format(new Date(job.applicationDeadline), "MMMM dd, yyyy")}</p>
-                  <p><span className="material-symbols-outlined">contacts</span><strong className="field">Contact:</strong> {job.contactInfo}</p>
+                  <div className="job-details-row">
+                    <HiOutlineCalendar className="inline-icon" />
+                    <strong className="field">Deadline:</strong>{" "}
+                    {format(new Date(job.applicationDeadline), "MMMM dd, yyyy")}
+                  </div>
+                  <div className="job-details-row">
+                    <HiOutlineMail className="inline-icon" />
+                    <strong className="field">Contact:</strong> {job.contactInfo}
+                  </div>
                 </div>
               ))
             )}
@@ -68,7 +91,8 @@ function Job() {
         </>
       ) : (
         <div className="job-offer-form">
-        <JobOfferForm onJobAdded={handleNewJobAdded} /></div>
+          <JobOfferForm onJobAdded={handleNewJobAdded} />
+        </div>
       )}
     </div>
   );

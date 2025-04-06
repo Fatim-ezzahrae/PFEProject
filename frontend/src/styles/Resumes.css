@@ -86,6 +86,7 @@
 }
 
 /* Template Section */
+/* Template Section */
 .templates-container {
   padding: 20px;
   max-width: 1200px;
@@ -93,15 +94,18 @@
 }
 
 .title {
+  margin-top: -160px;
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   color: var(--secondary-dark);
 }
 
 .templates-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-left: -300px;
+  column-gap: 300px; /* horizontal gap */
+  row-gap: 50px; /* smaller vertical gap */
 }
 
 .template-card {
@@ -110,10 +114,11 @@
   transition: transform 0.3s ease;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   aspect-ratio: 1/1.414; /* Standard paper ratio (A4) */
+  min-height: 660px; /* Added minimum height */
 }
 
 .template-card:hover {
-  transform: scale(1.02);
+  transform: scale(1.03); /* Slightly increased hover effect */
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
@@ -126,40 +131,11 @@
 .template-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain; /* Changed from 'cover' to 'contain' to show full template */
   display: block;
+  background: white; /* White background for better contrast */
+  transition: transform 0.3s ease;
 }
-
-.select-button {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 10px 25px;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.template-card:hover .select-button {
-  opacity: 1;
-}
-
-.no-templates {
-  text-align: center;
-  grid-column: 1 / -1;
-  color: #666;
-  font-size: 1.2rem;
-  margin-top: 50px;
-}
-
-
 
 /* Loading state */
 .cv-container {

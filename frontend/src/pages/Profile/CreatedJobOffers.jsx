@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useAuthContext } from "../../hooks/useAuthContext";
 import { FaRegTrashAlt, FaRegEdit, FaCheck, FaTimes } from "react-icons/fa";
 import { FiInfo } from "react-icons/fi";
 import { HiOutlineOfficeBuilding, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineMail } from "react-icons/hi";
@@ -11,7 +12,7 @@ const CreatedJobOffers = ({ jobOffers, setJobOffers, fetchJobOffers }) => {
   const [editingJobId, setEditingJobId] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [jobToDelete, setJobToDelete] = useState(null);
-
+  const { user } = useAuthContext();
   const [updatedJob, setUpdatedJob] = useState({
     jobTitle: "",
     companyName: "",

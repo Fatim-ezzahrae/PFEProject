@@ -12,36 +12,18 @@
   margin-bottom: 2rem;
 }
 
-.resumes-header h1 {
-  font-size: 2rem;
-  color: #2c3e50;
-  margin: 0;
-}
-
-.create-btn {
-  display: inline-flex;
+.resumes-header h2 {
+  margin-top: 100px;
+  font-size: 3rem;
+  color: #4A7C59;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.5rem;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
+  justify-content: center;
+  margin-left:400px ;
+ 
 }
 
-.primary-btn {
-  background-color: #3498db;
-  color: white;
-}
 
-.primary-btn:hover {
-  background-color: #2980b9;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+
 
 .resumes-stats {
   display: flex;
@@ -73,18 +55,19 @@
 
 .resumes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  margin-left: -200px;
+  column-gap: 200px; /* horizontal gap */
+  row-gap: 50px; /* smaller vertical gap */
 }
 
 .resume-card {
-  background: white;
-  border-radius: 10px;
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  aspect-ratio: 1/1.414; /* Standard paper ratio (A4) */
+  min-height: 660px; /* Added minimum height */
 }
 
 .resume-card:hover {
@@ -108,6 +91,103 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+/* Add these styles to your existing ResumesList.css */
+
+/* Modal overlay styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 12000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Expanded resume styles */
+.expanded-resume {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-overlay.active .expanded-resume {
+  transform: scale(1);
+}
+
+.expanded-resume img {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+/* Close button */
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.close-modal:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: rotate(90deg);
+}
+
+/* Resume actions in modal */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+}
+
+/* Update the resume card to be clickable */
+.resume-card {
+  /* ... existing styles ... */
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.resume-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .date-badge {
@@ -315,6 +395,9 @@
 }
 
 .create-btn {
+  position: fixed;
+  right: 2rem; /* Distance from right edge */
+  bottom: 2rem; /* Distance from bottom */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -332,8 +415,8 @@
   box-shadow: 
     0 2px 4px rgba(104, 176, 171, 0.3),
     inset 0 1px 2px rgba(255, 255, 255, 0.2);
-  position: relative;
   overflow: hidden;
+  z-index: 100; /* Ensure it stays above other content */
 }
 
 .create-btn::before {
@@ -368,17 +451,6 @@
     0 2px 3px rgba(104, 176, 171, 0.3),
     inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
-
-/* Optional icon (using Font Awesome) */
-.create-btn .icon {
-  font-size: 1.1em;
-  transition: transform 0.2s ease;
-}
-
-.create-btn:hover .icon {
-  transform: translateX(3px);
-}
-
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

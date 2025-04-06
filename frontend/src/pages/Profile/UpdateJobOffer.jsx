@@ -148,7 +148,7 @@ const UpdateJobOffer = ({
           />
         </div>
 
-        <div className="form-actions">
+        <div className="form-update-actions">
           <button type="submit" disabled={loading}>
             {loading ? 'Updating...' : 'Update Job Offer'}
           </button>

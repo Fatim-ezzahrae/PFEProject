@@ -13,6 +13,7 @@
   justify-content: center;
   align-items: center;
   position: relative; 
+  margin-top: 130px;
 }
 .job-page {
   display: flex;
@@ -304,19 +305,20 @@
 }
 
 .update-job-offer-form button[type="submit"] {
-  background-color: #4CAF50;
+  background-color: var(--primary-dark);
   color: white;
 }
 
 .update-job-offer-form button[type="button"] {
-  background-color: #f44336;
+  background-color: #c5c5c5;
   color: white;
   margin-left: 4%;
 }
 
 /* Button hover effect */
 .update-job-offer-form button:hover {
-  opacity: 0.9;
+  opacity: 0.9; 
+  background-color: #68B0AB;
 }
 /* Success Popup Styles */
 .success-popup {
