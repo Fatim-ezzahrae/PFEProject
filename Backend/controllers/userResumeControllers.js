@@ -361,7 +361,6 @@ const getUserResumes = async (req, res) => {
         // 2. Format response with full image URLs
         const response = resumes.map(resume => ({
         resumeId: resume._id,
-        templateId: resume.templateId._id,
         templateName: resume.templateId?.name || 'Untitled',
         lastUpdated: resume.updatedAt,
         createdAt: resume.createdAt,
