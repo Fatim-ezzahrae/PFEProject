@@ -58,7 +58,6 @@ function Home() {
               <div className='hero-graphic'>
                   <div className="shape-blob"></div>
                   <div className="shape-blob two"></div>
-                 
               </div>
           </div>
 

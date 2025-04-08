@@ -113,7 +113,7 @@ const Dashboard = () => {
           render: 'Template added successfully!',
           type: 'success',
           isLoading: false,
-          autoClose: 2000
+          autoClose: 1500
         });
 
         setTemplateForm({
@@ -127,7 +127,7 @@ const Dashboard = () => {
         // Immediately show success and redirect after delay
         setTimeout(() => {
           setShowOnlyForm(false);
-        }, 2000);
+        }, 1500);
       }  else {
         throw new Error('Upload completed but server response was not successful');
       }

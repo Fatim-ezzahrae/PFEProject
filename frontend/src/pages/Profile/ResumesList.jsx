@@ -88,7 +88,7 @@ const ResumesList = () => {
       <div className="resumes-header">
         <h2>Your Resumes</h2>
         <>
-        <Link to="/Resume" className="create-btn">
+        <Link to="/Resumes" className="create-btn">
           + New Resume
         </Link></>
       </div>
