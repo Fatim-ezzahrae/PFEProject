@@ -13,8 +13,9 @@ function Resumes() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
-  const [generatedResumeURL, setGeneratedResumeURL] = useState(null);
-  const [userInfo, setUserInfo] = useState({ firstName: "", lastName: "", email: "", phone: "", address: "" });
+  const [generatedResumeURL, setGeneratedResumeURL] = useState(null);  
+  const { user } = useAuthContext();
+  const [userInfo, setUserInfo] = useState({firstName: "",    lastName: "",    email: user?.email || '',    phone: "",    address: ""   });
   const [showEmploymentForm, setShowEmploymentForm] = useState(false);
   const [showLanguagesForm, setShowLanguagesForm] = useState(false);
   const [showEducationForm, setShowEducationForm] = useState(false);
@@ -25,8 +26,7 @@ function Resumes() {
   const [educationHistory, setEducationHistory] = useState([{ institute: "", degree: "", startDateEdu: "", endDateEdu: "", city: "", country: "" }]);
   const [certifications, setCertifications] = useState([{ title: "", description: "" }]);
   const [skills, setSkills] = useState([{ category: "", details: "" }]);
-  const [templates, setTemplates] = useState([]);
-  const { user } = useAuthContext();
+  const [templates, setTemplates] = useState([]);  
   const location = useLocation();
 
   // Debugging logs

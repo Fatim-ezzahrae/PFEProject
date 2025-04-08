@@ -740,3 +740,140 @@ option:hover {
 .form-minus-button:hover .material-symbols-outlined {
   color: #cc0000;
 }
+
+.invalid {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+}
+@media screen and (max-width: 780px) {
+  /* Templates Container */
+  .templates-container {
+    padding: 20px 15px;
+    margin-top: 100px;
+  }
+
+  .title {
+    font-size: 2rem;
+    margin-top: -100px;
+    margin-bottom: 30px;
+  }
+
+  /* Templates Grid */
+  .templates-grid {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+    gap: 30px;
+    padding: 0 10px;
+  }
+
+  .template-card {
+    min-height: 400px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .select-button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    bottom: 15px;
+  }
+
+  /* CV Page Container */
+  .cv-page-container {
+    padding: 20px 15px;
+  }
+
+  /* CV Actions */
+  .cv-actions {
+    position: static;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: -110px;
+    margin-left: 320px;
+  }
+
+  .export-dropdown{
+    width: 44%;
+  }
+  .save-button {
+    margin-left: 40px;
+    width: 60%;
+  }
+
+  .export-options {
+    width: 100%;
+  }
+
+  .export-options button {
+    padding: 12px 20px;
+  }
+
+  /* PDF Viewer */
+  .pdf-viewer-container {
+    margin-top: 0;
+    height: auto;
+    min-height: 80vh;
+  }
+
+  .pdf-iframe {
+    width: 100%;
+    height: 80vh;
+    margin-top: 0;
+  }
+
+  /* Form elements */
+  .row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .label-form,
+  .label-form-Language {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  /* Buttons */
+  .next {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 12px 40px;
+    font-size: 1rem;
+  }
+
+  .add-button {
+    width: 100%;
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  /* Form boxes */
+  .form-box {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .form-minus-button {
+    margin-left: auto;
+    margin-bottom: 10px;
+  }
+
+  /* Description inputs */
+  .description-container {
+    margin-bottom: 15px;
+  }
+
+  .descp {
+    padding-right: 40px;
+  }
+
+  .minus-button {
+    right: 5px;
+  }
+}
