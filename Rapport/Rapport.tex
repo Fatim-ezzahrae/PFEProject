@@ -9,6 +9,20 @@
 \usepackage{ragged2e}  % For text justification
 \usepackage{setspace}  % For line spacing
 \usepackage{subcaption} % Essential for subfigures
+\usepackage{pdflscape} % For landscape orientation
+\usepackage{fancyhdr}
+\usepackage{varwidth}
+
+\makeatletter
+\let\@title\@empty
+\let\@author\@empty
+\makeatother
+
+\makeatletter
+\renewcommand{\maketitle}{} % Completely disable \maketitle
+\makeatother
+
+
 
 \definecolor{darkblue}{RGB}{34, 102, 153}  % Chapter title
 \definecolor{mediumblue}{RGB}{50, 120, 180}  % Section title
@@ -69,16 +83,96 @@
     pdfborder={0 0 0},     % Remove the border around links
 }
 
-\title{Rapport du Projet de Fin d'Études}
-\author{Fatim Ezzahrae Akniz \\ Fatima Ezzahra Benzeroual}
+\pagestyle{fancy}
+\fancyhf{} % Clear all header and footer fields
+\fancyfoot[R]{\thepage} % Right-aligned page number
+\renewcommand{\headrulewidth}{0pt} % Remove header line if not needed
 
 \begin{document}
 
-\maketitle
-
+\begin{titlepage}
+    \thispagestyle{empty}
+    \centering
+    \vspace*{-1.5cm}  % Negative space to pull everything up
+    
+    % School logo with perfect top margin
+    \includegraphics[height=5cm]{./imgs/ESTLogo.jpg}\\
+    \vspace{0cm}  % Reduced space after logo
+    
+    % School information with optimized spacing
+    {\fontsize{14}{16}\selectfont
+    UNIVERSITÉ CADI AYYAD\\[0.1cm] % Increased from 0.1cm
+    ÉCOLE SUPÉRIEURE DE TECHNOLOGIE DE SAFI\\[0.2cm] % More space before department
+    \textbf{Département de Génie Informatique}
+    }\\[1.2cm] % Slightly reduced final spacing
+    
+    % Project title section - preserved text with enhanced styling
+    \noindent
+    \begin{minipage}{\textwidth}
+        \centering
+        
+        % PFE title (unchanged)
+        {\fontsize{15}{17}\selectfont\scshape\textcolor{darkblue}{PROJET DE FIN D'ÉTUDES}}\\[0.6cm]
+        
+        % Wrapped content with borders
+        \hspace*{-3cm}% Adjust this value to control left shift
+        \begin{minipage}{1.5\textwidth}
+            \centering
+            % Top border
+            \textcolor{teal!50!black}{\rule{\textwidth}{1.5pt}}\\[0.1cm]
+            
+            % Project description
+            \fontsize{17}{21}\selectfont\bfseries\color{black}
+            Développement d'un site Web pour\\
+            la gestion de CV en utilisant React et Express\\[0.6cm]
+            
+            % Project name
+            {\fontsize{28}{32}\selectfont\bfseries\color{teal!90!black}NIBRAS}\\[0.1cm]
+            
+            % Bottom border
+            \textcolor{teal!50!black}{\rule{\textwidth}{1.5pt}}
+        \end{minipage}
+    \end{minipage}\\[1.2cm]
+    
+    % Names section - perfectly aligned at bottom
+    \vfill
+    \begin{minipage}{\textwidth}
+        \large
+        \begin{tabular}{@{}p{0.45\textwidth}@{\hspace{0.1\textwidth}}p{0.45\textwidth}@{}}
+            % Left side - Project authors
+            \hspace*{-2cm}\begin{minipage}{0.4\textwidth}
+                \textbf{\textcolor{darkblue}{Réalisé par:}}\\[0.3cm]
+                \hspace*{0.6cm}\begin{minipage}{1.7\textwidth}
+                    \textcolor{teal!80!black}{\small$\bullet$} Fatim Ezzahrae \textsc{Akniz}\\
+                    \textcolor{teal!80!black}{\small$\bullet$} Fatima Ezzahra \textsc{Benzeroual}
+                \end{minipage}
+            \end{minipage}
+            
+            &
+            
+            % Right side - Supervisor
+            \begin{minipage}{0.4\textwidth}
+                \raggedleft
+                \textbf{\textcolor{darkblue}{Encadré par:}}\\[0cm]
+                \hspace*{0.3cm}\begin{minipage}{1.7\textwidth}
+                    \flushright
+                    \textcolor{teal!80!black}{\small$\bullet$} Pr.~Abdelouahad \textsc{Bayar}
+                \end{minipage}
+            \end{minipage}
+        \end{tabular}
+    \end{minipage}
+    
+    % Year at absolute bottom
+    \vspace*{0.5cm} 
+    \hspace*{1cm}
+    {\large Année Universitaire 2024-2025}
+    % Ensures minimum 1cm bottom margin
+\end{titlepage}
 
 \vspace*{\fill} % Vertical centering
 
+\thispagestyle{fancy} % Enable page number
+\setcounter{page}{1} % Start counting from 1 here
 \section*{\textcolor{teal}{Résumé}}  % Unnumbered section in teal
 \justifying
 Ce projet scolaire consiste en une plateforme web permettant aux utilisateurs de créer et personnaliser des CV professionnels, avec la possibilité de les exporter en format PDF ou d'en récupérer le code source LaTeX pour des modifications avancées.  
@@ -105,13 +199,13 @@ Ce projet illustre comment les technologies web modernes peuvent répondre à de
 \justifying
 
 \vspace*{\fill} % Vertical centering
-Ce projet consiste en une plateforme web permettant aux utilisateurs de générer des CV professionnels au format LaTeX, avec la possibilité de les télécharger en PDF ou d'en récupérer le code source.  
+Ce rapport présente Nibras, notre plateforme web de génération de CV professionnels, développée dans le cadre du Projet de Fin d’Études à l’École Supérieure de Technologie de Safi sous la supervision du Professeur Abdelouahad BAYAR. Le nom Nibras, emprunté à l’arabe pour désigner un "guide lumineux", reflète l’ambition du projet : éclairer le parcours des chercheurs d’emploi en leur offrant des outils intuitifs pour mettre en lumière leurs compétences.
 
-La plateforme intègre également un système de gestion des offres d'emploi et une administration avancée. Les utilisateurs peuvent créer, modifier et partager leurs CV, tandis que les administrateurs ont accès à des statistiques (nombre d’utilisateurs, CV générés, etc.) et peuvent gérer des modèles de CV personnalisables.  
+Concrètement, Nibras permet aux utilisateurs de créer des CV élégants et structurés au format LaTeX, reconnu pour sa qualité typographique adaptée aux documents professionnels. La plateforme se distingue par sa double fonctionnalité : exporter les CV en PDF prêts à l’emploi, ou en fournir le code source LaTeX pour des personnalisations avancées. Elle intègre également un espace dédié aux offres d’emploi, où recruteurs et candidats peuvent interagir, renforçant ainsi son rôle de pont vers l’emploi.
 
-Développée avec une stack React pour le frontend, Express.js pour le backend et MongoDB pour la base de données, cette application suit une architecture rôle-based (utilisateur/admin) et répond à un besoin de personnalisation et d’automatisation dans la création de documents professionnels.  
+Du point de vue technique, Nibras repose sur une stack moderne associant React pour l’interface utilisateur, Express.js pour le backend, et MongoDB pour le stockage des données. Son architecture rôle-based garantit une expérience adaptée aux profils utilisateurs (création de CV, candidature) et administrateurs (gestion des modèles, statistiques).
 
-Ce rapport détaille les choix techniques, les fonctionnalités clés, les défis rencontrés et les pistes d’amélioration. 
+Ce document détaille les étapes clés du projet, depuis l’analyse des besoins jusqu’aux défis techniques surmontés, en passant par les choix de conception. Il s’achève par des pistes d’amélioration pour transformer Nibras en un outil encore plus performant au service de ses utilisateurs.
 
 \vspace*{\fill} % Vertical centering
 
@@ -305,20 +399,22 @@ Le diagramme des cas d'utilisation (Figure~\ref{fig:use_case_diagram}) présente
 Le diagramme de classes (Figure~\ref{fig:class_diagram}) présente la structure objet du système et les relations entre les différentes entités. Les principales classes représentées sont :
 
 \begin{itemize}
-    \item \textbf{User} : Gère l'authentification et les profils des utilisateurs
+    \item \textbf{Utilisateur} : Gère l'authentification et les profils des utilisateurs
     \item \textbf{CV} : Contient les informations des curriculum vitae et leurs templates
-    \item \textbf{JobOffer} : Stocke les données des offres d'emploi publiées
+    \item \textbf{Offre} : Stocke les données des offres d'emploi publiées
     \item \textbf{Template} : Modélise les différents modèles de CV disponibles
 \end{itemize}
 
 \vspace{2cm}
 
 \begin{figure}[htbp]
-    \centering
-    \makebox[\textwidth]{\includegraphics[width=1.6\linewidth, height=0.7\textheight]{./imgs/classDiagram.jpg}}
+    \vspace*{-4cm}
+    \includegraphics[angle=90, width=1.05\textwidth, keepaspectratio]{./imgs/classDiagram.png}
     \caption{Diagramme de classes}
     \label{fig:class_diagram}
 \end{figure}
+
+
 %\section{Diagrammes de séquence}
 
 \chapter{Outils et Langages utilisés}
@@ -375,10 +471,20 @@ EDI moderne par Microsoft. Utilisé grâce à :
     \item Débogueur intégré pour le full-stack
 \end{itemize}
 \begin{center}
-    \includegraphics[width=0.6\linewidth]{./imgs/vscodeLogo.jpg}
+    \includegraphics[width=0.5\linewidth]{./imgs/vscodeLogo.jpg}
 \end{center}
 
-\clearpage
+\subsection{Codeium}
+Assistant d'Intelligence Artificielle pour le développement. Intégré dans notre workflow pour :
+\begin{itemize}
+    \item Génération et complétion de code intelligent
+    \item Optimisation des algorithmes clés
+    \item Détection des vulnérabilités potentielles
+    \item Accélération du développement des composants React et Express
+\end{itemize}
+\begin{center}
+    \includegraphics[width=0.5\linewidth]{./imgs/codeiumLogo.jpg}
+\end{center}
 
 \subsection{StarUML}
 Logiciel de modélisation UML. Choisi pour :
@@ -388,7 +494,19 @@ Logiciel de modélisation UML. Choisi pour :
     \item Gratuit pour les projets académiques
 \end{itemize}
 \begin{center}
-    \includegraphics[width=0.9\linewidth]{./imgs/starumlLogo.jpg}
+    \includegraphics[width=0.7\linewidth]{./imgs/starumlLogo.jpg}
+\end{center}
+
+\subsection{Git}
+Système de contrôle de version distribué. Utilisé pour :
+\begin{itemize}
+    \item Gestion collaborative du code source
+    \item Suivi des modifications et historisation du projet
+    \item Organisation en branches (main, développement, features)
+    \item Intégration avec la plateforme GitHub pour le stockage distant
+\end{itemize}
+\begin{center}
+    \includegraphics[width=0.4\linewidth]{./imgs/gitLogo.jpg}
 \end{center}
 
 
@@ -401,10 +519,22 @@ Cette documentation visuelle présente l'application opérationnelle à travers 
 
 \subsection{Pages publiques}  % New subsection
 \subsubsection{Page d'accueil}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/home1.jpg}
+    \caption{Page d'accueil -1-}
+\end{figure}
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.4\linewidth]{./imgs/screens/home.jpg}
-    \caption{Page d'accueil}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/home2.jpg}
+    \caption{Page d'accueil -2-}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/home3.jpg}
+    \caption{Page d'accueil -3-}
 \end{figure}
 
 \clearpage
@@ -412,60 +542,60 @@ Cette documentation visuelle présente l'application opérationnelle à travers 
 \subsubsection{Authentification}
 \begin{figure}[h]
     \centering
-    \begin{subfigure}{0.45\textwidth}
-        \includegraphics[width=\linewidth]{./imgs/screens/login.jpg}
-        \caption{Page de connexion}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.45\textwidth}
-        \includegraphics[width=\linewidth]{./imgs/screens/signUP.jpg}
-        \caption{Page d'inscription}
-    \end{subfigure}
-    \caption{Interface d'authentification}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/login.jpg}
+    \caption{Page de connexion}
 \end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/signUP.jpg}
+    \caption{Page d'inscription}
+\end{figure}
+
+\clearpage
 
 \subsection{Interface utilisateur}
 
 \subsubsection{Creation de CV}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/tempListe.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/tempListe.jpg}
     \caption{Liste des templates disponibles}
 \end{figure} 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/personalForm.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/personalForm.jpg}
     \caption{Formulaire pour les informations personnelles}
 \end{figure} 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/empForm.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/empForm.jpg}
     \caption{Formulaire pour les informations des experiences requises}
 \end{figure} 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/eduForm.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/eduForm.jpg}
     \caption{Formulaire pour les informations d'éducation}
 \end{figure} 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/langForm.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/langForm.jpg}
     \caption{Formulaire pour les informations des langues}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/certifForm.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/certifForm.jpg}
     \caption{Formulaire pour les informations des certtifications}
 \end{figure} 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/previewResume.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/previewResume.jpg}
     \caption{Apercu du CV crée avec boutton de sauvegarde et téléchargement}
 \end{figure} 
 
@@ -473,92 +603,148 @@ Cette documentation visuelle présente l'application opérationnelle à travers 
 \subsubsection{Creation d'offre d'emploi}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/emptyJobOffer.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/emptyJobOffer.jpg}
     \caption{Interface de publication d'offre d'emploi (vide)}
 \end{figure} 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/createJobOffer.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/createJobOffer.jpg}
     \caption{Ajouter un nouvelle Offre d'emploi}
 \end{figure} 
 \vspace{2cm}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/jobOfferList.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/jobOfferList.jpg}
     \caption{Interface de publication d'offre d'emploi (après création d'offre)}
 \end{figure} 
 
 \clearpage
 \subsubsection{Profile}
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/userResumes.jpg}
-    \caption{Les cv crées par l'utilisateur connectés} 
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/profile.jpg}
+    \caption{La page de profile de l'utilisateur connecté} 
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/accountSettings.jpg}
+    \caption{Modifier les informations d'authentification de l'utilisateur connecté/ supprimer le compte} 
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/editProfile1.jpg}
+    \caption{Modifier/remplir les informations de l'utilisateur connecté -1-} 
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/editProfile2.jpg}
+    \caption{Modifier/remplir les informations de l'utilisateur connecté -2-} 
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/editProfile3.jpg}
+    \caption{Modifier/remplir les informations de l'utilisateur connecté -3-} 
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/editProfile4.jpg}
+    \caption{Modifier/remplir les informations de l'utilisateur connecté -4-} 
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/editProfile5.jpg}
+    \caption{Modifier/remplir les informations de l'utilisateur connecté -5-} 
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/userResumes.jpg}
+    \caption{Les cv crées par l'utilisateur connecté} 
 \end{figure} 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/userJobOffers.jpg}
-    \caption{Les offres d'emploi crées par l'utilisateur connectés} 
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/userJobOffers.jpg}
+    \caption{Les offres d'emploi crées par l'utilisateur connecté} 
 \end{figure} 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/userResumesDelete.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/userResumesDelete.jpg}
     \caption{Supprimer un offre d'emploi déjà crée} 
 \end{figure} 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/userResumesUpdate.jpg}
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/userResumesUpdate.jpg}
     \caption{Modifier un offre d'emploi déjà crée} 
+\end{figure}   
+\clearpage
+
+\subsection{Espace administrateurs}
+\subsubsection{Gestion des templates}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/addTemp.jpg}
+    \caption{Ajouter un nouveau template} 
+\end{figure}   
+\subsubsection{statistiques}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{./imgs/screens/stats.jpg}
+    \caption{statistiques du plateforme} 
+\end{figure}   
+
+\clearpage
+\subsection{Compatibilité Mobile}
+Cette section démontre l'adaptabilité de la plateforme Nibras aux appareils mobiles (responsive design), garantissant une expérience utilisateur optimale sur smartphones et tablettes. Les captures d'écran suivantes illustrent l'affichage correct de l'interface d'accueil sur différents écrans mobiles.
+
+\vspace{1cm}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{./imgs/screens/teleHome1.jpg}
+    \caption{Affichage mobile - Page d'accueil (version smartphone) -1-} 
 \end{figure} 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/profileActions.jpg}
-    \caption{Actions de profile} 
-\end{figure} 
+    \includegraphics[width=0.7\linewidth]{./imgs/screens/teleHome2.jpg}
+    \caption{Affichage mobile - Page d'accueil (version smartphone) -2-} 
+\end{figure}   
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/userInfoEdit.jpg}
-    \caption{Modifier/remplir les informations de l'utilisateur} 
-\end{figure} 
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/userInfoEdit2.jpg}
-    \caption{Modifier/remplir les informations de l'utilisateur (suite)} 
-\end{figure} 
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/userAuthEdit.jpg}
-    \caption{Modifier les informations d'authentification de l'utilisateur} 
-\end{figure} 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/userAuthDelete.jpg}
-    \caption{Supprimer le compte de l'utilisateur} 
-\end{figure} 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1.2\linewidth]{./imgs/screens/userInfoEdit.jpg}
-    \caption{Modifier/remplir les informations de l'utilisateur} 
-\end{figure} 
-
-
-%\subsection{Espace administrateurs}
-%\subsubsection{Gestion des templates}
-%\subsubsection{statistiques}
+    \includegraphics[width=0.7\linewidth]{./imgs/screens/teleHome3.jpg}
+    \caption{Affichage mobile - Page d'accueil (version smartphone) -3-} 
+\end{figure}   
 
 
 \section{Conclusion}
-Cette implémentation a validé la faisabilité technique de la plateforme tout en identifiant des axes d'optimisation, notamment pour la génération de documents et l'expérience utilisateur. L'architecture retenue (MERN + LaTeX) s'est révélée adaptée aux besoins du projet.
+L'implémentation de Nibras a démontré avec succès la viabilité d'une plateforme intégrée combinant génération automatisée de CV professionnels et gestion des opportunités d'emploi. Les principaux objectifs techniques ont été atteints :
 
+\begin{itemize}
+\item Une architecture MERN robuste permettant une séparation claire des responsabilités entre frontend (React), backend (Express.js) et base de données (MongoDB)
+\item Un système hybride efficace générant à la fois des PDF prêts à l'emploi et du code LaTeX modifiable
+\item Une expérience utilisateur cohérente à travers les différents modules (CV, offres d'emploi, profil)
+\end{itemize}
+
+Les défis rencontrés, notamment la compilation serveur de documents LaTeX et la synchronisation des données entre composants, ont conduit à des solutions innovantes qui pourraient être réutilisées dans des contextes similaires.
+
+\subsection{Perspectives d'Amélioration}
+L'évolution de la plateforme pourrait intégrer :
+\begin{itemize}
+\item Une bibliothèque étendue de templates adaptés à différents secteurs professionnels
+\item Des outils d'analyse automatique des compétences à partir des CV
+\item Une interface administrateur plus complète avec tableaux de bord analytiques
+\item L'intégration d'APIs externes (LinkedIn, plateformes de recrutement)
+\end{itemize}
+
+Cette expérience a confirmé l'importance d'une approche modulaire dans le développement d'applications métier, tout en soulignant le potentiel des technologies open-source (LaTeX notamment) dans des contextes professionnels modernes.
 
 
 \chapter{Conclusion}
@@ -571,7 +757,7 @@ Ce projet a permis de développer une plateforme fonctionnelle de création de C
 
 \vspace{1cm} % Additional vertical space
 
-Les principaux défis techniques, notamment la compilation serveur de PDF et la gestion des données semi-structurées, ont été résolus grâce à une architecture modulaire. Bien que certaines limitations persistent, comme les temps de génération des documents ou les possibilités limitées de personnalisation avancée, la solution ouvre des perspectives intéressantes pour l'automatisation de processus RH.
+Les principaux défis techniques, notamment la compilation serveur de PDF et la gestion des données semi-structurées, ont été résolus grâce à une architecture modulaire. Bien que certaines limitations persistent, comme les temps de génération des documents ou les possibilités limitées de personnalisation avancée, la solution ouvre des perspectives intéressantes pour l'automatisation de processus ressources humaines.
 
 \vspace{1cm} % Additional vertical space
 
@@ -589,6 +775,7 @@ Ce travail démontre qu'il est possible de moderniser des workflows documentaire
     \item https://chatgpt.com/
     \item https://www.logoai.com/
     \item https://coolors.co/
+    \item https://www.youtube.com/@NetNinja
 \end{itemize}
 
 
