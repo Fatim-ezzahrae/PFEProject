@@ -13,7 +13,6 @@
 \usepackage{varwidth}
 \usepackage{float}
 
-
 \makeatletter
 \let\@title\@empty
 \let\@author\@empty
@@ -44,9 +43,9 @@
 \titleformat{\section}[block]  
 {\centering\bfseries\Huge\vspace{5cm}\color{darkblue}}  % Centre horizontalement, police moderne et grande
 {Section \thesection:}  % Section numérotée sous la forme "Section X: "
-{10pt}  
+{9pt}  
 {\parbox{0.9\textwidth}{\centering}} % Wrap inside a centered box
-[\vspace{0.4pt}\rule{\textwidth}{1pt}\vspace{10pt}] % Ligne SOUS le titre
+[\vspace{0.4pt}\rule{\textwidth}{1pt}\vspace{1pt}] % Ligne SOUS le titre
 
 % Sous-sections styling
 \titleformat{\subsection}
@@ -82,10 +81,21 @@
     pdfborder={0 0 0},     % Remove the border around links
 }
 
-% Change numbering for sections and subsections
-\renewcommand{\thesection}{\arabic{section}}
+% Change numbering for sections and subsections (FIXED)
+\renewcommand{\thesection}{\arabic{section}}  % Removed "Section" prefix here
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+% Add "Section" prefix to TOC entries (NEW)
+\makeatletter
+\let\oldl@section\l@section
+\renewcommand{\l@section}[2]{\oldl@section{Section #1}{#2}}
+\makeatother
+
+% Ensure justification persists after environments (NEW)
+\AfterEndEnvironment{figure}{\justifying}
+\AfterEndEnvironment{table}{\justifying}
+\AfterEndEnvironment{landscape}{\justifying}
 
 \pagestyle{fancy}
 \fancyhf{} % Clear all header and footer fields
@@ -203,8 +213,6 @@ Ce projet illustre comment les technologies web modernes peuvent répondre à de
 \clearpage
 
 \section{Introduction Générale}
-\centering
-\clearpage
 \justifying
 
 \vspace*{\fill} % Vertical centering
@@ -442,7 +450,7 @@ Notre solution combine des technologies modernes pour le frontend, le backend et
 
 \subsection{Outils}
 \subsubsection{React}
-Framework JavaScript pour interfaces utilisateurs. Choisi pour :
+Framework JavaScript pour interfaces utilisateurs. Choisi pour 
 \begin{itemize}
     \item Architecture composants réutilisables
     \item Gestion d'état efficace (hooks, contexte)
@@ -462,7 +470,7 @@ Framework web minimaliste pour Node.js. Sélectionné pour :
 \begin{center}
     \includegraphics[width=0.8\linewidth]{./imgs/expressLogo.jpg}
 \end{center}
-
+\newpage
 \subsubsection{MongoDB}
 Base de données NoSQL orientée documents. Adoptée car :
 \begin{itemize}
@@ -496,7 +504,7 @@ Assistant d'Intelligence Artificielle pour le développement. Intégré dans not
 \begin{center}
     \includegraphics[width=0.5\linewidth]{./imgs/codeiumLogo.jpg}
 \end{center}
-
+\newpage
 \subsubsection{StarUML}
 Logiciel de modélisation UML. Choisi pour :
 \begin{itemize}
