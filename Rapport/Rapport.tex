@@ -41,11 +41,11 @@
 
 % --- Personnalisation du style des sections ---
 \titleformat{\section}[block]  
-{\centering\bfseries\Huge\vspace{5cm}\color{darkblue}}  % Centre horizontalement, police moderne et grande
+{\centering\bfseries\Huge\vspace*{\fill}\color{darkblue}}  % Centre horizontalement et verticalement, police moderne et grande
 {Section \thesection:}  % Section numérotée sous la forme "Section X: "
 {9pt}  
 {\parbox{0.9\textwidth}{\centering}} % Wrap inside a centered box
-[\vspace{0.4pt}\rule{\textwidth}{1pt}\vspace{1pt}] % Ligne SOUS le titre
+[\vspace{0.4pt}\rule{\textwidth}{1pt}\vspace{1pt}\vspace*{\fill}] % Ligne SOUS le titre
 
 % Sous-sections styling
 \titleformat{\subsection}
@@ -214,6 +214,7 @@ Ce projet illustre comment les technologies web modernes peuvent répondre à de
 
 \section{Introduction Générale}
 \justifying
+\clearpage
 
 \vspace*{\fill} % Vertical centering
 Ce rapport présente Nibras, notre plateforme web de génération de CV professionnels, développée dans le cadre du Projet de Fin d'Études à l'École Supérieure de Technologie de Safi sous la supervision du Professeur Abdelouahad BAYAR. Le nom Nibras, emprunté à l'arabe pour désigner un "guide lumineux", reflète l'ambition du projet : éclairer le parcours des chercheurs d'emploi en leur offrant des outils intuitifs pour mettre en lumière leurs compétences.
