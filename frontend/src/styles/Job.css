@@ -510,7 +510,7 @@
 
 .description-content {
   white-space: pre-wrap; /* Preserves line breaks */
-  line-height: 1.5;
+  line-height: 2;
   text-align: justify;
   padding-left: 20px; /* Indent description text */
   border-left: 2px solid #eee; /* Optional subtle visual separator */
@@ -522,4 +522,155 @@
   left: 0;
   top: 3px; /* Aligns with first line */
   font-size: 1.1rem;
+}
+@media screen and (max-width: 768px) {
+  /* Job Page Container */
+  .job-page-profile {
+    padding: 20px 15px;
+    padding-top: 80px;
+  }
+
+  /* Add Button */
+  .addbutton {
+    right: 20px;
+    bottom: 20px;
+  }
+
+  /* Job Offers List */
+  .job-offer-profile {
+    margin-top: 20px;
+  }
+
+  .job-offers-profile-h2 {
+    font-size: 28px;
+    padding: 10px 0;
+    position: static;
+    transform: none;
+    width: 100%;
+    text-align: center;
+    margin-bottom:15px;
+    margin-top: 50px;
+  }
+
+  /* Job Post Cards */
+  .job-post-profile {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .job-title-profile {
+    font-size: 22px !important;
+    text-align: left !important;
+  }
+
+  .job-details-row {
+    font-size: 14px;
+    margin: 8px 0;
+  }
+
+  .inline-icon {
+    font-size: 1.2rem !important;
+    margin-right: 6px;
+  }
+
+  .field {
+    font-size: 16px;
+  }
+
+  /* Job Description */
+  .job-description-container {
+    margin: 0.5rem 0 0.5rem 5px;
+    padding-left: 24px; /* Space for icon alignment */
+    position: relative;
+  }
+
+  .description-header {
+    margin-bottom: 8px;
+  }
+
+  .description-content {
+    padding-left: 4px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* No Jobs Message */
+  .no-job-offers {
+    position: static;
+    transform: none;
+    width: 100%;
+    margin: 20px 0;
+    font-size: 16px;
+  }
+
+  /* Job Form */
+  .job-offer-form {
+    margin-top: 30px;
+    padding: 0 15px;
+  }
+
+  .Jobinfo-wrapper,
+  .descp-wrapper,
+  .app-wrapper {
+    padding: 50px 60px;
+    width: 110%;
+    margin-top: 180px;
+    transform: none !important;
+  }
+
+  .Jobinfo-wrapper h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+
+  .label-Job {
+    font-size: 16px;
+  }
+
+  .Jobinfo-wrapper input,
+  .app-wrapper input {
+    font-size: 14px;
+    padding: 10px;
+  }
+  .descp-wrapper textarea{
+    font-size: 14px;
+    padding: 26px;
+  }
+
+  .descp-wrapper textarea {
+    height: 150px;
+  }
+
+  .nextJob {
+    font-size: 18px;
+    padding: 12px 40px;
+    margin: 10px auto !important;
+  }
+
+  .button-back {
+    transform: none;
+    margin-top: 10px;
+  }
+
+  /* Success Popup */
+  .success-popup .popup-content {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  .popup-content .material-symbols-outlined {
+    font-size: 2.5rem;
+  }
+
+  .popup-title {
+    font-size: 1.1rem;
+  }
+
+  .popup-content p {
+    font-size: 1rem;
+  }
+ .update-job-offer-form{
+  margin-top: 100px !important;
+  margin-left: 70px !important ;
+ }
 }

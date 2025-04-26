@@ -128,6 +128,11 @@ const Signup = () => {
             <button className='Sign-up' type="submit" disabled={isLoadingSignup}>
               {isLoadingSignup ? 'Creating Account...' : 'Sign Up'}
             </button>
+            
+            {/* Mobile toggle button for sign-up form */}
+            <div className="mobile-form-toggle">
+              <p>Already have an account? <button type="button" onClick={handleSignInClick}>Sign In</button></p>
+            </div>
           </form>
         </div>
         
@@ -175,10 +180,15 @@ const Signup = () => {
             <button className='Sign-up' type="submit" disabled={isLoadingLogin}>
               {isLoadingLogin ? 'Signing In...' : 'Sign In'}
             </button>
+            
+            {/* Mobile toggle button for sign-in form */}
+            <div className="mobile-form-toggle">
+              <p>Don't have an account? <button type="button" onClick={handleSignUpClick}>Sign Up</button></p>
+            </div>
           </form>
         </div>
         
-        {/* Overlay */}
+        {/* Overlay (hidden on mobile) */}
         <div className="Sign-up-overlay-container">
           <div className="Sign-up-overlay">
             <div className="Sign-up-overlay-panel overlay-left">

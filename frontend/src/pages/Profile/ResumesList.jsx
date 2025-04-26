@@ -144,7 +144,7 @@ const ResumesList = () => {
         )}
       </div>
        <>
-        <Link to="/Resume" className="create-btn">
+        <Link to="/Resumes" className="create-btn">
           + New Resume
         </Link></>
     </div>

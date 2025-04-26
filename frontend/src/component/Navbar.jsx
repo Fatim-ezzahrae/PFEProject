@@ -75,15 +75,16 @@ function Navbar() {
             </li>
           )}
           {user && (
-            <li className='nav-item'>
-              <Link to='/sign-up' className='nav-button1' onClick={handleLogout}>
+            <li className='nav-item-log' onClick={closeMobileMenu}>
+              <Link to='/sign-up' className='nav-button1' onClick={handleLogout} >
                 <span>Logout</span><span class="material-symbols-outlined">
                   logout
                 </span>
               </Link>
-              <Link to='/Profile' className='prof-butt'>
+              <Link to='/Profile' className='prof-butt' onClick={closeMobileMenu}>
               <span class="material-symbols-outlined">account_circle</span>              
               </Link>
+            
             </li>
           )}
           

@@ -558,6 +558,16 @@ const removeSkill = (index) => {
     }
 
 
+    const validateEmail = (email) => {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    };
+    
+    // Add to your validation logic:
+    if (!validateEmail(userInfo.email)) {
+      showErrorToast('Please enter a valid email address');
+      return false;
+    }
   };
 
   return (
@@ -585,7 +595,17 @@ const removeSkill = (index) => {
             <label className="label-form">First Name:<input type="text" name="firstName" placeholder="Enter your First Name..." value={userInfo.firstName} onChange={handleInputChange} required /></label>
             <label className="label-form">Last Name:<input type="text" name="lastName"  placeholder="Enter your Last Name..." value={userInfo.lastName} onChange={handleInputChange} required /></label>
             </div>
-            <label className="label-form">Email:<input type="email" name="email"  placeholder="ex: xx@gmail.com" value={userInfo.email} onChange={handleInputChange} required /></label>
+            <label className="label-form">
+  Email:
+  <input
+    type="email"
+    name="email"
+    value={userInfo.email}
+    onChange={handleInputChange}
+    placeholder="Enter your email"
+    required
+  />
+</label>
             <label className="label-form">Phone:<input type="tel" name="phone"  placeholder="ex: XXXXXXXXXX" value={userInfo.phone} onChange={handleInputChange} required /></label>
             <label className="label-form">Address:<input type="text" name="address"  placeholder="Enter your address..." value={userInfo.address} onChange={handleInputChange} required /></label>
             </form>

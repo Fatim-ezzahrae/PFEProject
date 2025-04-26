@@ -651,50 +651,141 @@
 }
 
 /* ====== Responsive Design ====== */
-@media (max-width: 768px) {
-    .Edit-profile-container {
-        margin: 2rem var(--space-sm) 0;
-        padding: var(--space-md);
-        border-radius: 0;
-        box-shadow: none;
-    }
-    
-    .Edit-profile-header {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: var(--space-sm);
-    }
-    
-    .Edit-edit-btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .Edit-form-row {
-        flex-direction: column;
-        gap: 0;
-    }
-    
-    .Edit-form-label {
-        min-width: 100%;
-    }
-    
-    .Edit-submit-btn {
-        max-width: 100%;
-    }
-    .Account-settings-form {
-        padding: var(--space-md);
-        margin: var(--space-md) auto;
-      }
-      
-      .Account-settings-buttons {
-        flex-direction: column;
-        gap: var(--space-sm);
-      }
-      
-      .Account-settings-save,
-      .Account-settings-cancel {
-        max-width: 100%;
-        width: 100%;
-      }
+@media screen and (max-width: 768px) {
+  /* General layout adjustments */
+  .Edit-profile-page {
+    padding: 1rem;
+  }
+
+  .Edit-profile-container {
+    width: 70%;
+    margin-top: 300px;
+    padding: 1rem;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+  
+  .Account-settings-form {
+    width: 89%;
+    margin-top: 100px;
+    margin-left: 50px;
+    padding: 1rem;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+
+  .Edit-profile-form {
+    width: 87%;
+    margin-top: 100px;
+    margin-left: 25px ;
+    padding: 1rem;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* Header adjustments */
+  .Edit-profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .Edit-profile-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .Edit-edit-btn,
+  .Edit-settings-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Form adjustments */
+  .Edit-form-section {
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .Edit-form-card {
+    padding: 1rem;
+    position: relative;
+  }
+
+  .edit-minus-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    margin-left: 0;
+  }
+
+  .Edit-form-row {
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  .Edit-form-label {
+    min-width: 100%;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Description items */
+  .Edit-desc-item-container {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Add buttons */
+  .Edit-add-item-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Form buttons */
+  .Edit-form-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .Edit-submit-btn,
+  .Edit-cancel-btn {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* Account settings specific */
+  .Account-settings-form h1 {
+    font-size: 1.8rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .Account-settings-buttons {
+    flex-direction: column;
+  }
+
+  .Account-settings-save,
+  .Account-settings-cancel {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* Delete confirmation */
+  .Delete-confirmation {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .Delete-confirm,
+  .Delete-cancel {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  /* Password visibility toggle */
+  .password-toggle-icon {
+    right: 0.75rem;
+  }
 }
