@@ -10,8 +10,8 @@
 \usepackage{setspace}  % For line spacing
 \usepackage{subcaption} % Essential for subfigures
 \usepackage{pdflscape} % For landscape orientation
-\usepackage{fancyhdr}
 \usepackage{varwidth}
+\usepackage{float}
 
 \makeatletter
 \let\@title\@empty
@@ -22,16 +22,14 @@
 \renewcommand{\maketitle}{} % Completely disable \maketitle
 \makeatother
 
-
-
-\definecolor{darkblue}{RGB}{34, 102, 153}  % Chapter title
-\definecolor{mediumblue}{RGB}{50, 120, 180}  % Section title
-\definecolor{lightblue}{RGB}{100, 140, 200}  % Subsection title
-\definecolor{subblue}{RGB}{120, 160, 220}     % New color for subsubsection
+\definecolor{darkblue}{RGB}{0, 0, 139}  % Section title
+\definecolor{mediumblue}{RGB}{50, 120, 180}  % Subsection title
+\definecolor{lightblue}{RGB}{100, 140, 200}  % Subsubsection title
+\definecolor{subblue}{RGB}{120, 160, 220}     % New color for subsubsubsection
 \definecolor{teal}{RGB}{30, 120, 120}  % Résumé & Table of Contents
 \definecolor{grayline}{RGB}{180, 180, 180}  % Line under titles
-
 \renewcommand{\normalsize}{\fontsize{13pt}{15pt}\selectfont}  % Default text size
+
 % --- Improving paragraph appearance ---
 \AtBeginDocument{
     \justifying          
@@ -41,33 +39,33 @@
     \setlength{\parskip}{6pt}  % Add space between paragraphs
 }
 
-% --- Personnalisation du style des chapitres ---
-\titleformat{\chapter}[block]  
+% --- Personnalisation du style des sections ---
+\titleformat{\section}[block]  
 {\centering\bfseries\Huge\vspace{5cm}\color{darkblue}}  % Centre horizontalement, police moderne et grande
-{Chapitre \thechapter:}  % Chapitre numéroté sous la forme "Chapitre X: "
-{10pt}  
+{Section \thesection:}  % Section numérotée sous la forme "Section X: "
+{9pt}  
 {\parbox{0.9\textwidth}{\centering}} % Wrap inside a centered box
-[\vspace{0.4pt}\rule{\textwidth}{1pt}\vspace{10pt}] % Ligne SOUS le titre
+[\vspace{0.4pt}\rule{\textwidth}{1pt}\vspace{1pt}] % Ligne SOUS le titre
 
-%sections styling
-\titleformat{\section}
-{\Large\bfseries\color{mediumblue}}  % Medium Blue for Sections
-{\thesection}{1em}{}
-
-%subsections styling
+% Sous-sections styling
 \titleformat{\subsection}
-{\large\bfseries\color{lightblue}}  % Light Blue for Subsections
+{\Large\bfseries\color{mediumblue}}  % Medium Blue for Subsections
 {\thesubsection}{1em}{}
 
-% Custom subsubsection style
-\titleformat{\subsubsection}[block] % Shape
+% Sous-sous-sections styling
+\titleformat{\subsubsection}
+{\large\bfseries\color{lightblue}}  % Light Blue for Subsubsections
+{\thesubsubsection}{1em}{}
+
+% Custom subsubsubsection style
+\titleformat{\paragraph}[block] % Shape
   {\normalfont\bfseries\color{subblue}} % Format
-  {\thesubsubsection} % Label
+  {\theparagraph} % Label
   {0.5em} % Horizontal separation between label and title
   {} % Before-code
   [\vspace{-0.5em}] % After-code (reduces space after header)
 
-\titlespacing*{\subsubsection}{0pt}{1.5\baselineskip}{0.5\baselineskip} % {left}{before}{after}
+\titlespacing*{\paragraph}{0pt}{1.5\baselineskip}{0.5\baselineskip} % {left}{before}{after}
 
 % --- Force chaque section à commencer sur une nouvelle page ---
 \preto\section{\clearpage}
@@ -83,27 +81,47 @@
     pdfborder={0 0 0},     % Remove the border around links
 }
 
+% Change numbering for sections and subsections (FIXED)
+\renewcommand{\thesection}{\arabic{section}}  % Removed "Section" prefix here
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+% Add "Section" prefix to TOC entries (NEW)
+\makeatletter
+\let\oldl@section\l@section
+\renewcommand{\l@section}[2]{\oldl@section{Section #1}{#2}}
+\makeatother
+
+% Ensure justification persists after environments (NEW)
+\AfterEndEnvironment{figure}{\justifying}
+\AfterEndEnvironment{table}{\justifying}
+\AfterEndEnvironment{landscape}{\justifying}
+
 \pagestyle{fancy}
 \fancyhf{} % Clear all header and footer fields
 \fancyfoot[R]{\thepage} % Right-aligned page number
 \renewcommand{\headrulewidth}{0pt} % Remove header line if not needed
+
+% Set TOC depth
+\setcounter{tocdepth}{3} % Show down to subsubsections in TOC
 
 \begin{document}
 
 \begin{titlepage}
     \thispagestyle{empty}
     \centering
-    \vspace*{-1.5cm}  % Negative space to pull everything up
+    \vspace*{-5cm}  % Negative space to pull everything up
     
     % School logo with perfect top margin
-    \includegraphics[height=5cm]{./imgs/ESTLogo.jpg}\\
+    \includegraphics[height=6cm]{./imgs/EST Safi.jpg}\\
     \vspace{0cm}  % Reduced space after logo
     
     % School information with optimized spacing
     {\fontsize{14}{16}\selectfont
     UNIVERSITÉ CADI AYYAD\\[0.1cm] % Increased from 0.1cm
-    ÉCOLE SUPÉRIEURE DE TECHNOLOGIE DE SAFI\\[0.2cm] % More space before department
-    \textbf{Département de Génie Informatique}
+    ÉCOLE SUPÉRIEURE DE TECHNOLOGIE DE SAFI\\[0.1cm] % More space before department
+    \textbf{Département Génie Informatique}\\[0.1cm]
+    \textbf{Administration des Systèmes de réseaux}
     }\\[1.2cm] % Slightly reduced final spacing
     
     % Project title section - preserved text with enhanced styling
@@ -169,7 +187,7 @@
     % Ensures minimum 1cm bottom margin
 \end{titlepage}
 
-\vspace*{\fill} % Vertical centering
+
 
 \thispagestyle{fancy} % Enable page number
 \setcounter{page}{1} % Start counting from 1 here
@@ -188,39 +206,40 @@ Ce projet illustre comment les technologies web modernes peuvent répondre à de
 \vspace*{\fill} % Vertical centering
 
 { % Open a temporary scope
-\titleformat{\chapter}{\normalfont\Huge}{}{0pt}{}  % Reset style
+\titleformat{\section}{\normalfont\Huge}{}{0pt}{}  % Reset style
 \tableofcontents
 \listoffigures  % List of Figures
 } % Close the scope
 \clearpage
 
-\chapter{Introduction}
-\clearpage
+\section{Introduction Générale}
 \justifying
 
 \vspace*{\fill} % Vertical centering
-Ce rapport présente Nibras, notre plateforme web de génération de CV professionnels, développée dans le cadre du Projet de Fin d’Études à l’École Supérieure de Technologie de Safi sous la supervision du Professeur Abdelouahad BAYAR. Le nom Nibras, emprunté à l’arabe pour désigner un "guide lumineux", reflète l’ambition du projet : éclairer le parcours des chercheurs d’emploi en leur offrant des outils intuitifs pour mettre en lumière leurs compétences.
+Ce rapport présente Nibras, notre plateforme web de génération de CV professionnels, développée dans le cadre du Projet de Fin d'Études à l'École Supérieure de Technologie de Safi sous la supervision du Professeur Abdelouahad BAYAR. Le nom Nibras, emprunté à l'arabe pour désigner un "guide lumineux", reflète l'ambition du projet : éclairer le parcours des chercheurs d'emploi en leur offrant des outils intuitifs pour mettre en lumière leurs compétences.
 
-Concrètement, Nibras permet aux utilisateurs de créer des CV élégants et structurés au format LaTeX, reconnu pour sa qualité typographique adaptée aux documents professionnels. La plateforme se distingue par sa double fonctionnalité : exporter les CV en PDF prêts à l’emploi, ou en fournir le code source LaTeX pour des personnalisations avancées. Elle intègre également un espace dédié aux offres d’emploi, où recruteurs et candidats peuvent interagir, renforçant ainsi son rôle de pont vers l’emploi.
+Concrètement, Nibras permet aux utilisateurs de créer des CV élégants et structurés au format LaTeX, reconnu pour sa qualité typographique adaptée aux documents professionnels. La plateforme se distingue par sa double fonctionnalité : exporter les CV en PDF prêts à l'emploi, ou en fournir le code source LaTeX pour des personnalisations avancées. Elle intègre également un espace dédié aux offres d'emploi, où recruteurs et candidats peuvent interagir, renforçant ainsi son rôle de pont vers l'emploi.
 
-Du point de vue technique, Nibras repose sur une stack moderne associant React pour l’interface utilisateur, Express.js pour le backend, et MongoDB pour le stockage des données. Son architecture rôle-based garantit une expérience adaptée aux profils utilisateurs (création de CV, candidature) et administrateurs (gestion des modèles, statistiques).
+Du point de vue technique, Nibras repose sur une stack moderne associant React pour l'interface utilisateur, Express.js pour le backend, et MongoDB pour le stockage des données. Son architecture rôle-based garantit une expérience adaptée aux profils utilisateurs (création de CV, candidature) et administrateurs (gestion des modèles, statistiques).
 
-Ce document détaille les étapes clés du projet, depuis l’analyse des besoins jusqu’aux défis techniques surmontés, en passant par les choix de conception. Il s’achève par des pistes d’amélioration pour transformer Nibras en un outil encore plus performant au service de ses utilisateurs.
+Ce document détaille les étapes clés du projet, depuis l'analyse des besoins jusqu'aux défis techniques surmontés, en passant par les choix de conception. Il s'achève par des pistes d'amélioration pour transformer Nibras en un outil encore plus performant au service de ses utilisateurs.
 
 \vspace*{\fill} % Vertical centering
 
-\chapter{Présentation de l'organisme}
-\section{Ecole Supérieure de Technologie de Safi}
-L’Ecole Supérieure de Technologie de Safi (ESTS) fondée en Septembre 1992, établissement phare de l’université Cadi Ayyad, est une institution académique reconnue pour sa formation technique (DUT) et professionnelle (LP) à partir de l’année universitaire 2014-2015.  
+\section{Présentation de l'organisme}
+\clearpage
+\subsection{Ecole Supérieure de Technologie de Safi}
+L'Ecole Supérieure de Technologie de Safi (ESTS) fondée en Septembre 1992, établissement phare de l'université Cadi Ayyad, est une institution académique reconnue pour sa formation technique (DUT) et professionnelle (LP) à partir de l'année universitaire 2014-2015.  
 
-Située à Safi, une ville côtière du Maroc, l’ESTS offre une gamme diversifiée de programmes dans les domaines de l’ingénierie, des sciences appliquées, et de la gestion. Depuis sa création, l’ESTS s’est engagé à fournir une éducation moderne et pertinente, en mettant l’accent sur l’excellence académique et l’innovation.  
+Située à Safi, une ville côtière du Maroc, l'ESTS offre une gamme diversifiée de programmes dans les domaines de l'ingénierie, des sciences appliquées, et de la gestion. Depuis sa création, l'ESTS s'est engagé à fournir une éducation moderne et pertinente, en mettant l'accent sur l'excellence académique et l'innovation.  
 
-Dans le but est de préparer ses étudiants à répondre aux défis du marché du travail avec des compétences pratiques et théoriques solides. Supervisé par un corps professoral qualifié et infrastructures modernes, l’ESTS se positionne comme un acteur clé dans le développement de talents capables de contribuer au progrès technologique et économique de la région.  
+Dans le but est de préparer ses étudiants à répondre aux défis du marché du travail avec des compétences pratiques et théoriques solides. Supervisé par un corps professoral qualifié et infrastructures modernes, l'ESTS se positionne comme un acteur clé dans le développement de talents capables de contribuer au progrès technologique et économique de la région.  
 
-\chapter{Analyse des besoins}
-\section{Besoins fonctionnels}
+\section{Analyse des besoins}
+\clearpage
+\subsection{Besoins fonctionnels}
 
-L’analyse des besoins fonctionnels a permis d’identifier les principales exigences du système, classées selon les différents acteurs (utilisateurs et administrateurs).
+L'analyse des besoins fonctionnels a permis d'identifier les principales exigences du système, classées selon les différents acteurs (utilisateurs et administrateurs).
 
 \par
 
@@ -291,7 +310,7 @@ L’analyse des besoins fonctionnels a permis d’identifier les principales exi
 
 Cette analyse a servi de base pour la conception de l'architecture et le développement des différentes briques fonctionnelles du système.
 
-\section{Besoins non-fonctionnels}
+\subsection{Besoins non-fonctionnels}
 
 Les besoins non fonctionnels définissent les exigences techniques et qualitatives de notre plateforme, garantissant son bon fonctionnement dans des conditions réelles d'utilisation.
 
@@ -346,8 +365,9 @@ Cette section présente les critères essentiels que notre application doit resp
     \item Déploiement possible sur un serveur standard.
 \end{itemize}
 
-\chapter{Conception}
-\section{UML}
+\section{Conception}
+\clearpage
+\subsection{UML}
 
 Pour formaliser l'architecture et les interactions de notre application, nous avons utilisé UML (Unified Modeling Language). Ce langage de modélisation standardisé nous a permis de :
 
@@ -378,7 +398,7 @@ Les diagrammes UML produits incluent :
     \label{fig:uml_logo}
 \end{figure}
 
-\section{Diagramme des cas d'utilisation}
+\subsection{Diagramme des cas d'utilisation}
 
 Le diagramme des cas d'utilisation (Figure~\ref{fig:use_case_diagram}) présente les interactions entre les différents acteurs du système et les fonctionnalités principales. On distingue deux types d'acteurs principaux :
 
@@ -394,7 +414,7 @@ Le diagramme des cas d'utilisation (Figure~\ref{fig:use_case_diagram}) présente
     \label{fig:use_case_diagram}
 \end{figure}
 
-\section{Diagramme de classe}
+\subsection{Diagramme de classe}
 
 Le diagramme de classes (Figure~\ref{fig:class_diagram}) présente la structure objet du système et les relations entre les différentes entités. Les principales classes représentées sont :
 
@@ -414,11 +434,9 @@ Le diagramme de classes (Figure~\ref{fig:class_diagram}) présente la structure 
     \label{fig:class_diagram}
 \end{figure}
 
-
-%\section{Diagrammes de séquence}
-
-\chapter{Outils et Langages utilisés}
-\section{Introduction}
+\section{Outils et Langages utilisés}
+\clearpage
+\subsection{Introduction}
 
 Ce chapitre présente l'écosystème technologique choisi pour le développement de notre plateforme de gestion de CV. La sélection des outils s'est basée sur :
 
@@ -429,9 +447,10 @@ Ce chapitre présente l'écosystème technologique choisi pour le développement
 \end{itemize}
 
 Notre solution combine des technologies modernes pour le frontend, le backend et la gestion des données. Ce choix technologique permet une séparation claire des responsabilités tout en garantissant une bonne maintenabilité du projet.
-\section{Outils}
-\subsection{React}
-Framework JavaScript pour interfaces utilisateurs. Choisi pour :
+
+\subsection{Outils}
+\subsubsection{React}
+Framework JavaScript pour interfaces utilisateurs. Choisi pour 
 \begin{itemize}
     \item Architecture composants réutilisables
     \item Gestion d'état efficace (hooks, contexte)
@@ -441,7 +460,7 @@ Framework JavaScript pour interfaces utilisateurs. Choisi pour :
     \includegraphics[width=0.8\linewidth]{./imgs/reactLogo.jpg}
 \end{center}
 
-\subsection{Express.js}
+\subsubsection{Express.js}
 Framework web minimaliste pour Node.js. Sélectionné pour :
 \begin{itemize}
     \item Création rapide d'API REST
@@ -451,8 +470,8 @@ Framework web minimaliste pour Node.js. Sélectionné pour :
 \begin{center}
     \includegraphics[width=0.8\linewidth]{./imgs/expressLogo.jpg}
 \end{center}
-
-\subsection{MongoDB}
+\newpage
+\subsubsection{MongoDB}
 Base de données NoSQL orientée documents. Adoptée car :
 \begin{itemize}
     \item Schéma flexible adapté aux CV personnalisés
@@ -463,7 +482,7 @@ Base de données NoSQL orientée documents. Adoptée car :
     \includegraphics[width=0.6\linewidth]{./imgs/mongodbLogo.jpg}
 \end{center}
 
-\subsection{Visual Studio Code}
+\subsubsection{Visual Studio Code}
 EDI moderne par Microsoft. Utilisé grâce à :
 \begin{itemize}
     \item Support excellent du JavaScript/TypeScript
@@ -474,7 +493,7 @@ EDI moderne par Microsoft. Utilisé grâce à :
     \includegraphics[width=0.5\linewidth]{./imgs/vscodeLogo.jpg}
 \end{center}
 
-\subsection{Codeium}
+\subsubsection{Codeium}
 Assistant d'Intelligence Artificielle pour le développement. Intégré dans notre workflow pour :
 \begin{itemize}
     \item Génération et complétion de code intelligent
@@ -485,8 +504,8 @@ Assistant d'Intelligence Artificielle pour le développement. Intégré dans not
 \begin{center}
     \includegraphics[width=0.5\linewidth]{./imgs/codeiumLogo.jpg}
 \end{center}
-
-\subsection{StarUML}
+\newpage
+\subsubsection{StarUML}
 Logiciel de modélisation UML. Choisi pour :
 \begin{itemize}
     \item Génération automatique de diagrammes
@@ -497,7 +516,7 @@ Logiciel de modélisation UML. Choisi pour :
     \includegraphics[width=0.7\linewidth]{./imgs/starumlLogo.jpg}
 \end{center}
 
-\subsection{Git}
+\subsubsection{Git}
 Système de contrôle de version distribué. Utilisé pour :
 \begin{itemize}
     \item Gestion collaborative du code source
@@ -509,16 +528,17 @@ Système de contrôle de version distribué. Utilisé pour :
     \includegraphics[width=0.4\linewidth]{./imgs/gitLogo.jpg}
 \end{center}
 
-
-\chapter{Implémentation du Projet}
-\section{Introduction}
+\section{Implémentation du Projet}
+\clearpage
+\subsection{Introduction}
 
 Cette documentation visuelle présente l'application opérationnelle à travers ses interfaces principales : création de CV (export PDF/LaTeX), publication d'offres d'emploi, et gestion administrative des templates et utilisateurs. Les captures d'écran illustrent le flux complet des fonctionnalités implémentées.
 
-\section{Application web}
+\subsection{Application web}
 
-\subsection{Pages publiques}  % New subsection
-\subsubsection{Page d'accueil}
+\subsubsection{Pages publiques}
+\paragraph{Page d'accueil:}
+une plateforme simple et moderne pour créer des CV. Elle propose un bouton pour démarrer rapidement, une galerie de modèles de CV professionnels, et une section avec des offres d’emploi récentes. L’interface est claire, avec une navigation en haut et des appels à l’action bien visibles.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=1.0\linewidth]{./imgs/screens/home1.jpg}
@@ -539,7 +559,8 @@ Cette documentation visuelle présente l'application opérationnelle à travers 
 
 \clearpage
 
-\subsubsection{Authentification}
+\paragraph{Authentification:}
+La page de connexion et d’inscription de Nibras est simple et intuitive. Elle permet aux utilisateurs de se connecter à leur compte ou d’en créer un nouveau en quelques clics, avec un design épuré et des champs faciles à remplir.
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.0\linewidth]{./imgs/screens/login.jpg}
@@ -554,9 +575,10 @@ Cette documentation visuelle présente l'application opérationnelle à travers 
 
 \clearpage
 
-\subsection{Interface utilisateur}
+\subsubsection{Interface utilisateur}
 
-\subsubsection{Creation de CV}
+\paragraph{Creation de CV}
+La page de création de CV sur Nibras est organisée et facile à utiliser. Elle propose une liste de modèles disponibles, suivie de plusieurs formulaires pour saisir les informations personnelles, les expériences, l’éducation, les langues et les certifications. Un aperçu en temps réel du CV est affiché, avec des boutons pour le sauvegarder ou le télécharger.
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.0\linewidth]{./imgs/screens/tempListe.jpg}
@@ -600,7 +622,8 @@ Cette documentation visuelle présente l'application opérationnelle à travers 
 \end{figure} 
 
 \clearpage
-\subsubsection{Creation d'offre d'emploi}
+\paragraph{Creation d'offre d'emploi}
+La page de création d'offre d'emploi permet aux recruteurs de publier facilement de nouvelles offres. Elle offre une interface simple pour ajouter tous les détails nécessaires, comme le titre du poste, la localisation, la date, et le domaine. Un bouton permet d’ajouter et enregistrer une nouvelle offre rapidement.
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.0\linewidth]{./imgs/screens/emptyJobOffer.jpg}
@@ -621,8 +644,8 @@ Cette documentation visuelle présente l'application opérationnelle à travers 
 \end{figure} 
 
 \clearpage
-\subsubsection{Profile}
-
+\paragraph{Profile}
+La page de profil permet à l’utilisateur connecté de gérer toutes ses informations. Il peut modifier ses données personnelles, ses informations d’authentification ou supprimer son compte. Il peut aussi consulter, modifier ou supprimer ses CV et ses offres d’emploi créées depuis cette page, le tout dans une interface claire et centralisée.
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.0\linewidth]{./imgs/screens/profile.jpg}
@@ -686,13 +709,15 @@ Cette documentation visuelle présente l'application opérationnelle à travers 
 \clearpage
 
 \subsection{Espace administrateurs}
-\subsubsection{Gestion des templates}
+L’espace administrateur offre des fonctionnalités de gestion avancée. Il permet d’ajouter de nouveaux templates de CV et d’accéder à des statistiques sur la plateforme, comme le nombre d’utilisateurs, de modèles disponibles et de CV créés.
+\paragraph{Gestion des templates}
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.0\linewidth]{./imgs/screens/addTemp.jpg}
     \caption{Ajouter un nouveau template} 
 \end{figure}   
-\subsubsection{statistiques}
+\newpage
+\paragraph{statistiques}
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.0\linewidth]{./imgs/screens/stats.jpg}
@@ -705,26 +730,25 @@ Cette section démontre l'adaptabilité de la plateforme Nibras aux appareils mo
 
 \vspace{1cm}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{./imgs/screens/teleHome1.jpg}
     \caption{Affichage mobile - Page d'accueil (version smartphone) -1-} 
 \end{figure} 
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{./imgs/screens/teleHome2.jpg}
     \caption{Affichage mobile - Page d'accueil (version smartphone) -2-} 
 \end{figure}   
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{./imgs/screens/teleHome3.jpg}
     \caption{Affichage mobile - Page d'accueil (version smartphone) -3-} 
 \end{figure}   
-
-
-\section{Conclusion}
+\newpage
+\subsection{Conclusion}
 L'implémentation de Nibras a démontré avec succès la viabilité d'une plateforme intégrée combinant génération automatisée de CV professionnels et gestion des opportunités d'emploi. Les principaux objectifs techniques ont été atteints :
 
 \begin{itemize}
@@ -735,7 +759,7 @@ L'implémentation de Nibras a démontré avec succès la viabilité d'une platef
 
 Les défis rencontrés, notamment la compilation serveur de documents LaTeX et la synchronisation des données entre composants, ont conduit à des solutions innovantes qui pourraient être réutilisées dans des contextes similaires.
 
-\subsection{Perspectives d'Amélioration}
+\section{Perspectives d'Amélioration}
 L'évolution de la plateforme pourrait intégrer :
 \begin{itemize}
 \item Une bibliothèque étendue de templates adaptés à différents secteurs professionnels
@@ -746,8 +770,7 @@ L'évolution de la plateforme pourrait intégrer :
 
 Cette expérience a confirmé l'importance d'une approche modulaire dans le développement d'applications métier, tout en soulignant le potentiel des technologies open-source (LaTeX notamment) dans des contextes professionnels modernes.
 
-
-\chapter{Conclusion}
+\section{Conclusion Générale}
 \clearpage
 
 
@@ -770,9 +793,6 @@ Ce travail démontre qu'il est possible de moderniser des workflows documentaire
     \item https://uiverse.io/
     \item https://fonts.google.com/
     \item https://fontawesome.com/
-    \item https://github.com/Fatim-ezzahrae/PFEProject.git
-    \item https://chat.deepseek.com/
-    \item https://chatgpt.com/
     \item https://www.logoai.com/
     \item https://coolors.co/
     \item https://www.youtube.com/@NetNinja
