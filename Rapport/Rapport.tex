@@ -12,6 +12,7 @@
 \usepackage{pdflscape} % For landscape orientation
 \usepackage{varwidth}
 \usepackage{float}
+\usepackage{enumitem}
 
 \makeatletter
 \let\@title\@empty
@@ -760,15 +761,18 @@ L'implémentation de Nibras a démontré avec succès la viabilité d'une platef
 
 Les défis rencontrés, notamment la compilation serveur de documents LaTeX et la synchronisation des données entre composants, ont conduit à des solutions innovantes qui pourraient être réutilisées dans des contextes similaires.
 
+
 \section{Perspectives d'Amélioration}
+\vspace*{-2cm} % Adjust this value to move content up
 L'évolution de la plateforme pourrait intégrer :
 \begin{itemize}
-\item Une bibliothèque étendue de templates adaptés à différents secteurs professionnels
-\item Des outils d'analyse automatique des compétences à partir des CV
-\item Une interface administrateur plus complète avec tableaux de bord analytiques
-\item L'intégration d'APIs externes (LinkedIn, plateformes de recrutement)
+    \item Une bibliothèque étendue de templates adaptés à différents secteurs professionnels
+    \item Des outils d'analyse automatique des compétences à partir des CV
+    \item Une interface administrateur plus complète avec tableaux de bord analytiques
+    \item L'intégration d'APIs externes (LinkedIn, plateformes de recrutement)
 \end{itemize}
 
+\vspace*{-0.3cm} % Adjust this to control space after list
 Cette expérience a confirmé l'importance d'une approche modulaire dans le développement d'applications métier, tout en soulignant le potentiel des technologies open-source (LaTeX notamment) dans des contextes professionnels modernes.
 
 \section{Conclusion Générale}
@@ -790,15 +794,16 @@ Ce travail démontre qu'il est possible de moderniser des workflows documentaire
 \vspace*{\fill} % Vertical centering
 
 \section*{Références}
-\begin{itemize}
+\vspace*{1cm} 
+\begin{itemize}[topsep=200pt, itemsep=10pt, partopsep=0pt, parsep=0pt]
     \item https://uiverse.io/
     \item https://fonts.google.com/
     \item https://fontawesome.com/
     \item https://www.logoai.com/
     \item https://coolors.co/
     \item https://www.youtube.com/@NetNinja
+   
 \end{itemize}
-
 
 \addcontentsline{toc}{section}{Références}  % Add Références to TOC
 
